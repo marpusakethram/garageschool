@@ -63,6 +63,34 @@ assert(pr.fund.deployed <= p.meta.investable + 1, 'cannot deploy more than inves
 assert(pr.fund.netTvpi >= 0 && Number.isFinite(pr.fund.netTvpi));
 assert(pr.fundPercentile >= 0 && pr.fundPercentile <= 100);
 
+// IRR: -100 now, +200 in one year is 100%.
+assert(Math.abs(E.irr([{ t: 0, v: -100 }, { t: 1, v: 200 }]) - 1) < 1e-4);
+
+// LP report agrees with the debrief and adds up.
+const rep = E.fundReport(p, pState);
+assert(Math.abs(rep.netTvpi - pr.fund.netTvpi) < 1e-9, 'report TVPI must match debrief');
+assert(Math.abs(rep.deployed - pr.fund.deployed) < 1, 'report deployed must match debrief');
+assert(rep.netIrr === null || (rep.netIrr > -1 && rep.netIrr < 10));
+const rows = rep.years.reduce((s, y) => s + y.distributed - y.paidIn, 0);
+assert(Math.abs(rows - rep.years[12].cumulative) < 1, 'yearly cash flows must sum to the cumulative total');
+const aRep = E.fundReport(t, asState(best));
+assert(aRep.positions.length === 10 && aRep.excluded === 0);
+
+// Cap table workshop: percentages sum to 100%, Series A and pool land on their targets.
+for (let k = 1; k <= 25; k++) {
+  const ex = E.capTableExercise(k);
+  ex.steps.forEach(st => assert(Math.abs(st.table.rows.reduce((s, r) => s + r.pct, 0) - 1) < 1e-9));
+  const last = ex.steps[4].table.rows;
+  const aFrac = ex.inputs.aAmt / (ex.inputs.aPre + ex.inputs.aAmt);
+  assert(Math.abs(last.find(r => r.holder === 'Series A investor').pct - aFrac) < 1e-4, 'Series A pct');
+  assert(Math.abs(last.find(r => r.holder === 'Option pool').pct - ex.inputs.poolTarget) < 1e-4, 'pool pct');
+  const safe = ex.steps[2].table.rows.find(r => r.holder === 'SAFE holder').pct;
+  assert(Math.abs(safe - ex.inputs.safeAmt / ex.inputs.safeCap) < 1e-4, 'SAFE pct');
+  const ts = E.termSheetExercise(k);
+  assert(Math.abs(ts.answers.ownership - ts.amount / (ts.amount + ts.pre)) < 1e-12);
+  assert(ts.answers.effectivePre < ts.pre && ts.answers.price > 0);
+}
+
 console.log('engine ok:', stats.companies, 'companies;', 'success rate', (stats.success / stats.companies * 100).toFixed(1) + '%;',
   'median', median.toFixed(2) + 'x;', 'top 5% share', (share * 100).toFixed(0) + '%;',
   'partner sample net TVPI', pr.fund.netTvpi.toFixed(2) + 'x', 'percentile', pr.fundPercentile);

@@ -14,15 +14,34 @@
     });
   }
 
-  // Syllabus on the home page.
-  var syl = document.getElementById('syllabus');
-  if (syl && window.GARAGE_COURSE) {
-    syl.innerHTML = window.GARAGE_COURSE.map(function (m) {
-      return '<li><a href="app.html#/course/' + m.slug + '"><span class="n" aria-hidden="true">' + m.id + '</span>' +
-        '<h3>' + esc(m.title) + '</h3><span class="meta">' + m.minutes + ' min read</span><p>' + esc(m.summary) + '</p></a></li>';
-    }).join('') +
-      '<li><a href="break-into-vc.html"><span class="n" aria-hidden="true">+</span><h3>How to break into venture capital</h3>' +
-      '<span class="meta">Guide</span><p>The paths in, what firms look for, how interviews work, and a 90-day plan.</p></a></li>';
+  // Course syllabus lists (home page and founders page).
+  function syllabus(el, course, extra) {
+    if (!el || !window.GARAGE_COURSE) return;
+    el.innerHTML = window.GARAGE_COURSE.filter(function (m) { return m.course === course; }).map(function (m) {
+      return '<li><a href="app.html#/course/' + m.slug + '"><span class="n" aria-hidden="true">' + m.n + '</span>' +
+        '<h3>' + esc(m.title) + '</h3><span class="meta">' + (m.part === 'Build it yourself' ? 'Build it yourself, ' : '') + m.minutes + ' min read</span><p>' + esc(m.summary) + '</p></a></li>';
+    }).join('') + (extra || '');
+  }
+  syllabus(document.getElementById('syllabus'), 'vc',
+    '<li><a href="break-into-vc.html"><span class="n" aria-hidden="true">+</span><h3>How to break into venture capital</h3>' +
+    '<span class="meta">Guide</span><p>The paths in, what firms look for, how interviews work, and a 90-day plan.</p></a></li>');
+  syllabus(document.getElementById('founder-syllabus'), 'founder');
+
+  // Founders page: ask a question. Goes to the feedback Google Form, which emails the team.
+  var ask = document.getElementById('ask-form');
+  if (ask) {
+    ask.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = document.getElementById('ask-name').value.trim(), email = document.getElementById('ask-email').value.trim(), q = document.getElementById('ask-q').value.trim();
+      var err = document.getElementById('ask-err');
+      if (!q) { err.textContent = 'Write your question first.'; document.getElementById('ask-q').focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Enter a valid email so we can reply.'; document.getElementById('ask-email').focus(); return; }
+      err.textContent = '';
+      var btn = ask.querySelector('button'); btn.disabled = true; btn.textContent = 'Sending...';
+      window.VSForms.send('feedback', { 'Type': 'Founder question', 'Name': name, 'Email': email, 'Where (test or page)': 'Founders page', 'Message': q }).then(function () {
+        ask.innerHTML = '<p style="font:400 22px var(--serif);color:#fff" role="status">Thanks. We will reply to ' + esc(email) + '.</p>';
+      });
+    });
   }
 
   // One test, fifty startups: every company from Analyst test 1 as a dot.

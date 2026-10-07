@@ -45,7 +45,13 @@
     library: '<path d="M4 4h5v16H4zM10 4h5v16h-5z"/><path d="M16 5l4 1-3 14-4-1z"/>',
     glossary: '<path d="M4 6h16M4 12h10M4 18h13"/>',
     compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
-    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+    tool: '<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3z"/><path d="M14.5 6.5L17 4l3 3-2.5 2.5"/>',
+    chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    map: '<path d="M9 4l-6 2v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+    spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+    chat: '<path d="M4 5h16v11H9l-5 4z"/>',
+    rocket: '<path d="M5 15c-1 1-1.5 3.5-1.5 3.5S6 18 7 17"/><path d="M9 15l-3-3c2-6 7-9 13-9 0 6-3 11-9 13z"/><circle cx="14.5" cy="9.5" r="1.5"/>'
   };
   function icon(name) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>'; }
   var GMARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15.5" fill="#1A3EBC"/><circle cx="16" cy="16" r="13.3" fill="#2350E8"/><circle cx="16" cy="16" r="11.3" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/><path d="M9.6 10.2h3.5l2.9 7.4 2.9-7.4h3.5l-4.8 12.1h-3.2z" fill="#fff"/></svg>';
@@ -53,25 +59,40 @@
 
   // ---------- Layout ----------
   function shell(active, html) {
-    var nav = [
+    var founder = store.profile && store.profile.kind === 'founder';
+    var nav = founder ? [
+      ['home', '#/', 'Dashboard', 'home'],
+      ['course', '#/courses/founder', 'Founder course', 'rocket'],
+      ['course-vc', '#/course', 'VC course', 'course'],
+      ['tests', '#/tests', 'Tests', 'tests']
+    ] : [
       ['home', '#/', 'Dashboard', 'home'],
       ['tests', '#/tests', 'Tests', 'tests'],
       ['course', '#/course', 'Course', 'course'],
-      ['walkthrough', '#/walkthrough', 'Walkthrough', 'play'],
-      ['library', '#/library', 'Library', 'library'],
-      ['glossary', '#/glossary', 'Glossary', 'glossary']
+      ['workshops', '#/workshops', 'Workshops', 'tool'],
+      ['walkthrough', '#/walkthrough', 'Walkthrough', 'play']
     ];
-    var links = nav.map(function (n) {
-      return '<li><a href="' + n[1] + '"' + (active === n[0] ? ' aria-current="page"' : '') + '>' + icon(n[3]) + n[2] + '</a></li>';
-    }).join('');
-    var user = store.profile
+    var res = [
+      ['metrics', '#/metrics', 'Metrics guide', 'chart'],
+      ['sectors', '#/sectors', 'Sector map', 'map'],
+      ['glossary', '#/glossary', 'Glossary', 'glossary'],
+      ['library', '#/library', 'Library', 'library']
+    ];
+    function li(n) { return '<li><a href="' + n[1] + '"' + (active === n[0] ? ' aria-current="page"' : '') + '>' + icon(n[3]) + n[2] + '</a></li>'; }
+    var links = nav.map(li).join('');
+    var resLinks = res.map(li).join('');
+    var user = store.profile && !store.signedOut
       ? '<div class="side-user"><b>' + esc(store.profile.name) + '</b><a href="#/profile">Profile and progress</a></div>'
-      : '<div class="side-user"><b>Not signed in</b><a href="#/signup">Create an account</a> to save your tests.</div>';
+      : '<div class="side-user"><b>Not signed in</b><a href="#/signup">Create an account</a> or <a href="#/login">log in</a>.</div>';
     return '<div class="app" id="app">' +
       '<aside class="sidebar">' + LOGO +
         '<nav aria-label="App"><ul class="side-nav">' + links + '</ul></nav>' +
-        '<nav aria-label="More"><p class="side-label">More</p><ul class="side-nav">' +
-          '<li><a href="break-into-vc.html">' + icon('compass') + 'Break into VC</a></li>' +
+        '<nav aria-label="Resources"><p class="side-label">Resources</p><ul class="side-nav">' + resLinks +
+          '<li><a href="ai-tools.html">' + icon('spark') + 'AI tools for VCs</a></li>' +
+          '<li><a href="founders.html">' + icon('rocket') + 'For founders</a></li>' +
+          '<li><a href="break-into-vc.html">' + icon('compass') + 'Break into VC</a></li></ul></nav>' +
+        '<nav aria-label="You"><p class="side-label">You</p><ul class="side-nav">' +
+          li(['feedback', '#/feedback', 'Send feedback', 'chat']) +
           '<li><a href="#/profile"' + (active === 'profile' ? ' aria-current="page"' : '') + '>' + icon('user') + 'Profile</a></li></ul></nav>' +
         user + '</aside>' +
       '<div class="main"><div class="app-top">' + LOGO + '<button class="btn btn-secondary btn-sm" type="button" data-act="menu" aria-expanded="false">Menu</button></div>' +
@@ -114,11 +135,9 @@
     var parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
     var p0 = parts[0] || '';
     document.title = 'VentureSim';
-    var needsAccount = { '': 1, tests: 1, test: 1, results: 1, profile: 1 };
-    if (needsAccount[p0] && !store.profile) {
-      if (p0 === '' || p0 === 'tests') return viewSignup('Create an account to take tests and save your progress.');
-      return viewSignup();
-    }
+    var needsAccount = { '': 1, tests: 1, test: 1, results: 1, report: 1, profile: 1 };
+    if (needsAccount[p0] && (!store.profile || store.signedOut)) return go(store.profile ? '#/login' : '#/signup');
+    if (VSApp.routes[p0]) return VSApp.routes[p0](parts);
     switch (p0) {
       case '': return viewDashboard();
       case 'signup': return viewSignup();
@@ -127,7 +146,8 @@
       case 'test': return viewTest(parts[1], +parts[2], parts[3]);
       case 'results': return viewResults(parts[1], +parts[2]);
       case 'example': return viewExample();
-      case 'course': return parts[1] ? viewLesson(parts[1]) : viewCourse();
+      case 'course': return parts[1] ? viewLesson(parts[1]) : viewCourse('vc');
+      case 'courses': return viewCourse(parts[1]);
       case 'walkthrough': return viewWalkthrough();
       case 'library': return viewLibrary();
       case 'glossary': return viewGlossary();
@@ -213,6 +233,7 @@
   function viewDashboard() {
     document.title = 'Dashboard | VentureSim';
     var p = store.profile;
+    if (p.kind === 'founder' && VSApp.routes.founderHome) return VSApp.routes.founderHome();
     var active = null;
     Object.keys(store.tests).forEach(function (k) { var s = store.tests[k]; if (s.status === 'active' && (!active || s.updatedAt > active.updatedAt)) active = s; });
     var main = p.track, n = nextTest(main);
@@ -234,11 +255,12 @@
         '<a class="btn btn-secondary btn-sm" href="#/tests/' + t + '">' + (d ? 'View tests' : 'Start') + '</a><div class="bar" aria-hidden="true"><i style="width:' + (d / 50 * 100) + '%"></i></div></div>';
     }).join('');
 
-    var lessons = COURSE.map(function (m) {
-      return '<li><span class="tick' + (store.course[m.slug] ? ' done' : '') + '" aria-hidden="true"></span><a href="#/course/' + m.slug + '">' + m.id + '. ' + esc(m.title) + '</a><span class="small muted">' + m.minutes + ' min</span>' +
+    var lessons = COURSE.filter(function (m) { return m.course === 'vc'; }).map(function (m) {
+      return '<li><span class="tick' + (store.course[m.slug] ? ' done' : '') + '" aria-hidden="true"></span><a href="#/course/' + m.slug + '">' + m.n + '. ' + esc(m.title) + '</a><span class="small muted">' + m.minutes + ' min</span>' +
         (store.course[m.slug] ? '<span class="sr-only">Read</span>' : '') + '</li>';
     }).join('');
-    var read = COURSE.filter(function (m) { return store.course[m.slug]; }).length;
+    var vcCourse = COURSE.filter(function (m) { return m.course === 'vc'; });
+    var read = vcCourse.filter(function (m) { return store.course[m.slug]; }).length;
 
     var recent = Object.keys(store.tests).map(function (k) { return store.tests[k]; }).filter(function (s) { return s.status === 'done'; })
       .sort(function (a, b) { return b.finishedAt - a.finishedAt; }).slice(0, 5);
@@ -255,7 +277,7 @@
         '<section class="panel" aria-labelledby="tr-h"><div class="panel-head"><h2 id="tr-h">Your tracks</h2><a class="small" href="#/tests">All tests</a></div>' + tracks + '</section>' +
         '<section class="panel" aria-labelledby="re-h"><div class="panel-head"><h2 id="re-h">Recent results</h2></div>' + recentHtml + '</section>' +
       '</div>' +
-      '<section class="panel" aria-labelledby="co-h" style="margin-top:20px"><div class="panel-head"><h2 id="co-h">Course</h2><span class="small muted">' + read + ' of ' + COURSE.length + ' read</span></div><ul class="check-list">' + lessons + '</ul></section>' +
+      '<section class="panel" aria-labelledby="co-h" style="margin-top:20px"><div class="panel-head"><h2 id="co-h">Course</h2><span class="small muted">' + read + ' of ' + vcCourse.length + ' read</span></div><ul class="check-list">' + lessons + '</ul></section>' +
       '<div class="grid-2" style="margin-top:20px">' +
         '<a class="panel panel-body module-card" href="#/walkthrough"><span class="n">Video</span><h3>How a test works</h3><p>The full walkthrough, from the fund brief to the debrief.</p></a>' +
         '<a class="panel panel-body module-card" href="break-into-vc.html"><span class="n">Guide</span><h3>Break into VC</h3><p>The paths in, the interview process, and a 90-day plan.</p></a>' +
@@ -588,6 +610,7 @@
 
     var nextN = n < 50 ? n + 1 : null;
     var actions = '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">' + (nextN ? '<a class="btn btn-primary btn-lg" href="#/test/' + track + '/' + nextN + '">Next: test ' + nextN + ', ' + money(E.fundSize(nextN)) + ' fund</a>' : '') +
+      '<a class="btn btn-secondary btn-lg" href="#/report/' + track + '/' + n + '">Read the LP report</a>' +
       '<a class="btn btn-secondary btn-lg" href="#/tests/' + track + '">Back to ' + trackName(track) + ' tests</a></div>';
 
     render(shell('tests', page(
@@ -597,8 +620,10 @@
       (r.fund ? '<p class="small muted" style="margin-top:12px">Carry paid to the GPs: ' + money(r.fund.carry) + '. Capital left uninvested: ' + money(r.fund.undeployed) + '. Initial investments made by month 24: ' + r.by24 + ' of ' + meta.slots + '.</p>' : '') +
       '<section class="panel" style="margin-top:24px"><div class="panel-head"><h2>What to work on</h2></div><div class="panel-body">' + lessons + '</div></section>' +
       '<section class="panel" style="margin-top:20px"><div class="panel-head"><h2>Signals</h2></div><div class="panel-body"><p class="small muted" style="margin-bottom:12px">Left: how much each signal predicted outcomes at the ' + E.STAGES[meta.stages[0]].label + ' stage. Right: how much stronger your picks were on that signal than the companies you let go.</p>' + signals + '</div></section>' +
-      '<section style="margin-top:28px"><h2 style="font-size:20px;margin-bottom:12px">Every company</h2>' + table + '</section>' + actions
+      '<section style="margin-top:28px"><h2 style="font-size:20px;margin-bottom:12px">Every company</h2>' + table + '</section>' + actions +
+      '<div id="fb-slot" style="margin-top:28px"></div>'
     )));
+    if (VSApp.feedbackBox) VSApp.feedbackBox(document.getElementById('fb-slot'), { where: trackName(track) + ' test ' + n, key: key(track, n) });
     root.querySelector('.filter').addEventListener('click', function (e) {
       var b = e.target.closest('[data-filter]'); if (!b) return;
       var f = b.getAttribute('data-filter');
@@ -661,13 +686,26 @@
   }
 
   // ---------- Course ----------
-  function viewCourse() {
-    document.title = 'Course | VentureSim';
-    var list = COURSE.map(function (m) {
-      return '<li><span class="tick' + (store.course[m.slug] ? ' done' : '') + '" aria-hidden="true" style="margin-top:6px"></span><a href="#/course/' + m.slug + '"><b>' + m.id + '. ' + esc(m.title) + '</b><br><span class="small muted">' + esc(m.summary) + '</span></a><span class="small muted" style="white-space:nowrap">' + m.minutes + ' min</span></li>';
+  var COURSE_INFO = {
+    vc: { name: 'VC course', path: '#/course', sub: 'Fourteen lessons on the 20% of venture capital that does most of the work. Eleven on theory, then three where you build a memo, a term sheet, and a cap table yourself.' },
+    founder: { name: 'Founder course', path: '#/courses/founder', sub: 'Eight lessons for founders: how investors think, getting VC ready, getting into accelerators and residencies, raising your first round, and practice interview questions.' }
+  };
+  function viewCourse(which) {
+    which = which === 'founder' ? 'founder' : 'vc';
+    var info = COURSE_INFO[which];
+    document.title = info.name + ' | VentureSim';
+    var list = COURSE.filter(function (m) { return m.course === which; });
+    var parts = [];
+    list.forEach(function (m) { if (parts.indexOf(m.part) === -1) parts.push(m.part); });
+    var body = parts.map(function (part) {
+      return '<h2 style="font:400 24px var(--serif);margin:28px 0 12px">' + esc(part) + '</h2><section class="panel"><ul class="check-list course-list">' +
+        list.filter(function (m) { return m.part === part; }).map(function (m) {
+          return '<li><span class="tick' + (store.course[m.slug] ? ' done' : '') + '" aria-hidden="true" style="margin-top:6px"></span><a href="#/course/' + m.slug + '"><b>' + m.n + '. ' + esc(m.title) + '</b><br><span class="small muted">' + esc(m.summary) + '</span></a><span class="small muted" style="white-space:nowrap">' + m.minutes + ' min</span></li>';
+        }).join('') + '</ul></section>';
     }).join('');
-    render(shell('course', page(pageHead('Course', 'Eleven lessons on the 20% of venture capital that does most of the work. Each one opens with the short version, then goes deeper with worked examples and a few questions to check yourself.'),
-      '<section class="panel"><ul class="check-list course-list">' + list + '</ul></section>')));
+    var tabs = '<nav class="tabs" aria-label="Courses"><a href="#/course"' + (which === 'vc' ? ' aria-current="page"' : '') + '>VC course</a><a href="#/courses/founder"' + (which === 'founder' ? ' aria-current="page"' : '') + '>Founder course</a></nav>';
+    render(shell(which === 'founder' && !(store.profile && store.profile.kind === 'founder') ? 'course' : (which === 'vc' && store.profile && store.profile.kind === 'founder' ? 'course-vc' : 'course'),
+      page(pageHead(info.name, info.sub), tabs + body)));
   }
 
   function loadLesson(slug, cb) {
@@ -686,23 +724,27 @@
     var m = lessonBySlug(slug);
     if (!m) return go('#/course');
     document.title = m.title + ' | VentureSim';
-    var head = '<header class="lesson-head"><p class="crumbs"><a href="#/course">Course</a> / Lesson ' + m.id + ' of ' + COURSE.length + ', ' + m.minutes + ' min read</p><h1>' + esc(m.title) + '</h1><p>' + esc(m.summary) + '</p></header>';
+    if (VSApp.lastLesson) VSApp.lastLesson(m);
+    var siblings = COURSE.filter(function (x) { return x.course === m.course; });
+    var info = COURSE_INFO[m.course];
+    var head = '<header class="lesson-head"><p class="crumbs"><a href="' + info.path + '">' + info.name + '</a> / Lesson ' + m.n + ' of ' + siblings.length + ', ' + m.minutes + ' min read</p><h1>' + esc(m.title) + '</h1><p>' + esc(m.summary) + '</p></header>';
     render(shell('course', page('', head + '<p class="muted">Loading the lesson...</p>')));
     var wanted = location.hash;
     loadLesson(slug, function (L) {
       if (location.hash !== wanted) return;
       if (!L) { render(shell('course', page('', head + '<p class="feedback bad">This lesson could not be loaded. Check that the assets/js/course folder is next to app.html.</p>'))); return; }
-      var prev = lessonById(m.id - 1), next = lessonById(m.id + 1), read = !!store.course[m.slug];
+      var at = siblings.indexOf(m), prev = siblings[at - 1], next = siblings[at + 1], read = !!store.course[m.slug];
       var shortHtml = '<section class="short-version" aria-labelledby="sv-h"><h2 id="sv-h">The short version</h2><ol>' + L.short.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol></section>';
       var body = document.createElement('div');
       body.innerHTML = L.body;
       var toc = [];
       body.querySelectorAll('h2').forEach(function (h) { h.id = 'l-' + slugify(h.textContent); toc.push([h.id, h.textContent]); });
       var tocHtml = '<nav class="lesson-toc" aria-label="On this page"><p>On this page</p><ol>' + toc.map(function (t) { return '<li><a href="#' + t[0] + '" data-jump="' + t[0] + '">' + esc(t[1]) + '</a></li>'; }).join('') + '</ol></nav>';
-      var nav = '<div class="lesson-nav"><div>' + (prev ? '<a class="btn btn-secondary" href="#/course/' + prev.slug + '">Lesson ' + prev.id + '</a>' : '') + '</div>' +
+      var nav = '<div class="lesson-nav"><div>' + (prev ? '<a class="btn btn-secondary" href="#/course/' + prev.slug + '">Lesson ' + prev.n + '</a>' : '') + '</div>' +
         (store.profile ? '<button class="btn ' + (read ? 'btn-secondary' : 'btn-primary') + '" type="button" id="mark">' + (read ? 'Marked as read' : 'Mark as read') + '</button>' : '<a class="btn btn-primary" href="#/signup">Create an account to track progress</a>') +
-        '<div>' + (next ? '<a class="btn btn-secondary" href="#/course/' + next.slug + '">Lesson ' + next.id + ': ' + esc(next.title) + '</a>' : '<a class="btn btn-secondary" href="#/tests">Go to the tests</a>') + '</div></div>';
-      render(shell('course', page('', head + '<div class="lesson-wrap"><div>' + shortHtml + '<article class="lesson">' + body.innerHTML + '</article>' + nav + '</div>' + tocHtml + '</div>')));
+        '<div>' + (next ? '<a class="btn btn-secondary" href="#/course/' + next.slug + '">Lesson ' + next.n + ': ' + esc(next.title) + '</a>' : (m.course === 'founder' ? '<a class="btn btn-secondary" href="founders.html#ask">Ask us a question</a>' : '<a class="btn btn-secondary" href="#/workshops">Go to the workshops</a>')) + '</div></div>';
+      var ws = m.workshop ? '<div class="scenario" style="margin-top:32px"><p><b>Practice it.</b> The ' + esc(m.title.toLowerCase()) + ' workshop starts with a short guided tour, then gives you a scenario to work through.</p><a class="btn btn-primary btn-sm" style="margin-top:10px" href="#/workshop/' + m.workshop + '">Open the workshop</a></div>' : '';
+      render(shell('course', page('', head + '<div class="lesson-wrap"><div>' + shortHtml + '<article class="lesson">' + body.innerHTML + '</article>' + ws + nav + '</div>' + tocHtml + '</div>')));
       var bar = document.createElement('div');
       bar.className = 'reading-bar';
       bar.setAttribute('aria-hidden', 'true');
@@ -785,13 +827,16 @@
     var done = TRACK_IDS.reduce(function (s, t) { return s + doneCount(t); }, 0);
     render(shell('profile', page(pageHead('Profile and progress', 'Your account and progress are saved in this browser on this device.'),
       '<form class="form panel panel-body" id="pf" style="max-width:none"><div class="grid-2"><div><label for="name">Name</label><input type="text" id="name" value="' + esc(p.name) + '" required></div>' +
-      '<div><label for="email">Email (optional)</label><input type="email" id="email" value="' + esc(p.email || '') + '"></div></div>' +
+      '<div><label for="email">Email</label><input type="email" id="email" value="' + esc(p.email || '') + '"></div>' +
+      '<div><label for="phone">Phone number</label><input type="text" id="phone" value="' + esc(p.phone || '') + '"></div>' +
+      '<div><label for="role">' + (p.kind === 'founder' ? 'What you are building' : 'What you do now') + '</label><input type="text" id="role" value="' + esc(p.kind === 'founder' ? (p.building || '') : (p.role || '')) + '"></div></div>' +
       '<div><label for="track">Main track</label><select id="track" class="search">' + TRACK_IDS.map(function (t) { return '<option value="' + t + '"' + (p.track === t ? ' selected' : '') + '>' + trackName(t) + '</option>'; }).join('') + '</select></div>' +
       '<p class="form-error" id="pf-msg" role="status"></p><div><button class="btn btn-primary" type="submit">Save changes</button></div></form>' +
       '<section class="panel" style="margin-top:20px"><div class="panel-head"><h2>Your data</h2></div><div class="panel-body stack">' +
         '<p>' + done + ' tests finished. Export a copy to move your progress to another device or keep a backup.</p>' +
         '<div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-secondary" type="button" id="export">Export progress</button>' +
         '<label class="btn btn-secondary" for="import">Import progress</label><input type="file" id="import" accept="application/json" class="sr-only"></div><p class="form-error" id="form-error" role="alert"></p>' +
+        '<hr style="border:0;border-top:1px solid var(--line)"><p><b>Sign out.</b> Your progress stays saved in this browser for when you log back in.</p><div><button class="btn btn-secondary" type="button" id="signout">Sign out</button></div>' +
         '<hr style="border:0;border-top:1px solid var(--line)"><p><b>Reset everything.</b> Deletes your account, all test results, and course progress from this browser.</p>' +
         '<div><button class="btn btn-bad" type="button" id="reset">Delete my progress</button></div></div></section>')));
     document.getElementById('pf').addEventListener('submit', function (e) {
@@ -799,6 +844,8 @@
       var name = document.getElementById('name').value.trim(), msg = document.getElementById('pf-msg');
       if (!name) { msg.textContent = 'Name cannot be empty.'; return; }
       p.name = name; p.email = document.getElementById('email').value.trim(); p.track = document.getElementById('track').value;
+      p.phone = document.getElementById('phone').value.trim();
+      if (p.kind === 'founder') p.building = document.getElementById('role').value.trim(); else p.role = document.getElementById('role').value.trim();
       save(); msg.style.color = 'var(--good)'; msg.textContent = 'Changes saved.';
     });
     document.getElementById('export').addEventListener('click', function () {
@@ -812,6 +859,10 @@
       if (!confirm('Importing replaces the progress saved in this browser. Continue?')) { e.target.value = ''; return; }
       importFile(e);
     });
+    document.getElementById('signout').addEventListener('click', function () {
+      var done = function () { store.signedOut = true; save(); location.href = 'index.html'; };
+      if (window.VSAuth) window.VSAuth.signOut().then(done, done); else done();
+    });
     document.getElementById('reset').addEventListener('click', function () {
       if (!confirm('Delete your account and all progress from this browser? This cannot be undone.')) return;
       store = { profile: null, tests: {}, course: {} }; save();
@@ -819,5 +870,14 @@
     });
   }
 
-  route();
+  window.VSApp = {
+    routes: {},
+    store: function () { return store; },
+    setStore: function (s2) { store = s2; save(); },
+    save: save, esc: esc, shell: shell, page: page, pageHead: pageHead, render: render, go: go, route: route,
+    getTest: getTest, testState: testState, trackName: trackName, stageText: stageText, icon: icon, LOGO: LOGO,
+    money: money, mult: mult, pct: pct, setKeys: setKeys, setScroll: setScroll, importFile: importFile,
+    lessonBySlug: lessonBySlug, COURSE: COURSE, TRACK_IDS: TRACK_IDS, doneCount: doneCount, nextTest: nextTest
+  };
+  document.addEventListener('DOMContentLoaded', route);
 })();

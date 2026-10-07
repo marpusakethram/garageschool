@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI tools for venture investors | VentureSim</title>
+<meta name="description" content="How venture investors use Granola, Mem, Notion, and Claude or ChatGPT for sourcing, meetings, diligence, and memos, with a workflow, prompts, and the cautions that matter.">
+<meta name="theme-color" content="#F7F6F2">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15.5' fill='%231A3EBC'/%3E%3Ccircle cx='16' cy='16' r='13.3' fill='%232350E8'/%3E%3Ccircle cx='16' cy='16' r='11.3' fill='none' stroke='%23fff' stroke-opacity='.35' stroke-width='1'/%3E%3Cpath d='M9.6 10.2h3.5l2.9 7.4 2.9-7.4h3.5l-4.8 12.1h-3.2z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap">
+<link rel="stylesheet" href="assets/css/garage.css">
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="head-bar">
+    <a class="logo" href="index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15.5" fill="#1A3EBC"/><circle cx="16" cy="16" r="13.3" fill="#2350E8"/><circle cx="16" cy="16" r="11.3" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/><path d="M9.6 10.2h3.5l2.9 7.4 2.9-7.4h3.5l-4.8 12.1h-3.2z" fill="#fff"/></svg>VentureSim</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html#tracks">Tests</a>
+      <a href="app.html#/course">Course</a>
+      <a href="founders.html">Founders</a>
+      <a href="ai-tools.html" aria-current="page">AI tools</a>
+      <a href="app.html#/metrics">Metrics</a>
+      <a href="break-into-vc.html">Break into VC</a>
+    </nav>
+    <div class="nav-right">
+      <a class="login" href="app.html#/login">Log in</a>
+      <a class="btn btn-primary" href="app.html#/signup">Sign up</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Main">
+    <a href="index.html#tracks">Tests</a><a href="app.html#/course">Course</a><a href="founders.html">Founders</a><a href="ai-tools.html">AI tools</a>
+    <a href="app.html#/metrics">Metrics</a><a href="break-into-vc.html">Break into VC</a><a href="app.html#/login">Log in</a>
+    <a class="btn btn-primary" href="app.html#/signup">Sign up</a>
+  </nav>
+</header>
+
+<main id="main">
+  <div class="article-head">
+    <div>
+      <h1>AI tools for venture investors</h1>
+      <p>How investors use Granola, Mem, Notion, and Claude or ChatGPT across sourcing, meetings, diligence, and memos. What each one is good at, a workflow that ties them together, and where to be careful.</p>
+    </div>
+  </div>
+
+  <div class="article">
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#stack">The stack at a glance</a></li>
+        <li><a href="#granola">Granola</a></li>
+        <li><a href="#mem">Mem</a></li>
+        <li><a href="#notion">Notion</a></li>
+        <li><a href="#assistants">Claude and ChatGPT</a></li>
+        <li><a href="#workflow">From first call to memo</a></li>
+        <li><a href="#prompts">Prompts to start with</a></li>
+        <li><a href="#careful">Where to be careful</a></li>
+      </ol>
+    </nav>
+
+    <article class="prose">
+      <h2 id="stack">The stack at a glance</h2>
+      <p>Most of an investor's week is meetings, notes, research, and writing. AI tools help with each of those, but none of them does the judgment for you. Think of them as a way to spend less time on capture and summary, so you can spend more on the decisions.</p>
+      <table>
+        <thead><tr><th>Job</th><th>Tool</th><th>What it does for you</th></tr></thead>
+        <tbody>
+          <tr><td>Taking notes in calls</td><td>Granola</td><td>Turns your rough notes plus the call audio into clean, structured notes</td></tr>
+          <tr><td>Remembering everything</td><td>Mem</td><td>Keeps your notes organized and lets you ask questions across all of them</td></tr>
+          <tr><td>Running the pipeline</td><td>Notion</td><td>A shared workspace for your deal pipeline, memo templates, and team notes</td></tr>
+          <tr><td>Research and writing</td><td>Claude or ChatGPT</td><td>Research briefs, document analysis, market math, and first drafts</td></tr>
+        </tbody>
+      </table>
+      <p>You do not need all four. A solo angel might use only Granola and an assistant. A small fund might run everything in Notion with an assistant on the side. Pick the smallest set that covers your week.</p>
+
+      <h2 id="granola">Granola: meeting notes</h2>
+      <p>Granola is an AI notepad for meetings. You type rough notes during a call as you normally would. It listens to the audio on your computer, without adding a bot to the call, and afterwards combines your notes with the conversation into clean, structured notes. You can also ask questions about a meeting or across past meetings.</p>
+      <h3>How investors use it</h3>
+      <ul>
+        <li><strong>First calls with founders.</strong> Use a template with the same headings every time: team, problem, product, traction, market, round, red flags, next steps. Consistent notes make deals easy to compare later.</li>
+        <li><strong>Reference and customer calls.</strong> Capture exact wording. "Would you work with her again?" answers are worth quoting precisely in a memo.</li>
+        <li><strong>Partner meetings.</strong> Keep a record of what was decided and why, which is useful when you revisit a pass a year later.</li>
+      </ul>
+      <h3>Tips</h3>
+      <ul>
+        <li>Write your own judgments in the notes as you go, such as "strong on sales, unsure about margins." The summary is only as good as what you add.</li>
+        <li>Tell people you are taking AI-assisted notes, and get consent where the law or the other person requires it. Rules on recording differ by place.</li>
+      </ul>
+
+      <h2 id="mem">Mem: your second memory</h2>
+      <p>Mem is an AI note-taking app built to keep your notes organized without much manual filing, and to let you search and ask questions across everything you have written. For investors, whose job depends on remembering hundreds of founders and conversations, that recall is the main value.</p>
+      <h3>How investors use it</h3>
+      <ul>
+        <li><strong>Founder relationships.</strong> Ask what a founder told you six months ago, and see how the story has changed. A founder whose metrics improved as promised is a strong signal.</li>
+        <li><strong>Theses and market maps.</strong> Keep running notes on the sectors you care about, and pull together everything you have learned about one market before a meeting.</li>
+        <li><strong>Pass log.</strong> Record why you passed on each company. Mem makes it easy to find those notes when a company raises again, which is how you learn whether your reasons held up.</li>
+      </ul>
+
+      <h2 id="notion">Notion: the shared workspace</h2>
+      <p>Notion combines documents and databases in one workspace, with built-in AI that can summarize pages, answer questions about your workspace, and help draft. Many small funds and angel groups run their whole process in it.</p>
+      <h3>How investors use it</h3>
+      <ul>
+        <li><strong>Deal pipeline.</strong> A database with one row per company and properties for stage (screened, first call, diligence, committee, invested, passed), sector, round size, source, and owner. Board views show the funnel at a glance.</li>
+        <li><strong>Memo templates.</strong> A template with the sections from Lesson 12 of the VentureSim course, so every memo has the same structure.</li>
+        <li><strong>Investment committee notes.</strong> Decisions, votes, and reasons linked to each deal.</li>
+        <li><strong>Portfolio and LP updates.</strong> A page per company for monthly updates, and drafts of LP letters built from them.</li>
+      </ul>
+      <p>Larger firms often use a dedicated venture CRM instead. The principles are the same: one place for every company, a clear stage, and the history of every interaction.</p>
+
+      <h2 id="assistants">Claude and ChatGPT: research and writing</h2>
+      <p>General AI assistants such as Claude and ChatGPT are the most flexible tools in the stack. Both can read files you upload, keep context for a project, and help with research, analysis, and writing.</p>
+      <h3>How investors use them</h3>
+      <ul>
+        <li><strong>Research briefs before a meeting.</strong> A summary of a market, its main companies, how they make money, and recent changes, as a starting point you then check.</li>
+        <li><strong>Reading documents.</strong> Summarizing a deck or a long market report, or pulling key numbers from a data room export.</li>
+        <li><strong>Market math.</strong> Building a bottom-up market size with you, step by step, so every assumption is visible.</li>
+        <li><strong>Red-teaming.</strong> Asking the assistant to argue against your thesis or run a pre-mortem: "Assume this investment failed. What are the five most likely reasons?"</li>
+        <li><strong>First drafts.</strong> Turning your notes into a first draft of a memo, an outreach email, or an LP letter that you then rewrite in your own voice.</li>
+        <li><strong>Checking numbers.</strong> Walking through dilution, SAFE conversion, or fund math to check your own work.</li>
+      </ul>
+
+      <h2 id="workflow">From first call to memo</h2>
+      <p>Here is one way the tools fit together for a single deal.</p>
+      <ol>
+        <li><strong>Before the call.</strong> Ask an assistant for a short brief on the market and competitors. Check the claims that matter.</li>
+        <li><strong>During the call.</strong> Take rough notes in Granola using your first-call template.</li>
+        <li><strong>Right after.</strong> Add the company to your Notion pipeline with the summary and next steps. Your notes are saved in Mem or Granola for later recall.</li>
+        <li><strong>Diligence.</strong> Use Granola for customer and reference calls. Upload exported metrics to an assistant to rebuild growth, retention, and concentration, then check the results against the raw data yourself.</li>
+        <li><strong>The memo.</strong> Paste your notes and diligence findings into an assistant with your memo template and ask for a first draft. Then rewrite it: the recommendation, the risks, and the scenarios must be yours.</li>
+        <li><strong>After the decision.</strong> Record the decision and the main reasons in your pipeline and pass log. A year later, ask Mem or Notion what you believed, and compare it with what happened.</li>
+      </ol>
+
+      <h2 id="prompts">Prompts to start with</h2>
+      <p>Replace the bracketed parts. Always check the output against sources you trust.</p>
+      <div class="callout"><p><strong>Market brief:</strong> I am meeting a startup that sells [product] to [customer]. Give me a one-page brief: who buys this today and from which budget, the main competitors and how they make money, what has changed in the last two years, and the three questions I should ask the founder. Mark anything you are unsure about.</p></div>
+      <div class="callout"><p><strong>Bottom-up market size:</strong> Help me size the market for [product] bottom-up. Ask me for the number of target customers and the price, show each step of the math, and list which assumptions would change the result the most.</p></div>
+      <div class="callout"><p><strong>Pre-mortem:</strong> Here are my notes on [company]. Assume we invested and it failed three years from now. List the five most likely reasons, ranked, and for each one tell me what evidence I could look for now.</p></div>
+      <div class="callout"><p><strong>Memo first draft:</strong> Using the notes below and this structure (recommendation, company, why it could be very large, team, evidence, competition, risks, returns), write a two-page first draft. Keep my numbers exactly as given and flag any gaps.</p></div>
+      <div class="callout"><p><strong>Reference call questions:</strong> I am calling a former manager of [founder], who was [role] at [company]. Write eight specific questions that would reveal how they work under pressure, how they hire, and where they need help.</p></div>
+      <div class="callout"><p><strong>Cap table check:</strong> A company has [shares] fully diluted shares including a pool of [pool]. An investor puts in [amount] at a [pre-money] pre-money and wants a [x]% pool after the round. Walk me through the price per share, new shares, and everyone's ownership after the round.</p></div>
+
+      <h2 id="careful">Where to be careful</h2>
+      <ul>
+        <li><strong>Confidentiality.</strong> Founders share decks, financials, and data rooms in confidence, sometimes under an NDA. Check each tool's settings and plan for how it stores and uses your data, use business plans where available, and follow your firm's policy. When in doubt, remove names and figures before uploading.</li>
+        <li><strong>Accuracy.</strong> Assistants can state wrong numbers confidently. Never put a figure in a memo that you have not checked against the source.</li>
+        <li><strong>Recording consent.</strong> Tell people when meetings are transcribed, and follow the rules where you and they are.</li>
+        <li><strong>Flattened judgment.</strong> Summaries smooth over hesitation and nuance, which is often where the real signal is. Reread your own notes for the important calls.</li>
+        <li><strong>The decision is yours.</strong> Tools make you faster at gathering and organizing evidence. Deciding what it means is still the job.</li>
+      </ul>
+      <p class="small muted">Features and plans change often; check each tool's own site for current details. VentureSim is not affiliated with Granola, Mem, Notion, Anthropic, or OpenAI.</p>
+      <p><a class="btn btn-primary" href="app.html#/workshop/memo">Practice writing a memo</a></p>
+    </article>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand"><a class="logo" href="index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15.5" fill="#1A3EBC"/><circle cx="16" cy="16" r="13.3" fill="#2350E8"/><circle cx="16" cy="16" r="11.3" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/><path d="M9.6 10.2h3.5l2.9 7.4 2.9-7.4h3.5l-4.8 12.1h-3.2z" fill="#fff"/></svg>VentureSim</a><p>The Venture Capital Simulator. A course and investing tests for anyone learning venture capital.</p></div>
+      <nav aria-label="Tests"><h2>Tests</h2><ul><li><a href="app.html#/tests/analyst">Analyst</a></li><li><a href="app.html#/tests/associate">Associate</a></li><li><a href="app.html#/tests/partner">Partner</a></li><li><a href="app.html#/workshops">Workshops</a></li></ul></nav>
+      <nav aria-label="Learn"><h2>Learn</h2><ul><li><a href="app.html#/course">VC course</a></li><li><a href="founders.html">For founders</a></li><li><a href="app.html#/metrics">Metrics guide</a></li><li><a href="app.html#/sectors">Sector map</a></li><li><a href="break-into-vc.html">Break into VC</a></li></ul></nav>
+      <nav aria-label="Account"><h2>Account</h2><ul><li><a href="app.html#/signup">Sign up</a></li><li><a href="app.html#/login">Log in</a></li><li><a href="app.html#/feedback">Send feedback</a></li></ul></nav>
+    </div>
+    <div class="foot-bottom"><p>&copy; 2026 VentureSim</p><p>VentureSim is an educational simulation. Nothing here is investment advice.</p></div>
+  </div>
+</footer>
+</body>
+</html>

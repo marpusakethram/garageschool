@@ -650,11 +650,165 @@
     return out.slice(0, 3);
   }
 
+  // ---------- LP report ----------
+  // Annualized return for dated cash flows [{t: years, v: dollars}]. Null if it has no solution.
+  function irr(flows) {
+    function npv(r) { return flows.reduce(function (s, f) { return s + f.v / Math.pow(1 + r, f.t); }, 0); }
+    var lo = -0.95, hi = 10, flo = npv(lo);
+    if (flo * npv(hi) > 0) return null;
+    for (var k = 0; k < 200; k++) {
+      var mid = (lo + hi) / 2, fm = npv(mid);
+      if (Math.abs(fm) < 1e-6) return mid;
+      if (flo * fm < 0) hi = mid; else { lo = mid; flo = fm; }
+    }
+    return (lo + hi) / 2;
+  }
+
+  // Treats a finished test as a fund that has fully exited, the way a GP reports to LPs at the end of its life.
+  // Uses the same fee, carry, and hurdle rules as the debrief so the headline numbers match.
+  function fundReport(test, state) {
+    var meta = test.meta, d = state.decisions || {}, f = state.followOns || {};
+    var partner = meta.track === 'partner';
+    var held = test.companies.filter(function (c) { return d[c.i] && d[c.i].yes && c.inThesis; });
+    var positions = held.map(function (c) {
+      var h = c.hidden, t0 = c.month / 12;
+      var fo = partner && f[c.i] === true;
+      var exitT = Math.min(12, Math.max(h.year, t0 + 1.5));
+      var followT = fo ? Math.min(exitT - 0.25, t0 + 1.5) : null;
+      var cost = meta.check + (fo ? meta.followCheck : 0);
+      var proceeds = meta.check * h.multiple + (fo ? meta.followCheck * h.followMultiple : 0);
+      var status = h.multiple === 0 ? 'Written off' : h.multiple < 1 ? 'Sold below cost' : (h.multiple >= 10 && h.exitValue >= 1e9 ? 'IPO' : 'Acquired');
+      return { c: c, t0: t0, followOn: fo, followT: followT, exitT: exitT, cost: cost, proceeds: proceeds, multiple: proceeds / cost, status: status };
+    }).sort(function (a, b) { return b.proceeds - a.proceeds; });
+
+    var deployed = positions.reduce(function (s, p) { return s + p.cost; }, 0);
+    var gross = positions.reduce(function (s, p) { return s + p.proceeds; }, 0);
+    var undeployed = Math.max(0, meta.investable - deployed);
+    var fm = fundMath(meta, gross, deployed, undeployed);
+    var keep = gross ? 1 - fm.carry / gross : 1;          // carry comes out of investment proceeds
+
+    var lpFlows = [], grossFlows = [];
+    for (var y = 0; y < 10; y++) lpFlows.push({ t: y + 0.5, v: -meta.fees / 10 });
+    positions.forEach(function (p) {
+      lpFlows.push({ t: p.t0, v: -meta.check }); grossFlows.push({ t: p.t0, v: -meta.check });
+      if (p.followOn) { lpFlows.push({ t: p.followT, v: -meta.followCheck }); grossFlows.push({ t: p.followT, v: -meta.followCheck }); }
+      lpFlows.push({ t: p.exitT, v: p.proceeds * keep }); grossFlows.push({ t: p.exitT, v: p.proceeds });
+    });
+
+    var years = [];
+    for (var yr = 0; yr <= 12; yr++) years.push({ year: yr, paidIn: 0, distributed: 0 });
+    lpFlows.forEach(function (fl) {
+      var b = years[Math.min(12, Math.floor(fl.t))];
+      if (fl.v < 0) b.paidIn -= fl.v; else b.distributed += fl.v;
+    });
+    var cum = 0;
+    years.forEach(function (b) { cum += b.distributed - b.paidIn; b.cumulative = cum; });
+
+    function group(key) {
+      var out = {};
+      positions.forEach(function (p) {
+        var k = key(p.c);
+        out[k] = out[k] || { cost: 0, proceeds: 0, count: 0 };
+        out[k].cost += p.cost; out[k].proceeds += p.proceeds; out[k].count++;
+      });
+      return Object.keys(out).map(function (k) { return { name: k, cost: out[k].cost, proceeds: out[k].proceeds, count: out[k].count, multiple: out[k].cost ? out[k].proceeds / out[k].cost : 0 }; })
+        .sort(function (a, b) { return b.cost - a.cost; });
+    }
+
+    var lpDistributed = gross * keep + undeployed;
+    return {
+      meta: meta, positions: positions, deployed: deployed, gross: gross, undeployed: undeployed,
+      fees: meta.fees, carry: fm.carry, grossMoic: fm.grossMoic, netTvpi: fm.netTvpi, dpi: fm.netTvpi, rvpi: 0,
+      lpDistributed: lpDistributed, netIrr: irr(lpFlows), grossIrr: grossFlows.length ? irr(grossFlows) : null,
+      years: years, bySector: group(function (c) { return c.sectorLabel; }), byStage: group(function (c) { return c.stageLabel; }),
+      writeOffs: positions.filter(function (p) { return p.status === 'Written off'; }).length,
+      excluded: test.companies.filter(function (c) { return d[c.i] && d[c.i].yes && !c.inThesis; }).length
+    };
+  }
+
+  // ---------- Workshop scenarios ----------
+  function pickFrom(r, a) { return a[Math.floor(r() * a.length)]; }
+
+  // Cap table: founding, pool, post-money SAFE, seed, Series A with a pool increase.
+  function capTableExercise(n) {
+    var r = makeRng('captable:' + n);
+    var fA = pickFrom(r, [5e6, 5.5e6, 6e6, 7e6]), fB = 10e6 - fA;
+    var pool = pickFrom(r, [1e6, 1.5e6, 2e6]);
+    var safeAmt = pickFrom(r, [250e3, 500e3, 750e3, 1e6]), safeCap = pickFrom(r, [5e6, 6e6, 8e6, 10e6]);
+    var seedAmt = pickFrom(r, [1.5e6, 2e6, 2.5e6, 3e6]), seedPre = pickFrom(r, [8e6, 10e6, 12e6]);
+    var aAmt = pickFrom(r, [5e6, 6e6, 8e6, 10e6]), aPre = pickFrom(r, [24e6, 30e6, 36e6, 40e6]), poolTarget = pickFrom(r, [0.10, 0.12, 0.15]);
+
+    var s = safeAmt / safeCap;
+    var base = fA + fB + pool;
+    var safeShares = Math.round(base * s / (1 - s));
+    var preSeed = base + safeShares;
+    var seedPrice = seedPre / preSeed;
+    var seedShares = Math.round(seedAmt / seedPrice);
+    var x = preSeed + seedShares;
+    var aFrac = aAmt / (aPre + aAmt);
+    var N = (x - pool) / (1 - poolTarget - aFrac);
+    var aShares = Math.round(N * aFrac);
+    var poolAfter = Math.round(N * poolTarget);
+    var topUp = poolAfter - pool;
+    var aPrice = aPre / (fA + fB + poolAfter + safeShares + seedShares);
+
+    function table(rows) {
+      var total = rows.reduce(function (t, row) { return t + row[1]; }, 0);
+      return { rows: rows.map(function (row) { return { holder: row[0], shares: row[1], pct: row[1] / total }; }), total: total };
+    }
+    return {
+      n: n,
+      inputs: { fA: fA, fB: fB, pool: pool, safeAmt: safeAmt, safeCap: safeCap, seedAmt: seedAmt, seedPre: seedPre, aAmt: aAmt, aPre: aPre, poolTarget: poolTarget },
+      steps: [
+        { key: 'found', title: 'Founding', text: 'Founder A receives ' + fA.toLocaleString('en-US') + ' shares and Founder B receives ' + fB.toLocaleString('en-US') + ' shares.',
+          table: table([['Founder A', fA], ['Founder B', fB]]), numbers: [] },
+        { key: 'pool', title: 'Option pool', text: 'The company creates an option pool of ' + pool.toLocaleString('en-US') + ' new shares for future employees.',
+          table: table([['Founder A', fA], ['Founder B', fB], ['Option pool', pool]]), numbers: [] },
+        { key: 'safe', title: 'SAFE converts', text: 'An angel invested ' + money(safeAmt) + ' on a post-money SAFE with a ' + money(safeCap) + ' valuation cap. It converts just before the seed round.',
+          table: table([['Founder A', fA], ['Founder B', fB], ['Option pool', pool], ['SAFE holder', safeShares]]),
+          numbers: [{ key: 'safeShares', label: 'Shares issued to the SAFE holder', value: safeShares, kind: 'shares' }] },
+        { key: 'seed', title: 'Seed round', text: 'A seed investor puts in ' + money(seedAmt) + ' at a ' + money(seedPre) + ' pre-money valuation. No change to the pool.',
+          table: table([['Founder A', fA], ['Founder B', fB], ['Option pool', pool], ['SAFE holder', safeShares], ['Seed investor', seedShares]]),
+          numbers: [{ key: 'seedPrice', label: 'Seed price per share', value: seedPrice, kind: 'price' }, { key: 'seedShares', label: 'New shares issued to the seed investor', value: seedShares, kind: 'shares' }] },
+        { key: 'seriesA', title: 'Series A with a pool increase', text: 'A Series A investor puts in ' + money(aAmt) + ' at a ' + money(aPre) + ' pre-money valuation, and requires the unused option pool to be ' + Math.round(poolTarget * 100) + '% of the company after the round. None of the pool has been granted yet.',
+          table: table([['Founder A', fA], ['Founder B', fB], ['Option pool', poolAfter], ['SAFE holder', safeShares], ['Seed investor', seedShares], ['Series A investor', aShares]]),
+          numbers: [{ key: 'topUp', label: 'New options added to the pool', value: topUp, kind: 'shares' }, { key: 'aPrice', label: 'Series A price per share', value: aPrice, kind: 'price' }, { key: 'aShares', label: 'New shares issued to the Series A investor', value: aShares, kind: 'shares' }] }
+      ]
+    };
+  }
+
+  var CO_NAMES = ['Tidewell', 'Corvline', 'Lumora', 'Brightforge', 'Kestrel Health', 'Northgrid', 'Fenpath', 'Halcyon AI', 'Orrstack', 'Wrenfield'];
+  // Term sheet: a seed or Series A deal with a pool requirement and a founder ask that decides the board.
+  function termSheetExercise(n) {
+    var r = makeRng('termsheet:' + n);
+    var seriesA = r() < 0.5;
+    var amount = seriesA ? pickFrom(r, [6e6, 8e6, 10e6, 12e6]) : pickFrom(r, [2e6, 2.5e6, 3e6, 4e6]);
+    var pre = seriesA ? pickFrom(r, [24e6, 30e6, 36e6, 40e6]) : pickFrom(r, [8e6, 10e6, 12e6, 16e6]);
+    var fdShares = pickFrom(r, [8e6, 9e6, 10e6, 12e6]);
+    var poolNow = pickFrom(r, [400e3, 600e3, 800e3]);
+    var poolTarget = pickFrom(r, [0.10, 0.12, 0.15]);
+    var post = pre + amount, inv = amount / post;
+    var N = (fdShares - poolNow) / (1 - poolTarget - inv);
+    var invShares = Math.round(N * inv);
+    var preFd = Math.round(N) - invShares;
+    var price = pre / preFd;
+    var effectivePre = pre - (Math.round(N * poolTarget) - poolNow) * price;
+    var boardAsk = pickFrom(r, ['control', 'balanced']);
+    return {
+      n: n, company: pickFrom(r, CO_NAMES), round: seriesA ? 'Series A' : 'Seed', security: seriesA ? 'Series A Preferred' : 'Series Seed Preferred',
+      amount: amount, pre: pre, fdShares: fdShares, poolNow: poolNow, poolTarget: poolTarget,
+      answers: { post: post, ownership: inv, price: price, newPool: Math.round(N * poolTarget) - poolNow, effectivePre: effectivePre, investorShares: invShares },
+      boardAsk: boardAsk,
+      boardCorrect: boardAsk === 'control' ? '2 founders, 1 investor' : '2 founders, 1 investor, 1 independent'
+    };
+  }
+
   return {
     TESTS_PER_TRACK: TESTS_PER_TRACK, COMPANIES_PER_TEST: COMPANIES_PER_TEST,
     TRACKS: TRACKS, STAGES: STAGES, FACTORS: FACTORS, FACTOR_LABEL: FACTOR_LABEL,
     fundSize: fundSize, stagesFor: stagesFor, testMeta: testMeta,
     generateTest: generateTest, generateExample: generateExample, scoreTest: scoreTest,
+    fundReport: fundReport, irr: irr, capTableExercise: capTableExercise, termSheetExercise: termSheetExercise,
     money: money, mult: mult, pct: pct
   };
 });
