@@ -1,4 +1,4 @@
-// Garage course index. Lesson text lives in assets/js/course/<slug>.js and loads when opened.
+// VentureSim course index. Lesson text lives in assets/js/course/<slug>.js and loads when opened.
 window.GARAGE_COURSE = [
   { id: 1, slug: 'how-vc-works', title: 'How venture capital works', minutes: 11,
     summary: 'Where the money comes from, how funds are paid, the power law, and why every deal has to be able to return the fund.' },

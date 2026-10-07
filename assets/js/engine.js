@@ -1,5 +1,5 @@
 /*
-  Garage test engine.
+  VentureSim test engine.
   Every test is generated from a seed, so the same track and test number always
   produce the same 50 companies for every user. Nothing here touches the page.
 */
@@ -262,7 +262,7 @@
     var follow = Math.round(slots * 0.6);
     return {
       track: track, n: n, trackName: T.name,
-      fundName: 'Garage Capital Fund ' + n,
+      fundName: 'VentureSim Capital Fund ' + n,
       fundSize: size, investable: investable, fees: size - investable,
       stages: stagesFor(size),
       thesis: makeThesis(r, track),

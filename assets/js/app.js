@@ -1,4 +1,4 @@
-// Garage app: dashboard, tests, course, library. Progress is stored in this browser.
+// VentureSim app: dashboard, tests, course, library. Progress is stored in this browser.
 (function () {
   'use strict';
 
@@ -48,8 +48,8 @@
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'
   };
   function icon(name) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>'; }
-  var GMARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2350E8"/><circle cx="8.5" cy="23.5" r="2.4" fill="#fff"/><circle cx="15" cy="17" r="3.6" fill="#fff"/><circle cx="23" cy="9" r="5.4" fill="#fff"/></svg>';
-  var LOGO = '<a class="logo" href="index.html">' + GMARK + 'Garage</a>';
+  var GMARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15.5" fill="#1A3EBC"/><circle cx="16" cy="16" r="13.3" fill="#2350E8"/><circle cx="16" cy="16" r="11.3" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/><path d="M9.6 10.2h3.5l2.9 7.4 2.9-7.4h3.5l-4.8 12.1h-3.2z" fill="#fff"/></svg>';
+  var LOGO = '<a class="logo" href="index.html">' + GMARK + 'VentureSim</a>';
 
   // ---------- Layout ----------
   function shell(active, html) {
@@ -113,7 +113,7 @@
     var rb = document.querySelector('.reading-bar'); if (rb) rb.remove();
     var parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
     var p0 = parts[0] || '';
-    document.title = 'Garage';
+    document.title = 'VentureSim';
     var needsAccount = { '': 1, tests: 1, test: 1, results: 1, profile: 1 };
     if (needsAccount[p0] && !store.profile) {
       if (p0 === '' || p0 === 'tests') return viewSignup('Create an account to take tests and save your progress.');
@@ -132,7 +132,7 @@
       case 'library': return viewLibrary();
       case 'glossary': return viewGlossary();
       case 'profile': return viewProfile();
-      default: return render(shell('', page(pageHead('Page not found', 'That address does not match anything in Garage.'), '<a class="btn btn-primary" href="#/">Go to the dashboard</a>')));
+      default: return render(shell('', page(pageHead('Page not found', 'That address does not match anything in VentureSim.'), '<a class="btn btn-primary" href="#/">Go to the dashboard</a>')));
     }
   }
   window.addEventListener('hashchange', route);
@@ -151,7 +151,7 @@
 
   // ---------- Auth (local) ----------
   function viewSignup(note) {
-    document.title = 'Create account | Garage';
+    document.title = 'Create account | VentureSim';
     var tracks = TRACK_IDS.map(function (t, k) {
       return '<label><input type="radio" name="track" value="' + t + '"' + (k === 0 ? ' checked' : '') + '><span><b>' + trackName(t) + '</b><span>' + esc(E.TRACKS[t].blurb) + '</span></span></label>';
     }).join('');
@@ -178,10 +178,10 @@
   }
 
   function viewLogin() {
-    document.title = 'Log in | Garage';
+    document.title = 'Log in | VentureSim';
     var body = store.profile
       ? '<h1>Welcome back, ' + esc(store.profile.name) + '</h1><p>Your progress is saved in this browser.</p><a class="btn btn-primary btn-lg" href="#/">Continue to your dashboard</a>'
-      : '<h1>Log in</h1><p>There is no Garage account in this browser yet. Accounts are saved on the device where you created them.</p>' +
+      : '<h1>Log in</h1><p>There is no VentureSim account in this browser yet. Accounts are saved on the device where you created them.</p>' +
         '<div class="form"><a class="btn btn-primary btn-lg" href="#/signup">Create an account</a>' +
         '<div><label for="import">Moved from another device? Import your progress file</label><input type="file" id="import" accept="application/json"></div>' +
         '<p class="form-error" id="form-error" role="alert"></p></div>';
@@ -203,7 +203,7 @@
         go('#/');
       } catch (err) {
         var el = document.getElementById('form-error');
-        if (el) el.textContent = 'That file is not a Garage progress file. Export one from Profile on your other device.';
+        if (el) el.textContent = 'That file is not a VentureSim progress file. Export one from Profile on your other device.';
       }
     };
     reader.readAsText(file);
@@ -211,7 +211,7 @@
 
   // ---------- Dashboard ----------
   function viewDashboard() {
-    document.title = 'Dashboard | Garage';
+    document.title = 'Dashboard | VentureSim';
     var p = store.profile;
     var active = null;
     Object.keys(store.tests).forEach(function (k) { var s = store.tests[k]; if (s.status === 'active' && (!active || s.updatedAt > active.updatedAt)) active = s; });
@@ -266,7 +266,7 @@
   // ---------- Track lists ----------
   function viewTracks(track) {
     if (!E.TRACKS[track]) track = 'analyst';
-    document.title = trackName(track) + ' tests | Garage';
+    document.title = trackName(track) + ' tests | VentureSim';
     var tabs = '<nav class="tabs" aria-label="Tracks">' + TRACK_IDS.map(function (t) {
       return '<a href="#/tests/' + t + '"' + (t === track ? ' aria-current="page"' : '') + '>' + trackName(t) + ' (' + doneCount(t) + '/50)</a>';
     }).join('') + '</nav>';
@@ -305,7 +305,7 @@
     if (mode === 'play' && st) return viewRunner(track, n);
     if (mode === 'play' && !st) return go('#/test/' + track + '/' + n);
     var meta = E.testMeta(track, n), T = E.TRACKS[track];
-    document.title = trackName(track) + ' test ' + n + ' | Garage';
+    document.title = trackName(track) + ' test ' + n + ' | VentureSim';
     var facts = [['Fund', meta.fundName], ['Fund size', money(meta.fundSize)], ['Stage', stageText(meta)]];
     var rules;
     if (track === 'partner') {
@@ -388,7 +388,7 @@
     var test = getTest(track, n), meta = test.meta, T = E.TRACKS[track];
     var st = testState(track, n);
     setKeys(null);
-    document.title = trackName(track) + ' test ' + n + ' | Garage';
+    document.title = trackName(track) + ' test ' + n + ' | VentureSim';
     if (st.checkpoint) return viewCheckpoint(track, n);
     if (st.pos >= 50) return finishTest(track, n);
     var c = test.companies[st.pos];
@@ -532,7 +532,7 @@
     var st = testState(track, n);
     if (!st || st.status !== 'done') return go('#/tests/' + track);
     var test = getTest(track, n), meta = test.meta, r = st.result, T = E.TRACKS[track];
-    document.title = trackName(track) + ' test ' + n + ' debrief | Garage';
+    document.title = trackName(track) + ' test ' + n + ' debrief | VentureSim';
     var scores;
     if (track === 'partner') {
       scores = [
@@ -611,7 +611,7 @@
 
   // ---------- Example (no account, instant feedback) ----------
   function viewExample() {
-    document.title = 'Example test | Garage';
+    document.title = 'Example test | VentureSim';
     var test = E.generateExample(), meta = test.meta, T = E.TRACKS.analyst;
     var st = { pos: 0, decisions: {}, dug: {}, credits: meta.credits, picks: 0, right: 0 };
     // The strongest cases are the two in-thesis companies with the best expected return.
@@ -662,7 +662,7 @@
 
   // ---------- Course ----------
   function viewCourse() {
-    document.title = 'Course | Garage';
+    document.title = 'Course | VentureSim';
     var list = COURSE.map(function (m) {
       return '<li><span class="tick' + (store.course[m.slug] ? ' done' : '') + '" aria-hidden="true" style="margin-top:6px"></span><a href="#/course/' + m.slug + '"><b>' + m.id + '. ' + esc(m.title) + '</b><br><span class="small muted">' + esc(m.summary) + '</span></a><span class="small muted" style="white-space:nowrap">' + m.minutes + ' min</span></li>';
     }).join('');
@@ -685,7 +685,7 @@
   function viewLesson(slug) {
     var m = lessonBySlug(slug);
     if (!m) return go('#/course');
-    document.title = m.title + ' | Garage';
+    document.title = m.title + ' | VentureSim';
     var head = '<header class="lesson-head"><p class="crumbs"><a href="#/course">Course</a> / Lesson ' + m.id + ' of ' + COURSE.length + ', ' + m.minutes + ' min read</p><h1>' + esc(m.title) + '</h1><p>' + esc(m.summary) + '</p></header>';
     render(shell('course', page('', head + '<p class="muted">Loading the lesson...</p>')));
     var wanted = location.hash;
@@ -734,7 +734,7 @@
 
   // ---------- Walkthrough ----------
   function viewWalkthrough() {
-    document.title = 'Walkthrough | Garage';
+    document.title = 'Walkthrough | VentureSim';
     var steps = [
       ['Read the fund brief', 'Every test opens with the fund: its size, its thesis, how many companies you can pick, and the size of each check. Fund size rises with every test, so the stage of the companies changes as you go.'],
       ['Read each deal', 'Each company shows its pitch, team, market, product and customers, traction, competition, risks, and terms. Notes from the diligence team point out what stood out. There are no scores to lean on, so you read the evidence yourself.'],
@@ -744,14 +744,14 @@
       ['Read the debrief', 'At the end you see what happened to all 50 companies, your judgment score compared with random picks, what your picks actually returned, the winners you missed, and which signals you leaned on compared with what mattered. Each lesson links to the part of the course that covers it.']
     ];
     render(shell('walkthrough', page(pageHead('How a test works', 'Watch the walkthrough, or read the six steps below.'),
-      '<div class="player" data-src="media/garage-walkthrough.mp4" data-poster="media/garage-walkthrough-poster.jpg"><button class="poster" type="button" aria-label="Play the walkthrough video"><span><span class="play-icon" aria-hidden="true"></span><b>Walkthrough: one full test</b><small>From the fund brief to the debrief</small></span></button></div>' +
+      '<div class="player" data-src="media/venturesim-walkthrough.mp4" data-poster="media/venturesim-walkthrough-poster.jpg"><button class="poster" type="button" aria-label="Play the walkthrough video"><span><span class="play-icon" aria-hidden="true"></span><b>Walkthrough: one full test</b><small>From the fund brief to the debrief</small></span></button></div>' +
       '<ol class="check-list panel" style="margin-top:28px">' + steps.map(function (s, k) { return '<li style="align-items:flex-start"><span class="pill accent">' + (k + 1) + '</span><div><b>' + s[0] + '</b><p class="muted small" style="margin-top:4px">' + s[1] + '</p></div></li>'; }).join('') + '</ol>' +
       '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px"><a class="btn btn-primary" href="#/example">Try the example test</a><a class="btn btn-secondary" href="#/tests">Go to the tests</a></div>')));
   }
 
   // ---------- Library and glossary ----------
   function viewLibrary() {
-    document.title = 'Library | Garage';
+    document.title = 'Library | VentureSim';
     var items = LIB.length ? LIB.map(function (d) {
       return '<div class="pdf-card"><div class="pdf-icon" aria-hidden="true">PDF</div><div><h3>' + esc(d.title) + '</h3><p>' + esc(d.source) + (d.pages ? ', ' + d.pages + ' pages' : '') + '</p><p>' + esc(d.about) + '</p></div>' +
         '<a class="btn btn-secondary btn-sm" href="' + esc(d.file) + '" target="_blank" rel="noopener">Open PDF</a></div>';
@@ -763,7 +763,7 @@
   }
 
   function viewGlossary() {
-    document.title = 'Glossary | Garage';
+    document.title = 'Glossary | VentureSim';
     render(shell('glossary', page(pageHead('Glossary', GLOSS.length + ' terms used in the tests and the course.'),
       '<label class="sr-only" for="q">Search the glossary</label><input class="search" id="q" type="search" placeholder="Search terms, for example dilution" autocomplete="off">' +
       '<dl class="gloss" id="gloss"></dl><p class="empty" id="none" hidden>No terms match that search.</p>')));
@@ -780,7 +780,7 @@
 
   // ---------- Profile ----------
   function viewProfile() {
-    document.title = 'Profile | Garage';
+    document.title = 'Profile | VentureSim';
     var p = store.profile;
     var done = TRACK_IDS.reduce(function (s, t) { return s + doneCount(t); }, 0);
     render(shell('profile', page(pageHead('Profile and progress', 'Your account and progress are saved in this browser on this device.'),
@@ -804,7 +804,7 @@
     document.getElementById('export').addEventListener('click', function () {
       var blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = 'garage-progress.json';
+      a.href = URL.createObjectURL(blob); a.download = 'venturesim-progress.json';
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
     });

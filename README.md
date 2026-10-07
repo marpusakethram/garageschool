@@ -1,4 +1,6 @@
-# Garage
+# VentureSim
+
+The Venture Capital Simulator.
 
 A venture capital course and 150 investing tests. Each test hands you a fund and 50 fictional startups; you decide which to back, then see what happened to every one.
 
@@ -24,4 +26,4 @@ python -m http.server 4173
 
 - Accounts and progress live in the browser's localStorage. Real accounts need a backend.
 - Test outcomes ship to the browser, so a determined user can read them in the source. Score on a server before using results for hiring.
-- The two videos (`media/garage-intro.mp4`, `media/garage-walkthrough.mp4`) are not made yet; the players show a notice until they exist.
+- The two videos (`media/venturesim-intro.mp4`, `media/venturesim-walkthrough.mp4`) are not made yet; the players show a notice until they exist.
