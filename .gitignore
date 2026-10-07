@@ -1,0 +1,6 @@
+garage-site.zip
+.claude/
+simcap-vc-design.md
+node_modules/
+*.log
+.DS_Store

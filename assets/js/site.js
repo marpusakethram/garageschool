@@ -1,0 +1,96 @@
+// Public pages: mobile menu, syllabus, the 50-startup explorer, video players.
+(function () {
+  'use strict';
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  var head = document.querySelector('.site-head');
+  var toggle = document.querySelector('.nav-toggle');
+  if (head && toggle) {
+    toggle.addEventListener('click', function () {
+      var open = head.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.textContent = open ? 'Close' : 'Menu';
+    });
+  }
+
+  // Syllabus on the home page.
+  var syl = document.getElementById('syllabus');
+  if (syl && window.GARAGE_COURSE) {
+    syl.innerHTML = window.GARAGE_COURSE.map(function (m) {
+      return '<li><a href="app.html#/course/' + m.slug + '"><span class="n" aria-hidden="true">' + m.id + '</span>' +
+        '<h3>' + esc(m.title) + '</h3><span class="meta">' + m.minutes + ' min read</span><p>' + esc(m.summary) + '</p></a></li>';
+    }).join('') +
+      '<li><a href="break-into-vc.html"><span class="n" aria-hidden="true">+</span><h3>How to break into venture capital</h3>' +
+      '<span class="meta">Guide</span><p>The paths in, what firms look for, how interviews work, and a 90-day plan.</p></a></li>';
+  }
+
+  // One test, fifty startups: every company from Analyst test 1 as a dot.
+  var dotsEl = document.getElementById('dots');
+  var card = document.getElementById('deal-card');
+  if (dotsEl && card && window.GarageEngine) {
+    var E = window.GarageEngine;
+    var test = E.generateTest('analyst', 1);
+    var cs = test.companies;
+    dotsEl.innerHTML = cs.map(function (c) {
+      var m = c.hidden.multiple;
+      var cls = m >= 3 ? 'win' : m >= 1 ? 'mid' : '';
+      var size = m >= 3 ? Math.min(30, 16 + 5 * Math.log2(m / 3 + 1)) : m >= 1 ? 13 : 9;
+      return '<button class="dot ' + cls + '" type="button" data-i="' + c.i + '" aria-pressed="false" aria-label="' + esc(c.name) + ', returned ' + E.mult(m) + '">' +
+        '<i style="--s:' + size.toFixed(0) + 'px"></i></button>';
+    }).join('');
+
+    var show = function (i) {
+      var c = cs[i], h = c.hidden, t = c.terms;
+      var rows = c.traction.slice(0, 2).concat([['Post-money', E.money(t.post)], ['Your check', E.money(t.check)]]);
+      card.innerHTML =
+        '<div class="deal-top"><p class="deal-kicker">The deal, month ' + c.month + ' of 36</p><h3>' + esc(c.name) + '</h3>' +
+        '<p class="tags">' + c.stageLabel + ', ' + esc(c.sectorLabel) + ', ' + esc(c.location) + (c.inThesis ? '' : '. Outside the fund\'s thesis') + '</p>' +
+        '<p class="pitch">' + esc(c.pitch) + '</p>' +
+        '<dl>' + rows.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + '</dl></div>' +
+        '<div class="deal-bottom"><p class="big ' + (h.multiple >= 1 ? 'good' : '') + '">' + E.mult(h.multiple) + '</p>' +
+        '<div><p class="outcome">' + esc(h.outcome) + '</p><ul>' + h.mattered.map(function (x) { return '<li>' + esc(x.text) + '</li>'; }).join('') + '</ul></div></div>';
+      dotsEl.querySelectorAll('.dot').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-i') === i)); });
+    };
+    dotsEl.addEventListener('click', function (e) { var b = e.target.closest('.dot'); if (b) show(+b.getAttribute('data-i')); });
+    // Start on the biggest winner.
+    show(cs.reduce(function (a, c) { return c.hidden.multiple > a.hidden.multiple ? c : a; }).i);
+  }
+
+  window.GaragePlayers = function (scope) {
+    (scope || document).querySelectorAll('.player').forEach(function (player) {
+      if (player.dataset.ready) return;
+      player.dataset.ready = '1';
+      var poster = player.querySelector('.poster');
+      var img = player.getAttribute('data-poster');
+      if (img) {
+        var probe = new Image();
+        probe.onload = function () { poster.style.backgroundImage = 'url("' + img + '")'; poster.classList.add('has-image'); };
+        probe.src = img;
+      }
+      poster.addEventListener('click', function () {
+        var old = player.querySelector('.player-msg');
+        if (old) old.remove();
+        var video = document.createElement('video');
+        video.src = player.getAttribute('data-src');
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        if (img) video.poster = img;
+        video.addEventListener('error', function () {
+          video.remove();
+          poster.hidden = false;
+          var msg = document.createElement('p');
+          msg.className = 'player-msg';
+          msg.setAttribute('role', 'status');
+          msg.textContent = 'This video is not available yet. Try the example test in the meantime.';
+          player.appendChild(msg);
+        });
+        poster.hidden = true;
+        player.appendChild(video);
+        video.focus();
+      });
+    });
+  };
+  window.GaragePlayers();
+})();

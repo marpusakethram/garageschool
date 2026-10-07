@@ -1,0 +1,25 @@
+// Garage course index. Lesson text lives in assets/js/course/<slug>.js and loads when opened.
+window.GARAGE_COURSE = [
+  { id: 1, slug: 'how-vc-works', title: 'How venture capital works', minutes: 11,
+    summary: 'Where the money comes from, how funds are paid, the power law, and why every deal has to be able to return the fund.' },
+  { id: 2, slug: 'sourcing-and-screening', title: 'Sourcing and screening deals', minutes: 9,
+    summary: 'The funnel, thesis fit, where good deals come from, a ten-minute screen, and why you should keep a pass log.' },
+  { id: 3, slug: 'judging-founders', title: 'Judging founders', minutes: 9,
+    summary: 'The traits that predict success, how to run a founder meeting, references that tell you something, and your own biases.' },
+  { id: 4, slug: 'product-market-fit', title: 'Product-market fit', minutes: 8,
+    summary: 'Reading retention curves, the signals that fake fit, pull versus push, and what fit means when software is cheap to build.' },
+  { id: 5, slug: 'traction-and-unit-economics', title: 'Traction and unit economics', minutes: 9,
+    summary: 'ARR, growth, net revenue retention, gross margin, CAC payback, burn multiple, and how AI costs change the math.' },
+  { id: 6, slug: 'market-sizing', title: 'Market sizing', minutes: 8,
+    summary: 'Bottom-up sizing step by step, connecting market size to fund returns, markets that grow, and sizing AI products.' },
+  { id: 7, slug: 'competition-and-moats', title: 'Competition and moats', minutes: 8,
+    summary: 'The seven kinds of lasting advantage, why incumbents are slow, finding the real competition, and moats for AI companies.' },
+  { id: 8, slug: 'valuation-and-terms', title: 'Valuation, terms, and cap tables', minutes: 10,
+    summary: 'Pre and post-money, dilution, SAFEs, the option pool shuffle, liquidation preferences, and how price changes your return.' },
+  { id: 9, slug: 'risk-and-diligence', title: 'Risk and diligence', minutes: 8,
+    summary: 'The kinds of risk, "what must be true," the diligence that pays off, writing the memo, and the pre-mortem.' },
+  { id: 10, slug: 'portfolio-construction', title: 'Portfolio construction and fund math', minutes: 9,
+    summary: 'How many companies to back, reserves, follow-on decisions, deployment pace, and how gross returns become net.' },
+  { id: 11, slug: 'exits-and-liquidity', title: 'Exits and liquidity', minutes: 8,
+    summary: 'Acquisitions, IPOs, the waterfall, secondaries, continuation funds, and why exit size depends on fund size.' }
+];
