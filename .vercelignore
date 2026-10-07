@@ -3,3 +3,6 @@ garage-site.zip
 simcap-vc-design.md
 .git
 node_modules
+.env.local
+.env*
+.vercel
