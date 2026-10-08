@@ -103,7 +103,7 @@
         '<nav aria-label="You"><p class="side-label">You</p><ul class="side-nav">' +
           li(['feedback', '#/feedback', 'Send feedback', 'chat']) +
           '<li><a href="#/profile"' + (active === 'profile' ? ' aria-current="page"' : '') + '>' + icon('user') + 'Profile</a></li></ul></nav>' +
-        user + '</aside>' +
+        user + (window.GarageTheme ? GarageTheme.switchHtml() : '') + '</aside>' +
       '<div class="main"><div class="app-top">' + LOGO + '<button class="btn btn-secondary btn-sm" type="button" data-act="menu" aria-expanded="false">Menu</button></div>' +
       (storageOk ? '' : '<p class="feedback bad" role="alert">This browser is blocking storage, so your progress will not be saved. Try a normal (not private) window.</p>') +
       '<main id="main">' + html + '</main></div></div>';

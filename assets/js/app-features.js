@@ -339,11 +339,11 @@
     var y = function (v) { return h - pad - (v - lo) / span * (h - pad * 2); };
     var path = years.map(function (b, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(b.cumulative).toFixed(1); }).join(' ');
     var zero = y(0);
-    var labels = years.map(function (b, i) { return i % 2 === 0 ? '<text x="' + x(i) + '" y="' + (h - 10) + '" text-anchor="middle" font-size="11" fill="#8C877C">' + (2026 + b.year) + '</text>' : ''; }).join('');
-    return '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Cumulative net cash flow to LPs by year"><line x1="' + pad + '" x2="' + (w - pad) + '" y1="' + zero + '" y2="' + zero + '" stroke="#CAC6B8" stroke-dasharray="4 4"/>' +
-      '<text x="' + (pad - 6) + '" y="' + (zero + 4) + '" text-anchor="end" font-size="11" fill="#8C877C">0</text>' +
-      '<path d="' + path + '" fill="none" stroke="#2350E8" stroke-width="2.5"/>' +
-      years.map(function (b, i) { return '<circle cx="' + x(i) + '" cy="' + y(b.cumulative) + '" r="3" fill="#2350E8"/>'; }).join('') + labels + '</svg>';
+    var labels = years.map(function (b, i) { return i % 2 === 0 ? '<text x="' + x(i) + '" y="' + (h - 10) + '" text-anchor="middle" font-size="11" style="fill:var(--faint)">' + (2026 + b.year) + '</text>' : ''; }).join('');
+    return '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Cumulative net cash flow to LPs by year"><line x1="' + pad + '" x2="' + (w - pad) + '" y1="' + zero + '" y2="' + zero + '" style="stroke:var(--line-strong)" stroke-dasharray="4 4"/>' +
+      '<text x="' + (pad - 6) + '" y="' + (zero + 4) + '" text-anchor="end" font-size="11" style="fill:var(--faint)">0</text>' +
+      '<path d="' + path + '" fill="none" style="stroke:var(--blue)" stroke-width="2.5"/>' +
+      years.map(function (b, i) { return '<circle cx="' + x(i) + '" cy="' + y(b.cumulative) + '" r="3" style="fill:var(--blue)"/>'; }).join('') + labels + '</svg>';
   }
   function allocRows(rows, total) {
     return '<div class="alloc">' + rows.map(function (r) {

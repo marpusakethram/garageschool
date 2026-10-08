@@ -24,7 +24,8 @@
     dock.innerHTML = '<button class="dock-g" type="button" aria-expanded="false" aria-label="Menu"><img src="assets/img/g-mark-96.png" alt="" width="96" height="96"></button>' +
       '<div class="dock-links"><a href="index.html">Home</a>' +
       Array.prototype.map.call(mainNav.querySelectorAll('a'), function (a) { return '<a href="' + a.getAttribute('href') + '">' + esc(a.textContent) + '</a>'; }).join('') +
-      (cta ? '<a class="dock-cta" href="' + cta.getAttribute('href') + '">Sign up</a>' : '') + '</div>';
+      (cta ? '<a class="dock-cta" href="' + cta.getAttribute('href') + '">Sign up</a>' : '') +
+      (window.GarageTheme ? GarageTheme.switchHtml() : '') + '</div>';
     document.body.appendChild(dock);
     var dockBtn = dock.querySelector('.dock-g');
     var setOpen = function (o) { dock.classList.toggle('open', o); dockBtn.setAttribute('aria-expanded', String(o)); };
