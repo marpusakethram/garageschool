@@ -800,3 +800,8 @@ code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size:
 .yt-play:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
 .yt figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
 .yt figcaption b { color: var(--ink); font-weight: 600; }
+.pass-wrap { position: relative; }
+.pass-wrap input { width: 100%; padding-right: 72px; }
+.pass-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--blue); font: 500 14px var(--sans); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+.pass-toggle:hover { background: var(--blue-soft); }
+.pass-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }

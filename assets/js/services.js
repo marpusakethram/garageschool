@@ -45,7 +45,7 @@
       'auth/invalid-credential': 'That email and password do not match. Check them and try again.',
       'auth/wrong-password': 'That email and password do not match. Check them and try again.',
       'auth/user-not-found': 'There is no account with that email. Create one instead.',
-      'auth/weak-password': 'Use a password with at least 8 characters.',
+      'auth/weak-password': 'Use a password with at least 6 characters.',
       'auth/invalid-email': 'That email address does not look right.',
       'auth/popup-closed-by-user': 'The sign-in window was closed before finishing.',
       'auth/popup-blocked': 'Your browser blocked the sign-in window. Allow pop-ups for this site and try again.',

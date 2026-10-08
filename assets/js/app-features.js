@@ -166,7 +166,8 @@
         '</div><div class="divider">or use your email</div>' +
         '<form class="form" id="pw" novalidate style="max-width:none">' +
           '<div><label for="em">Email</label><input type="email" id="em" autocomplete="email"></div>' +
-          '<div><label for="pass">Password</label><input type="password" id="pass" autocomplete="' + (mode === 'login' ? 'current-password' : 'new-password') + '"><p class="hint">' + (mode === 'login' ? '' : 'At least 8 characters.') + '</p></div>' +
+          '<div><label for="pass">Password</label><div class="pass-wrap"><input type="password" id="pass" minlength="6" autocomplete="' + (mode === 'login' ? 'current-password' : 'new-password') + '">' +
+          '<button type="button" class="pass-toggle" id="pass-toggle" aria-controls="pass" aria-pressed="false">Show</button></div><p class="hint">' + (mode === 'login' ? '' : 'At least 6 characters.') + '</p></div>' +
           '<p class="form-error" id="form-error" role="alert"></p>' +
           '<button class="btn btn-primary btn-lg" type="submit">' + (mode === 'login' ? 'Log in' : 'Create account') + '</button></form>';
     } else {
@@ -185,11 +186,21 @@
       });
     });
     var pw = document.getElementById('pw');
+    var tog = document.getElementById('pass-toggle');
+    if (tog) tog.addEventListener('click', function () {
+      var input = document.getElementById('pass'), show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      tog.textContent = show ? 'Hide' : 'Show';
+      tog.setAttribute('aria-pressed', String(show));
+      tog.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      input.focus();
+    });
     if (pw) pw.addEventListener('submit', function (e) {
       e.preventDefault();
       var em = val('em'), pass = document.getElementById('pass').value;
       if (!EMAIL_RE.test(em)) return setErr('Enter a valid email address.', 'em');
-      if (pass.length < 8) return setErr('Use a password with at least 8 characters.', 'pass');
+      if (pass.length < 6) return setErr('Use a password with at least 6 characters.', 'pass');
+      setErr('');
       var fn = mode === 'login' ? window.VSAuth.emailSignIn : window.VSAuth.emailSignUp;
       fn(em, pass).then(function (u) { afterAuth(u, mode); }, function (err) { setErr(err.message); });
     });
