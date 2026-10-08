@@ -45,5 +45,24 @@ window.GARAGE_COURSE = [
   { id: 107, n: 7, course: 'founder', part: 'Getting funded', slug: 'terms-for-founders', title: 'Terms every founder should understand', minutes: 6,
     summary: 'Modeling SAFE dilution, sizing the option pool, valuation versus terms, control, and red flags.' },
   { id: 108, n: 8, course: 'founder', part: 'Practice', slug: 'founder-interview-questions', title: 'Interview questions to practice', minutes: 9,
-    summary: '39 questions founders hear from accelerators and investors, with what each one tests and what a strong answer includes.' }
+    summary: '39 questions founders hear from accelerators and investors, with what each one tests and what a strong answer includes.' },
+
+  { id: 201, n: 1, course: 'portfolio', part: 'Managing the portfolio', slug: 'portfolio-management-basics', title: 'What portfolio management is', minutes: 6,
+    summary: 'The four jobs after the check, what the power law means for your time, what founders actually value, and the system that holds it together.' },
+  { id: 202, n: 2, course: 'portfolio', part: 'Managing the portfolio', slug: 'board-work', title: 'Boards and board seats', minutes: 6,
+    summary: 'What a startup board does, directors versus observers, fiduciary duties, running a good meeting, and what makes a good board member.' },
+  { id: 203, n: 3, course: 'portfolio', part: 'Managing the portfolio', slug: 'portfolio-monitoring', title: 'Monitoring the portfolio', minutes: 6,
+    summary: 'The monthly numbers to collect, runway math, early warning signs, and running a quarterly portfolio review.' },
+  { id: 204, n: 4, course: 'portfolio', part: 'Managing the portfolio', slug: 'reserves-and-follow-ons', title: 'Reserves and follow-on decisions', minutes: 6,
+    summary: 'How much to reserve, pro rata worked through, the test for every follow-on, rescue investing, bridges, and signaling.' },
+  { id: 205, n: 5, course: 'portfolio', part: 'Managing the portfolio', slug: 'helping-founders', title: 'Helping founders', minutes: 5,
+    summary: 'Hiring help, introductions that work, supporting the next round, being a sounding board, and platform programs.' },
+  { id: 206, n: 6, course: 'portfolio', part: 'Managing the portfolio', slug: 'when-things-go-wrong', title: 'When things go wrong', minutes: 6,
+    summary: 'Running low on cash, down rounds, pivots, founder and CEO problems, selling a struggling company, and closing well.' },
+  { id: 207, n: 7, course: 'portfolio', part: 'Managing the portfolio', slug: 'valuing-the-portfolio', title: 'Valuing the portfolio and reporting to LPs', minutes: 6,
+    summary: 'How companies are marked, TVPI versus DPI, the quarterly LP report, secondaries, and continuation funds.' },
+  { id: 208, n: 8, course: 'portfolio', part: 'Careers in portfolio and community', slug: 'portfolio-and-platform-roles', title: 'Portfolio, platform, and operating roles', minutes: 6,
+    summary: 'Portfolio associates, platform leads, talent partners, operating partners, and how to get hired into these teams.' },
+  { id: 209, n: 9, course: 'portfolio', part: 'Careers in portfolio and community', slug: 'community-roles', title: 'Community roles at venture firms', minutes: 5,
+    summary: 'Why firms invest in community, what the work looks like, measuring it, a 90-day plan, and how to get the role.' }
 ];

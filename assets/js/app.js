@@ -688,10 +688,11 @@
   // ---------- Course ----------
   var COURSE_INFO = {
     vc: { name: 'VC course', path: '#/course', sub: 'Fourteen lessons on the 20% of venture capital that does most of the work. Eleven on theory, then three where you build a memo, a term sheet, and a cap table yourself.' },
-    founder: { name: 'Founder course', path: '#/courses/founder', sub: 'Eight lessons for founders: how investors think, getting VC ready, getting into accelerators and residencies, raising your first round, and practice interview questions.' }
+    founder: { name: 'Founder course', path: '#/courses/founder', sub: 'Eight lessons for founders: how investors think, getting VC ready, getting into accelerators and residencies, raising your first round, and practice interview questions.' },
+    portfolio: { name: 'Portfolio management course', path: '#/courses/portfolio', sub: 'Nine lessons on the work after the check: boards, monitoring, reserves and follow-ons, helping founders, hard times, and LP reporting. Plus the portfolio, platform, and community roles at venture firms.' }
   };
   function viewCourse(which) {
-    which = which === 'founder' ? 'founder' : 'vc';
+    which = COURSE_INFO[which] ? which : 'vc';
     var info = COURSE_INFO[which];
     document.title = info.name + ' | VentureSim';
     var list = COURSE.filter(function (m) { return m.course === which; });
@@ -703,7 +704,7 @@
           return '<li><span class="tick' + (store.course[m.slug] ? ' done' : '') + '" aria-hidden="true" style="margin-top:6px"></span><a href="#/course/' + m.slug + '"><b>' + m.n + '. ' + esc(m.title) + '</b><br><span class="small muted">' + esc(m.summary) + '</span></a><span class="small muted" style="white-space:nowrap">' + m.minutes + ' min</span></li>';
         }).join('') + '</ul></section>';
     }).join('');
-    var tabs = '<nav class="tabs" aria-label="Courses"><a href="#/course"' + (which === 'vc' ? ' aria-current="page"' : '') + '>VC course</a><a href="#/courses/founder"' + (which === 'founder' ? ' aria-current="page"' : '') + '>Founder course</a></nav>';
+    var tabs = '<nav class="tabs" aria-label="Courses"><a href="#/course"' + (which === 'vc' ? ' aria-current="page"' : '') + '>VC course</a><a href="#/courses/founder"' + (which === 'founder' ? ' aria-current="page"' : '') + '>Founder course</a><a href="#/courses/portfolio"' + (which === 'portfolio' ? ' aria-current="page"' : '') + '>Portfolio management</a></nav>';
     render(shell(which === 'founder' && !(store.profile && store.profile.kind === 'founder') ? 'course' : (which === 'vc' && store.profile && store.profile.kind === 'founder' ? 'course-vc' : 'course'),
       page(pageHead(info.name, info.sub), tabs + body)));
   }
@@ -742,7 +743,7 @@
       var tocHtml = '<nav class="lesson-toc" aria-label="On this page"><p>On this page</p><ol>' + toc.map(function (t) { return '<li><a href="#' + t[0] + '" data-jump="' + t[0] + '">' + esc(t[1]) + '</a></li>'; }).join('') + '</ol></nav>';
       var nav = '<div class="lesson-nav"><div>' + (prev ? '<a class="btn btn-secondary" href="#/course/' + prev.slug + '">Lesson ' + prev.n + '</a>' : '') + '</div>' +
         (store.profile ? '<button class="btn ' + (read ? 'btn-secondary' : 'btn-primary') + '" type="button" id="mark">' + (read ? 'Marked as read' : 'Mark as read') + '</button>' : '<a class="btn btn-primary" href="#/signup">Create an account to track progress</a>') +
-        '<div>' + (next ? '<a class="btn btn-secondary" href="#/course/' + next.slug + '">Lesson ' + next.n + ': ' + esc(next.title) + '</a>' : (m.course === 'founder' ? '<a class="btn btn-secondary" href="founders.html#ask">Ask us a question</a>' : '<a class="btn btn-secondary" href="#/workshops">Go to the workshops</a>')) + '</div></div>';
+        '<div>' + (next ? '<a class="btn btn-secondary" href="#/course/' + next.slug + '">Lesson ' + next.n + ': ' + esc(next.title) + '</a>' : (m.course === 'founder' ? '<a class="btn btn-secondary" href="founders.html#ask">Ask us a question</a>' : m.course === 'portfolio' ? '<a class="btn btn-secondary" href="break-into-vc.html#roles">Roles at a venture firm</a>' : '<a class="btn btn-secondary" href="#/workshops">Go to the workshops</a>')) + '</div></div>';
       var ws = m.workshop ? '<div class="scenario" style="margin-top:32px"><p><b>Practice it.</b> The ' + esc(m.title.toLowerCase()) + ' workshop starts with a short guided tour, then gives you a scenario to work through.</p><a class="btn btn-primary btn-sm" style="margin-top:10px" href="#/workshop/' + m.workshop + '">Open the workshop</a></div>' : '';
       render(shell('course', page('', head + '<div class="lesson-wrap"><div>' + shortHtml + '<article class="lesson">' + body.innerHTML + '</article>' + ws + nav + '</div>' + tocHtml + '</div>')));
       var bar = document.createElement('div');

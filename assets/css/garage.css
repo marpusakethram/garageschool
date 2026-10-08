@@ -414,6 +414,7 @@ kbd { font: 500 12px/1 var(--sans); border: 1px solid var(--line-strong); border
 .lesson table { width: 100%; border-collapse: collapse; margin: 8px 0 26px; font: 300 15px/1.5 var(--sans); background: var(--card); border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
 .lesson th, .lesson td { text-align: left; padding: 10px 13px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .lesson th { font-weight: 500; background: #FAFAF5; }
+@media (max-width: 600px) { .lesson table { display: block; overflow-x: auto; } .lesson th, .lesson td { min-width: 120px; } }
 .lesson tr:last-child td { border-bottom: 0; }
 .note { background: #FAFAF5; border-radius: 12px; box-shadow: 0 0 0 1px var(--line); border-left: 3px solid var(--blue); padding: 20px 24px; margin: 26px 0 30px; font-size: 17.5px; }
 .note p:last-child, .note ul:last-child, .note table:last-child { margin-bottom: 0; }
@@ -431,6 +432,8 @@ kbd { font: 500 12px/1 var(--sans); border: 1px solid var(--line-strong); border
 .lesson-toc a { display: block; padding-left: 12px; margin-left: -1px; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.35; }
 .lesson-toc a:hover, .lesson-toc a.on { color: var(--ink); border-left-color: var(--blue); }
 .lesson-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 48px; padding-top: 26px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.lesson-nav > div { min-width: 0; max-width: 100%; }
+.lesson-nav .btn { white-space: normal; text-align: left; padding-top: 8px; padding-bottom: 8px; max-width: 100%; }
 
 /* Glossary, library, forms */
 .search { width: 100%; max-width: 440px; border: 1px solid var(--line-strong); border-radius: 999px; padding: 11px 18px; font: 300 16px var(--sans); background: #fff; }
