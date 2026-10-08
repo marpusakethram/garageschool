@@ -291,7 +291,7 @@
       (rep.excluded ? '<p class="small muted" style="margin-top:8px">' + rep.excluded + ' compan' + (rep.excluded === 1 ? 'y was' : 'ies were') + ' outside the thesis and never reached the investment committee, so they are not in the portfolio.</p>' : '') +
       '<h2>Allocation by sector</h2>' + (rep.positions.length ? allocRows(rep.bySector, rep.deployed) : '<p class="muted">No investments.</p>') +
       '<h2>Allocation by stage</h2>' + (rep.positions.length ? allocRows(rep.byStage, rep.deployed) : '<p class="muted">No investments.</p>') +
-      '<p class="fine-print">Basis of preparation: all positions are fully realized, so DPI equals TVPI and there is no remaining value. Management fees and fund expenses are spread evenly over ten years. Carried interest is ' + Math.round(meta.carry * 100) + '% of profits (' + Math.round(meta.carryHigh * 100) + '% if the fund returns more than 3x) once distributions exceed about ' + meta.hurdle + 'x of commitments, a simplified stand-in for an 8% preferred return, and is taken from company proceeds. Uninvested capital is treated as returned at the end of the investment period. IRR uses the date of each investment and exit. VentureSim is an educational simulation; companies and outcomes are fictional.</p>' +
+      '<p class="fine-print">Basis of preparation: all positions are fully realized, so DPI equals TVPI and there is no remaining value. Management fees and fund expenses are spread evenly over the active life of the fund, which ends at its last exit. Carried interest is ' + Math.round(meta.carry * 100) + '% of profits (' + Math.round(meta.carryHigh * 100) + '% if the fund returns more than 3x) once distributions exceed about ' + meta.hurdle + 'x of commitments, a simplified stand-in for an 8% preferred return, and is taken from company proceeds. Uninvested capital is treated as returned at the end of the investment period. IRR uses the date of each investment and exit, and shows n/a when no single rate fits the cash flows. VentureSim is an educational simulation; companies and outcomes are fictional.</p>' +
       '</div>'));
     document.getElementById('print').addEventListener('click', function () { window.print(); });
   };
@@ -439,7 +439,7 @@
       root().querySelector('[data-ans="' + k + '"]').innerHTML = '<div class="answer">' + (extra ? '<p>' + extra + '</p>' : '') + '<p>' + st.table.rows.map(function (r) { return esc(r.holder) + ': ' + fmtShares(r.shares) + ' shares, ' + (r.pct * 100).toFixed(1) + '%'; }).join('<br>') + '</p>' +
         (st.numbers.length ? '<p>' + st.numbers.map(function (q) { return esc(q.label) + ': ' + (q.kind === 'price' ? '$' + q.value.toFixed(4) : fmtShares(q.value)); }).join('<br>') + '</p>' : '') + '</div>';
     }
-    root().addEventListener('click', function (e) {
+    root().querySelector('.ws-steps').addEventListener('click', function (e) {
       var c = e.target.closest('[data-check]'), sh = e.target.closest('[data-show]');
       if (c) check(+c.getAttribute('data-check')); if (sh) show(+sh.getAttribute('data-show'));
     });
@@ -545,6 +545,7 @@
     price: ['valuation', 'price', 'expensive', 'multiple', 'ownership'],
     luck: []
   };
+  var SECTION = { team: 'team', market: 'big', product: 'evidence', traction: 'evidence', moat: 'comp' };
   function memoCandidates() {
     var s = store(), out = [];
     Object.keys(s.tests || {}).forEach(function (k) {
@@ -589,9 +590,9 @@
         '<div><label for="mbt">What must be true (one per line)</label><textarea id="mbt"></textarea></div>' +
         '<div data-tour="scen"><label>Return scenarios</label><p class="hint">Your ownership today is ' + A.pct(t.ownership) + '. Assume it shrinks by the dilution below before exit. Probabilities must add up to 100%.</p>' +
           '<div class="ws-row"><label>Dilution before exit (%)<input class="ws-input" id="dil" value="40" inputmode="decimal"></label></div>' +
-          '<table class="scen" style="margin-top:10px"><thead><tr><th>Scenario</th><th>Probability (%)</th><th>Exit value ($M)</th><th>Your multiple</th><th>Weighted</th></tr></thead><tbody>' +
+          '<div style="overflow-x:auto;margin-top:10px"><table class="scen"><thead><tr><th>Scenario</th><th>Probability (%)</th><th>Exit value ($M)</th><th>Your multiple</th><th>Weighted</th></tr></thead><tbody>' +
           scen.map(function (r, k) { return '<tr><td>' + r[0] + '</td><td><input class="ws-input" id="p' + k + '" value="' + r[1] + '" inputmode="decimal"></td><td><input class="ws-input" id="v' + k + '" value="' + r[2] + '" inputmode="decimal"></td><td class="num" id="m' + k + '"></td><td class="num" id="w' + k + '"></td></tr>'; }).join('') +
-          '<tr><td><b>Total</b></td><td class="num" id="ptot"></td><td></td><td></td><td class="num"><b id="wtot"></b></td></tr></tbody></table></div>' +
+          '<tr><td><b>Total</b></td><td class="num" id="ptot"></td><td></td><td></td><td class="num"><b id="wtot"></b></td></tr></tbody></table></div></div>' +
         '<p class="form-error" id="form-error" role="alert"></p><div class="ws-actions" data-tour="submit"><button class="btn btn-primary" type="submit">Submit memo and see what happened</button><a class="btn btn-secondary" href="#/workshop/memo">Pick another company</a></div></form>' +
       '<div id="memo-out" style="margin-top:20px"></div>')));
     function calc() {
@@ -612,6 +613,7 @@
       if (!rec) return setErr('Choose invest or pass.', 'rec');
       if (val('summary').length < 40) return setErr('Write a summary of at least a sentence or two.', 'summary');
       if (Math.abs(r.tot - 100) > 0.5) return setErr('Your scenario probabilities add up to ' + r.tot + '%. Make them add up to 100%.', 'p0');
+      setErr('');
       var h = c.hidden, text = [val('summary'), val('big'), val('team'), val('evidence'), val('comp'), val('mbt')].concat(risks).join(' ').toLowerCase();
       var notes = [];
       notes.push(risks.length >= 3 ? { ok: true, t: 'You named three specific risks.' } : { ok: false, t: 'Name three risks. A memo with fewer looks one-sided to a partner.' });
@@ -620,7 +622,8 @@
       if (rec === 'Pass' && r.w > 10) notes.push({ ok: false, t: 'You recommend passing, but your scenarios give ' + mult(r.w) + '. Explain what makes you doubt your own numbers.' });
       var mattered = h.mattered.filter(function (x) { return KEYWORDS[x.factor] && KEYWORDS[x.factor].length; });
       mattered.forEach(function (x) {
-        var hit = KEYWORDS[x.factor].some(function (k) { return text.indexOf(k) > -1; });
+        // A filled-in section on the topic counts, as do keywords anywhere in the memo.
+        var hit = (SECTION[x.factor] && val(SECTION[x.factor]).length >= 25) || KEYWORDS[x.factor].some(function (k) { return text.indexOf(k) > -1; });
         notes.push({ ok: hit, t: (hit ? 'You discussed ' : 'You did not discuss ') + E.FACTOR_LABEL[x.factor].toLowerCase() + ', which turned out to matter: ' + x.text });
       });
       var call = (rec === 'Invest') === (h.ev >= 1.5);

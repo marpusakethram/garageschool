@@ -65,6 +65,10 @@ assert(pr.fundPercentile >= 0 && pr.fundPercentile <= 100);
 
 // IRR: -100 now, +200 in one year is 100%.
 assert(Math.abs(E.irr([{ t: 0, v: -100 }, { t: 1, v: 200 }]) - 1) < 1e-4);
+// A losing fund with fees paid after the last exit still gets a (negative) IRR.
+{ const f = [{ t: 0.2, v: -3.8 }, { t: 6, v: 4.5 }]; for (let y = 0; y < 10; y++) f.push({ t: y + 0.5, v: -0.2 });
+  const r = E.irr(f); assert(r < 0 && r > -0.2, "loss irr " + r);
+  assert(Math.abs(f.reduce((s, x) => s + x.v / Math.pow(1 + r, x.t), 0)) < 1e-4); }
 
 // LP report agrees with the debrief and adds up.
 const rep = E.fundReport(p, pState);
@@ -94,3 +98,10 @@ for (let k = 1; k <= 25; k++) {
 console.log('engine ok:', stats.companies, 'companies;', 'success rate', (stats.success / stats.companies * 100).toFixed(1) + '%;',
   'median', median.toFixed(2) + 'x;', 'top 5% share', (share * 100).toFixed(0) + '%;',
   'partner sample net TVPI', pr.fund.netTvpi.toFixed(2) + 'x', 'percentile', pr.fundPercentile);
+
+// A losing partner fund (every third company) used to show no net IRR because fees ran past its last exit.
+{ const t = E.generateTest('partner', 2), st = { decisions: {}, followOns: {} }; let yes = 0;
+  t.companies.forEach((c, k) => { st.decisions[c.i] = { yes: k % 3 === 0 && yes < t.meta.slots && !!++yes }; });
+  const r = E.fundReport(t, st);
+  assert(r.netTvpi < 1 && r.netIrr != null && r.netIrr < 0, 'partner loss irr ' + r.netIrr); }
+console.log('report irr ok');

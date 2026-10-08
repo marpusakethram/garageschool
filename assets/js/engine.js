@@ -654,8 +654,16 @@
   // Annualized return for dated cash flows [{t: years, v: dollars}]. Null if it has no solution.
   function irr(flows) {
     function npv(r) { return flows.reduce(function (s, f) { return s + f.v / Math.pow(1 + r, f.t); }, 0); }
-    var lo = -0.95, hi = 10, flo = npv(lo);
-    if (flo * npv(hi) > 0) return null;
+    // Scan down from a high rate to the first sign change. Fees paid after the last exit make NPV turn
+    // again near -100%, so fixed end points can miss the real root.
+    var hi = 10, fhi = npv(hi), lo = null, flo;
+    for (var r = 9; r > -0.99; r = r > 1 ? r - 1 : Math.round((r - 0.02) * 100) / 100) {
+      var fr = npv(r);
+      if (fr === 0) return r;
+      if (fr * fhi < 0) { lo = r; flo = fr; break; }
+      hi = r; fhi = fr;
+    }
+    if (lo === null) return null;
     for (var k = 0; k < 200; k++) {
       var mid = (lo + hi) / 2, fm = npv(mid);
       if (Math.abs(fm) < 1e-6) return mid;
@@ -687,8 +695,11 @@
     var fm = fundMath(meta, gross, deployed, undeployed);
     var keep = gross ? 1 - fm.carry / gross : 1;          // carry comes out of investment proceeds
 
+    // Fees are spread evenly over the fund's active life, which ends at its last paying exit (ten years if
+    // nothing paid out). Charging fees after the last distribution can leave a losing fund with no IRR at all.
+    var life = positions.reduce(function (m, p) { return p.proceeds > 0 ? Math.max(m, p.exitT) : m; }, 0) || 10;
     var lpFlows = [], grossFlows = [];
-    for (var y = 0; y < 10; y++) lpFlows.push({ t: y + 0.5, v: -meta.fees / 10 });
+    for (var y = 0; y < 10; y++) lpFlows.push({ t: (y + 0.5) * life / 10, v: -meta.fees / 10 });
     positions.forEach(function (p) {
       lpFlows.push({ t: p.t0, v: -meta.check }); grossFlows.push({ t: p.t0, v: -meta.check });
       if (p.followOn) { lpFlows.push({ t: p.followT, v: -meta.followCheck }); grossFlows.push({ t: p.followT, v: -meta.followCheck }); }
