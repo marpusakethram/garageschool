@@ -1,4 +1,4 @@
-// VentureSim app features: sign-up and log-in, founder home, LP reports, feedback,
+// VentureSchool app features: sign-up and log-in, founder home, LP reports, feedback,
 // workshops with guided tours, the metrics guide, and the sector map.
 (function () {
   'use strict';
@@ -122,7 +122,7 @@
   }
 
   R.signup = function (parts) {
-    document.title = 'Create account | VentureSim';
+    document.title = 'Create account | VentureSchool';
     var kind = parts[1] === 'founder' ? 'founder' : parts[1] === 'learner' ? 'learner' : null;
     if (!kind) {
       authCard('<h1>Create your account</h1><p>Tell us which describes you. You can use everything either way.</p>' +
@@ -136,14 +136,14 @@
   };
 
   R.login = function () {
-    document.title = 'Log in | VentureSim';
+    document.title = 'Log in | VentureSchool';
     var s = store();
     if (!window.VSAuth.enabled()) {
       if (s.profile) {
         authCard('<h1>Welcome back, ' + esc(s.profile.name) + '</h1><p>Your progress is saved in this browser.</p><button class="btn btn-primary btn-lg" type="button" id="cont">Continue to your dashboard</button>');
         document.getElementById('cont').addEventListener('click', function () { s.signedOut = false; A.save(); A.go('#/'); });
       } else {
-        authCard('<h1>Log in</h1><p>There is no VentureSim account in this browser yet. Accounts are saved on the device where you created them.</p>' +
+        authCard('<h1>Log in</h1><p>There is no VentureSchool account in this browser yet. Accounts are saved on the device where you created them.</p>' +
           '<div class="form"><a class="btn btn-primary btn-lg" href="#/signup">Create an account</a>' +
           '<div><label for="import">Moved from another device? Import your progress file</label><input type="file" id="import" accept="application/json"></div>' +
           '<p class="form-error" id="form-error" role="alert"></p></div>');
@@ -228,9 +228,9 @@
         ? '<div><label for="building">What are you building? (optional)</label><textarea id="building" placeholder="One or two sentences"></textarea></div>'
         : '<div><label for="role">What do you do now?</label><select id="role"><option value="">Choose one</option>' + JOBS.map(function (j) { return '<option>' + esc(j) + '</option>'; }).join('') + '</select></div>' +
           '<fieldset style="border:0;padding:0;margin:0"><legend style="font-weight:500;font-size:15px;margin-bottom:8px">Which track do you want to start with?</legend><div class="radio-cards">' + tracks + '</div></fieldset>');
-    authCard('<h1>' + (fromLogin ? 'Finish setting up this device' : 'A few details') + '</h1><p>' + (founder ? 'So we can follow up on your questions and send you founder resources.' : 'So we can tailor VentureSim to where you are now.') + '</p>' +
+    authCard('<h1>' + (fromLogin ? 'Finish setting up this device' : 'A few details') + '</h1><p>' + (founder ? 'So we can follow up on your questions and send you founder resources.' : 'So we can tailor VentureSchool to where you are now.') + '</p>' +
       '<form class="form" id="details" novalidate style="max-width:none">' + fields +
-      '<p class="consent">We save these details to contact you about VentureSim. We do not sell them or share them with anyone else.</p>' +
+      '<p class="consent">We save these details to contact you about VentureSchool. We do not sell them or share them with anyone else.</p>' +
       '<p class="form-error" id="form-error" role="alert"></p>' +
       '<button class="btn btn-primary btn-lg" type="submit">' + (founder ? 'Create founder account' : 'Create account') + '</button></form>', true);
     A.phone.bind('phone');
@@ -265,7 +265,7 @@
   // ---------- Founder home ----------
   R.founderHome = function () {
     var s = store(), p = s.profile;
-    document.title = 'Dashboard | VentureSim';
+    document.title = 'Dashboard | VentureSchool';
     var lessons = A.COURSE.filter(function (m) { return m.course === 'founder'; });
     var next = lessons.filter(function (m) { return !s.course[m.slug]; })[0];
     var read = lessons.length - lessons.filter(function (m) { return !s.course[m.slug]; }).length;
@@ -303,15 +303,15 @@
       var p = s.profile || {};
       window.VSForms.send('feedback', { 'Type': 'Test feedback', 'Name': p.name || '', 'Email': p.email || '', 'Phone number': p.phone || '', 'Rating (1 to 5)': rating || '', 'Where (test or page)': ctx.where, 'Message': msg });
       s.feedback = s.feedback || {}; s.feedback[ctx.key] = Date.now(); A.save();
-      slot.innerHTML = '<section class="panel panel-body feedback-box"><p class="ok-msg" role="status">Sent. Thank you for helping us improve VentureSim.</p></section>';
+      slot.innerHTML = '<section class="panel panel-body feedback-box"><p class="ok-msg" role="status">Sent. Thank you for helping us improve VentureSchool.</p></section>';
     });
   };
 
   R.feedback = function (parts) {
     var question = parts[1] === 'question';
-    document.title = (question ? 'Ask a question' : 'Send feedback') + ' | VentureSim';
+    document.title = (question ? 'Ask a question' : 'Send feedback') + ' | VentureSchool';
     var p = store().profile || {};
-    A.render(A.shell('feedback', A.page(A.pageHead(question ? 'Ask a question' : 'Send feedback', question ? 'Ask anything about raising money, accelerators, terms, or your pitch. We reply by email.' : 'Tell us what is working, what is not, or what you want next. It goes straight to the person who builds VentureSim.'),
+    A.render(A.shell('feedback', A.page(A.pageHead(question ? 'Ask a question' : 'Send feedback', question ? 'Ask anything about raising money, accelerators, terms, or your pitch. We reply by email.' : 'Tell us what is working, what is not, or what you want next. It goes straight to the person who builds VentureSchool.'),
       '<form class="form panel panel-body" id="gf" novalidate style="max-width:640px">' +
       '<div><label for="type">Type</label><select id="type">' + (question ? ['Founder question', 'General question'] : ['General feedback', 'Bug report', 'Feature idea', 'Founder question']).map(function (t) { return '<option>' + t + '</option>'; }).join('') + '</select></div>' +
       '<div class="grid-2"><div><label for="name">Name</label><input type="text" id="name" value="' + esc(p.name || '') + '"></div><div><label for="email">Email</label><input type="email" id="email" value="' + esc(p.email || '') + '"></div></div>' +
@@ -356,7 +356,7 @@
     var st = A.testState(track, n);
     if (!st || st.status !== 'done') return A.go('#/tests/' + track);
     var test = A.getTest(track, n), rep = E.fundReport(test, st), meta = rep.meta, p = store().profile;
-    document.title = meta.fundName + ' LP report | VentureSim';
+    document.title = meta.fundName + ' LP report | VentureSchool';
     var best = rep.positions[0], worst = rep.positions.filter(function (x) { return x.status === 'Written off'; });
     var topThree = rep.positions.slice(0, 3);
     var top3share = rep.gross ? topThree.reduce(function (sum, x) { return sum + x.proceeds; }, 0) / rep.gross : 0;
@@ -379,7 +379,7 @@
     A.render(A.shell('tests', '<div class="page report">' +
       '<p class="crumbs report-actions" style="margin:0 0 12px"><a href="#/results/' + track + '/' + n + '">Back to the debrief</a></p>' +
       '<div class="report-cover"><p class="kicker">Final report to limited partners, fiscal year ' + (2026 + Math.ceil(Math.max.apply(null, rep.positions.map(function (x) { return x.exitT; }).concat([10])))) + '</p><h1>' + esc(meta.fundName) + ', L.P.</h1>' +
-        '<p>A ' + money(meta.fundSize) + ' ' + A.stageText(meta).toLowerCase() + ' fund, vintage 2026. Simulated for ' + A.trackName(track) + ' test ' + n + ' on VentureSim.</p></div>' +
+        '<p>A ' + money(meta.fundSize) + ' ' + A.stageText(meta).toLowerCase() + ' fund, vintage 2026. Simulated for ' + A.trackName(track) + ' test ' + n + ' on VentureSchool.</p></div>' +
       '<div class="report-actions"><button class="btn btn-primary" type="button" id="print">Print or save as PDF</button><a class="btn btn-secondary" href="#/results/' + track + '/' + n + '">Back to the debrief</a></div>' +
       '<h2>Letter from the general partner</h2><div class="letter">' + letter + '</div>' +
       '<h2>Fund at a glance</h2><dl class="kpis"><div><dt>Net TVPI</dt><dd>' + mult(rep.netTvpi) + '</dd></div><div><dt>DPI</dt><dd>' + mult(rep.dpi) + '</dd></div><div><dt>Net IRR</dt><dd>' + pctFmt(rep.netIrr) + '</dd></div><div><dt>Gross multiple</dt><dd>' + mult(rep.grossMoic) + '</dd></div>' +
@@ -399,7 +399,7 @@
       (rep.excluded ? '<p class="small muted" style="margin-top:8px">' + rep.excluded + ' compan' + (rep.excluded === 1 ? 'y was' : 'ies were') + ' outside the thesis and never reached the investment committee, so they are not in the portfolio.</p>' : '') +
       '<h2>Allocation by sector</h2>' + (rep.positions.length ? allocRows(rep.bySector, rep.deployed) : '<p class="muted">No investments.</p>') +
       '<h2>Allocation by stage</h2>' + (rep.positions.length ? allocRows(rep.byStage, rep.deployed) : '<p class="muted">No investments.</p>') +
-      '<p class="fine-print">Basis of preparation: all positions are fully realized, so DPI equals TVPI and there is no remaining value. Management fees and fund expenses are spread evenly over the active life of the fund, which ends at its last exit. Carried interest is ' + Math.round(meta.carry * 100) + '% of profits (' + Math.round(meta.carryHigh * 100) + '% if the fund returns more than 3x) once distributions exceed about ' + meta.hurdle + 'x of commitments, a simplified stand-in for an 8% preferred return, and is taken from company proceeds. Uninvested capital is treated as returned at the end of the investment period. IRR uses the date of each investment and exit, and shows n/a when no single rate fits the cash flows. VentureSim is an educational simulation; companies and outcomes are fictional.</p>' +
+      '<p class="fine-print">Basis of preparation: all positions are fully realized, so DPI equals TVPI and there is no remaining value. Management fees and fund expenses are spread evenly over the active life of the fund, which ends at its last exit. Carried interest is ' + Math.round(meta.carry * 100) + '% of profits (' + Math.round(meta.carryHigh * 100) + '% if the fund returns more than 3x) once distributions exceed about ' + meta.hurdle + 'x of commitments, a simplified stand-in for an 8% preferred return, and is taken from company proceeds. Uninvested capital is treated as returned at the end of the investment period. IRR uses the date of each investment and exit, and shows n/a when no single rate fits the cash flows. VentureSchool is an educational simulation; companies and outcomes are fictional.</p>' +
       '</div>'));
     document.getElementById('print').addEventListener('click', function () { window.print(); });
   };
@@ -466,7 +466,7 @@
     captable: { title: 'Cap table', lesson: 'cap-tables', blurb: 'Build a cap table from founding through a SAFE, a seed round, and a Series A with a pool increase. Every number is checked.' }
   };
   R.workshops = function () {
-    document.title = 'Workshops | VentureSim';
+    document.title = 'Workshops | VentureSchool';
     var s = store(); s.ws = s.ws || {};
     A.render(A.shell('workshops', A.page(A.pageHead('Workshops', 'Optional practice for the analyst and associate tracks. Each one has a lesson to read first and a short guided tour before you start.'),
       '<div class="ws-cards">' + Object.keys(WS).map(function (k) {
@@ -498,7 +498,7 @@
     if (!n) n = s.ws.captable.n || 1;
     s.ws.captable.n = n; A.save();
     var ex = E.capTableExercise(n);
-    document.title = 'Cap table workshop | VentureSim';
+    document.title = 'Cap table workshop | VentureSchool';
     var steps = ex.steps.map(function (st, k) {
       var rows = st.table.rows.map(function (row, r) {
         var given = row.holder === 'Founder A' || row.holder === 'Founder B' || (row.holder === 'Option pool' && st.key !== 'seriesA');
@@ -567,13 +567,13 @@
     if (!n) n = s.ws.termsheet.n || 1;
     s.ws.termsheet.n = n; A.save();
     var ts = E.termSheetExercise(n);
-    document.title = 'Term sheet workshop | VentureSim';
+    document.title = 'Term sheet workshop | VentureSchool';
     var ask = ts.boardAsk === 'control' ? 'The founders want to keep control of the board after this round.' : 'The investor and founders agree to add one independent director that both sides approve, with founders keeping two seats.';
     function sel(id, label, opts) { return '<div><label for="' + id + '">' + label + '</label><select id="' + id + '" class="select"><option value="">Choose</option>' + opts.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join('') + '</select></div>'; }
     function inp(id, label, ph) { return '<div><label for="' + id + '">' + label + '</label><input class="ws-input" style="width:100%" id="' + id + '" inputmode="decimal" placeholder="' + ph + '"></div>'; }
     A.render(A.shell('workshops', A.page(wsHead('termsheet', 'Scenario ' + n + '. Draft the term sheet for this round, then check it against the math and market standard terms.'),
-      '<div class="scenario" data-tour="scenario"><p><b>' + esc(ts.company) + ', ' + ts.round + '.</b> VentureSim Capital will invest ' + money(ts.amount) + ' at a ' + money(ts.pre) + ' pre-money valuation.</p>' +
-      '<p>The company has ' + fmtShares(ts.fdShares) + ' fully diluted shares today, including an unused option pool of ' + fmtShares(ts.poolNow) + '. VentureSim Capital requires the unused pool to be ' + Math.round(ts.poolTarget * 100) + '% of the company after the round, created before the investment.</p><p>' + ask + ' Everything else should be market standard for an early-stage US round.</p></div>' +
+      '<div class="scenario" data-tour="scenario"><p><b>' + esc(ts.company) + ', ' + ts.round + '.</b> VentureSchool Capital will invest ' + money(ts.amount) + ' at a ' + money(ts.pre) + ' pre-money valuation.</p>' +
+      '<p>The company has ' + fmtShares(ts.fdShares) + ' fully diluted shares today, including an unused option pool of ' + fmtShares(ts.poolNow) + '. VentureSchool Capital requires the unused pool to be ' + Math.round(ts.poolTarget * 100) + '% of the company after the round, created before the investment.</p><p>' + ask + ' Everything else should be market standard for an early-stage US round.</p></div>' +
       '<form class="form panel panel-body" id="tsf" novalidate style="max-width:none;margin-top:18px">' +
         '<h3 style="font:400 22px var(--serif)" data-tour="econ">Economics</h3><div class="grid-2">' +
         sel('security', 'Security', ['Common stock', 'Series Seed Preferred', 'Series A Preferred', 'Convertible note']) +
@@ -668,7 +668,7 @@
     return out;
   }
   function memo(id) {
-    document.title = 'Memo workshop | VentureSim';
+    document.title = 'Memo workshop | VentureSchool';
     var cands = memoCandidates();
     var pickC = id ? cands.filter(function (x) { return x.id === id; })[0] : null;
     if (!pickC) {
@@ -757,7 +757,7 @@
       { el: '[data-tour=deal]', title: 'Read the deal', text: 'Everything you know about the company is here, the same information you had in the test.' },
       { el: '[data-tour=rec]', title: 'Lead with the decision', text: 'Choose invest or pass, then write a summary with your main reason and the biggest risk. Lesson 12 shows what a strong opening looks like.' },
       { el: '[data-tour=risks]', title: 'Name the real risks', text: 'Three specific risks, most serious first. "Execution risk" does not count.' },
-      { el: '[data-tour=scen]', title: 'Put numbers on it', text: 'Set probabilities and exit values for four scenarios. VentureSim computes your multiple in each one and the probability-weighted total.' },
+      { el: '[data-tour=scen]', title: 'Put numbers on it', text: 'Set probabilities and exit values for four scenarios. VentureSchool computes your multiple in each one and the probability-weighted total.' },
       { el: '[data-tour=submit]', title: 'Submit and learn', text: 'You will see the outcome, whether you covered the factors that mattered, and a formatted memo you can print.' }
     ]);
   }
@@ -808,7 +808,7 @@
   R.metrics = function (parts) {
     var sid = parts[1] || 'common', sector = SECTORS.filter(function (x) { return x.id === sid; })[0];
     if (!sector) sid = 'common';
-    document.title = (sector ? sector.name + ' metrics' : 'Startup metrics guide') + ' | VentureSim';
+    document.title = (sector ? sector.name + ' metrics' : 'Startup metrics guide') + ' | VentureSchool';
     var tabs = '<nav class="sector-tabs" aria-label="Sectors"><a href="#/metrics/common"' + (sid === 'common' ? ' aria-current="page"' : '') + '>Every startup</a>' +
       SECTORS.map(function (x) { return '<a href="#/metrics/' + x.id + '"' + (sector && x.id === sector.id ? ' aria-current="page"' : '') + '>' + esc(x.name) + '</a>'; }).join('') + '</nav>';
     A.render(A.shell('metrics', A.page(A.pageHead('Startup metrics guide', 'Start with the metrics every startup is judged on, then go deeper by sector: how companies make money, what investors look for at each stage, the questions to ask, and the numbers for each subsector. Benchmarks move with markets, so treat them as starting points.'),
@@ -819,7 +819,7 @@
     if (parts[2]) { var el = document.getElementById('sub-' + parts[2]); if (el) el.scrollIntoView(); }
   };
   R.sectors = function () {
-    document.title = 'Sector map | VentureSim';
+    document.title = 'Sector map | VentureSchool';
     A.render(A.shell('sectors', A.page(A.pageHead('Sector map', 'How startup sectors break down into subsectors. Every subsector links to the metrics investors use for it.'),
       '<p class="muted" style="margin-bottom:16px">New to startup metrics? Start with <a href="#/metrics/common">the metrics every startup is judged on</a>.</p><div class="map-grid">' + SECTORS.map(function (x) {
         return '<article class="map-card"><h3>' + esc(x.name) + '</h3><p>' + esc(x.about) + '</p><ul>' + x.subsectors.map(function (sub) {

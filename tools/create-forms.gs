@@ -1,20 +1,20 @@
 /*
-  VentureSim: creates the two Google Forms the website writes to.
-  Paste into a new project at https://script.google.com, then run setupVentureSimForms_ once (remove the trailing underscore first; it is private so it cannot be run again by accident).
+  VentureSchool: creates the two Google Forms the website writes to.
+  Paste into a new project at https://script.google.com, then run setupVentureSchoolForms_ once (remove the trailing underscore first; it is private so it cannot be run again by accident).
   It logs a JSON block. Paste that block into assets/js/forms-config.js.
 */
 var NOTIFY_EMAIL = 'marpu.sr@gmail.com';
 
-function setupVentureSimForms_() {
-  var sheet = SpreadsheetApp.create('VentureSim responses');
+function setupVentureSchoolForms_() {
+  var sheet = SpreadsheetApp.create('VentureSchool responses');
 
-  var signup = FormApp.create('VentureSim sign-ups');
-  signup.setDescription('Every account created on VentureSim. The website fills this in automatically.');
+  var signup = FormApp.create('VentureSchool sign-ups');
+  signup.setDescription('Every account created on VentureSchool. The website fills this in automatically.');
   ['Account type', 'Name', 'Phone number', 'Email', 'What they do now', 'What they are building',
    'Sign-in method', 'Starting track'].forEach(function (t) { signup.addTextItem().setTitle(t); });
   signup.setDestination(FormApp.DestinationType.SPREADSHEET, sheet.getId());
 
-  var feedback = FormApp.create('VentureSim feedback and questions');
+  var feedback = FormApp.create('VentureSchool feedback and questions');
   feedback.setDescription('Feedback after tests and questions from founders. The website fills this in automatically.');
   ['Type', 'Name', 'Email', 'Phone number', 'Rating (1 to 5)', 'Where (test or page)']
     .forEach(function (t) { feedback.addTextItem().setTitle(t); });
@@ -57,7 +57,7 @@ function notifyOnFeedback(e) {
     return ir.getItem().getTitle() + ': ' + ir.getResponse();
   });
   var type = (e.response.getItemResponses()[0] || { getResponse: function () { return 'response'; } }).getResponse();
-  MailApp.sendEmail(NOTIFY_EMAIL, 'VentureSim: new ' + type, lines.join('\n'));
+  MailApp.sendEmail(NOTIFY_EMAIL, 'VentureSchool: new ' + type, lines.join('\n'));
 }
 
 // Added later: adds Organization and Organization type to the sign-up form, finding it through the responses sheet.

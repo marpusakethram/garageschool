@@ -1,4 +1,4 @@
-// VentureSim deal materials: company details, a demo day pitch deck, a demo day transcript, and
+// VentureSchool deal materials: company details, a demo day pitch deck, a demo day transcript, and
 // scenario-based due diligence questions. Uses its own random seed per company, so it never changes
 // which companies appear in a test or how they turn out.
 (function (root, factory) {
@@ -144,7 +144,7 @@
     var count = round2(c.market.tam / d.price);
     var mi = tierOf(I.MARKET, c.market.text), oi = tierOf(I.MOAT, c.moat.text);
     return [
-      { kind: 'cover', title: c.name, sub: c.pitch, foot: c.location + ', founded ' + d.founded + '. VentureSim Demo Day.' },
+      { kind: 'cover', title: c.name, sub: c.pitch, foot: c.location + ', founded ' + d.founded + '. VentureSchool Demo Day.' },
       { kind: 'statement', label: 'The problem', title: S.problem.replace('{C}', C) },
       { kind: 'statement', label: 'Our solution', title: c.pitch, points: [productSpin(c)] },
       { kind: 'big', label: 'Traction', title: tr.big, points: tr.points },

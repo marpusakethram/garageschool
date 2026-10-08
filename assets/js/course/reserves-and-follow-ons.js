@@ -9,7 +9,7 @@ short: [
 ],
 body: `
 <h2>What reserves are</h2>
-<p>When a fund makes a first investment, it usually expects to invest again in later rounds. The money set aside for that is called reserves. If a $50M fund has $42M to invest after fees, it might put $21M into first checks and keep $21M in reserve. The partner tests in VentureSim give you a fixed number of follow-on checks to make these choices yourself.</p>
+<p>When a fund makes a first investment, it usually expects to invest again in later rounds. The money set aside for that is called reserves. If a $50M fund has $42M to invest after fees, it might put $21M into first checks and keep $21M in reserve. The partner tests in VentureSchool give you a fixed number of follow-on checks to make these choices yourself.</p>
 <p>Reserve levels vary. Pre-seed funds that write many small checks may reserve less and rely on later investors. Funds that lead seed and Series A rounds often reserve more, sometimes more than half. There is no right number, but there must be a plan.</p>
 
 <h2>Why follow-ons matter</h2>

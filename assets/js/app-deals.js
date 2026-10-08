@@ -1,4 +1,4 @@
-// VentureSim deal flow extras: pitch deck and demo day transcript viewer, the due diligence stage,
+// VentureSchool deal flow extras: pitch deck and demo day transcript viewer, the due diligence stage,
 // the one-page IC memo, and how both show up in the debrief.
 (function () {
   'use strict';
@@ -88,7 +88,7 @@
   function viewDD(track, n) {
     var st = A.testState(track, n), test = A.getTest(track, n), meta = test.meta, list = shortlist(st);
     A.setKeys(null);
-    document.title = 'Due diligence, ' + A.trackName(track) + ' test ' + n + ' | VentureSim';
+    document.title = 'Due diligence, ' + A.trackName(track) + ' test ' + n + ' | VentureSchool';
     var done = list.filter(function (i) { return complete(test, meta, st, i); }).length;
     var firstOpen = list.filter(function (i) { return !complete(test, meta, st, i); })[0];
     var cards = list.map(function (i) {
@@ -175,7 +175,7 @@
     var st = A.testState(track, n), test = A.getTest(track, n), meta = test.meta;
     var kept = shortlist(st).filter(function (i) { return st.dd && st.dd[i] && st.dd[i].keep === true; });
     A.setKeys(null);
-    document.title = 'IC memo, ' + A.trackName(track) + ' test ' + n + ' | VentureSim';
+    document.title = 'IC memo, ' + A.trackName(track) + ' test ' + n + ' | VentureSchool';
     var m = st.memo = st.memo || {};
     if (!kept.length) {
       A.render(A.shell('tests', A.page(A.pageHead('IC memo: ' + A.trackName(track) + ' test ' + n, null), head(track, n, meta, 2) +

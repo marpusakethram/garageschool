@@ -42,7 +42,7 @@ body: `
 <h2>How to get one of these jobs</h2>
 <ol>
   <li><strong>Be useful first.</strong> Help founders with hiring, introductions, or research before anyone pays you to. Keep a record of what you did.</li>
-  <li><strong>Show the skill.</strong> For portfolio roles, build a sample portfolio dashboard or LP report using public information or VentureSim test results. For platform roles, run a small event or community and show who came and what happened.</li>
+  <li><strong>Show the skill.</strong> For portfolio roles, build a sample portfolio dashboard or LP report using public information or VentureSchool test results. For platform roles, run a small event or community and show who came and what happened.</li>
   <li><strong>Know the firm's portfolio.</strong> Read about their companies and come with ideas for how you would help three of them.</li>
   <li><strong>Use the community.</strong> Platform professionals have their own networks and events. Join them and contribute.</li>
   <li><strong>Apply with evidence.</strong> A short note saying what you have done for founders, with links, beats a generic cover letter.</li>
