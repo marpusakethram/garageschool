@@ -26,7 +26,7 @@ body: `
 <p>The stage names matter less than the test. A "seed" round in one market looks like a "Series A" in another. Focus on what you can prove.</p>
 
 <h2>The numbers you must know</h2>
-<p>Investors will ask for your key metrics in the first few minutes. Answer instantly and precisely; hesitating on your own numbers is one of the fastest ways to lose credibility. The right metrics depend on your business, and the VentureSchool metrics guide lists them by sector and subsector. For most software companies the core set is:</p>
+<p>Investors will ask for your key metrics in the first few minutes. Answer instantly and precisely; hesitating on your own numbers is one of the fastest ways to lose credibility. The right metrics depend on your business, and the GarageSchool metrics guide lists them by sector and subsector. For most software companies the core set is:</p>
 <ul>
 <li>Revenue or ARR, and its growth rate month over month and year over year</li>
 <li>Number of customers or active users, and how that is trending</li>

@@ -1,4 +1,4 @@
-// VentureSchool metrics guide: the page for every startup, sector deep dives, and one key question per subsector.
+// GarageSchool metrics guide: the page for every startup, sector deep dives, and one key question per subsector.
 // Benchmarks are rough guides for early-stage companies and move with markets.
 
 window.VS_COMMON = {

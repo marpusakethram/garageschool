@@ -10,7 +10,7 @@ short: [
 body: `
 <h2>Shares first, percentages second</h2>
 <p>The single most important habit with cap tables is to track shares, not percentages. Percentages change every time new shares are issued. Shares only change when someone actually receives or gives up shares. If you keep a clean count of shares after every event, the percentages are always just each holder's shares divided by the total.</p>
-<p>We will build one company's cap table from founding through a Series A. The VentureSchool cap table workshop gives you new numbers each time, but the steps are always these five.</p>
+<p>We will build one company's cap table from founding through a Series A. The GarageSchool cap table workshop gives you new numbers each time, but the steps are always these five.</p>
 
 <h2>Step 1: founding</h2>
 <p>Two founders start a company and issue themselves 10,000,000 shares: 6,000,000 to Founder A and 4,000,000 to Founder B.</p>

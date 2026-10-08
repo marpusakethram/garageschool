@@ -44,6 +44,24 @@
     });
   }
 
+  // Residency page: join the list. Goes to the feedback Google Form, which emails the team.
+  var rf = document.getElementById('res-form');
+  if (rf) {
+    rf.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = function (id) { return document.getElementById(id).value.trim(); };
+      var err = document.getElementById('res-err');
+      if (!v('res-name')) { err.textContent = 'Enter your name.'; return document.getElementById('res-name').focus(); }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('res-email'))) { err.textContent = 'Enter a valid email so we can reach you.'; return document.getElementById('res-email').focus(); }
+      if (!v('res-role')) { err.textContent = 'Choose whether you are a founder, an investor, or both.'; return document.getElementById('res-role').focus(); }
+      err.textContent = '';
+      var btn = rf.querySelector('button'), email = v('res-email'); btn.disabled = true; btn.textContent = 'Sending...';
+      window.VSForms.send('feedback', { 'Type': 'Residency interest', 'Name': v('res-name'), 'Email': v('res-email'), 'Where (test or page)': 'Residency page: ' + v('res-role'), 'Message': v('res-note') || '(no note)' }).then(function () {
+        rf.innerHTML = '<p class="res-thanks" role="status">You are on the list. We will email ' + esc(email) + ' when details are ready.</p>';
+      });
+    });
+  }
+
   // One test, fifty startups: every company from Analyst test 1 as a dot.
   var dotsEl = document.getElementById('dots');
   var card = document.getElementById('deal-card');

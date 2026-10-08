@@ -1,4 +1,4 @@
-// VentureSchool app: dashboard, tests, course, library. Progress is stored in this browser.
+// GarageSchool app: dashboard, tests, course, library. Progress is stored in this browser.
 (function () {
   'use strict';
 
@@ -62,8 +62,8 @@
     rocket: '<path d="M5 15c-1 1-1.5 3.5-1.5 3.5S6 18 7 17"/><path d="M9 15l-3-3c2-6 7-9 13-9 0 6-3 11-9 13z"/><circle cx="14.5" cy="9.5" r="1.5"/>'
   };
   function icon(name) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>'; }
-  var GMARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><text x="16" y="23.4" text-anchor="middle" font-family="\'Times New Roman\', Times, serif" font-size="22" fill="#fff">V</text></svg>';
-  var LOGO = '<a class="logo" href="index.html" aria-label="ventureschool, home">' + GMARK + 'entureschool</a>';
+  var GMARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><text x="16" y="22.6" text-anchor="middle" font-family="\'Nunito Sans\', Avenir, \'Avenir Next\', sans-serif" font-weight="800" font-size="19" fill="#fff">G</text></svg>';
+  var LOGO = '<a class="logo" href="index.html" aria-label="garageschool, home">' + GMARK + 'arageschool</a>';
 
   // ---------- Layout ----------
   function shell(active, html) {
@@ -98,7 +98,8 @@
         '<nav aria-label="Resources"><p class="side-label">Resources</p><ul class="side-nav">' + resLinks +
           '<li><a href="ai-tools.html">' + icon('spark') + 'AI tools for VCs</a></li>' +
           '<li><a href="founders.html">' + icon('rocket') + 'For founders</a></li>' +
-          '<li><a href="break-into-vc.html">' + icon('compass') + 'Break into VC</a></li></ul></nav>' +
+          '<li><a href="break-into-vc.html">' + icon('compass') + 'Break into VC</a></li>' +
+          '<li><a href="residency.html">' + icon('home') + 'Residency <span class="pill" style="margin-left:4px">Soon</span></a></li></ul></nav>' +
         '<nav aria-label="You"><p class="side-label">You</p><ul class="side-nav">' +
           li(['feedback', '#/feedback', 'Send feedback', 'chat']) +
           '<li><a href="#/profile"' + (active === 'profile' ? ' aria-current="page"' : '') + '>' + icon('user') + 'Profile</a></li></ul></nav>' +
@@ -144,7 +145,7 @@
     var rb = document.querySelector('.reading-bar'); if (rb) rb.remove();
     var parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
     var p0 = parts[0] || '';
-    document.title = 'VentureSchool';
+    document.title = 'GarageSchool';
     var needsAccount = { '': 1, tests: 1, test: 1, results: 1, report: 1, profile: 1 };
     if (needsAccount[p0] && (!store.profile || store.signedOut)) return go(store.profile ? '#/login' : '#/signup');
     if (VSApp.routes[p0]) return VSApp.routes[p0](parts);
@@ -162,7 +163,7 @@
       case 'library': return viewLibrary();
       case 'glossary': return viewGlossary();
       case 'profile': return viewProfile();
-      default: return render(shell('', page(pageHead('Page not found', 'That address does not match anything in VentureSchool.'), '<a class="btn btn-primary" href="#/">Go to the dashboard</a>')));
+      default: return render(shell('', page(pageHead('Page not found', 'That address does not match anything in GarageSchool.'), '<a class="btn btn-primary" href="#/">Go to the dashboard</a>')));
     }
   }
   window.addEventListener('hashchange', route);
@@ -181,7 +182,7 @@
 
   // ---------- Auth (local) ----------
   function viewSignup(note) {
-    document.title = 'Create account | VentureSchool';
+    document.title = 'Create account | GarageSchool';
     var tracks = TRACK_IDS.map(function (t, k) {
       return '<label><input type="radio" name="track" value="' + t + '"' + (k === 0 ? ' checked' : '') + '><span><b>' + trackName(t) + '</b><span>' + esc(E.TRACKS[t].blurb) + '</span></span></label>';
     }).join('');
@@ -208,10 +209,10 @@
   }
 
   function viewLogin() {
-    document.title = 'Log in | VentureSchool';
+    document.title = 'Log in | GarageSchool';
     var body = store.profile
       ? '<h1>Welcome back, ' + esc(store.profile.name) + '</h1><p>Your progress is saved in this browser.</p><a class="btn btn-primary btn-lg" href="#/">Continue to your dashboard</a>'
-      : '<h1>Log in</h1><p>There is no VentureSchool account in this browser yet. Accounts are saved on the device where you created them.</p>' +
+      : '<h1>Log in</h1><p>There is no GarageSchool account in this browser yet. Accounts are saved on the device where you created them.</p>' +
         '<div class="form"><a class="btn btn-primary btn-lg" href="#/signup">Create an account</a>' +
         '<div><label for="import">Moved from another device? Import your progress file</label><input type="file" id="import" accept="application/json"></div>' +
         '<p class="form-error" id="form-error" role="alert"></p></div>';
@@ -233,7 +234,7 @@
         go('#/');
       } catch (err) {
         var el = document.getElementById('form-error');
-        if (el) el.textContent = 'That file is not a VentureSchool progress file. Export one from Profile on your other device.';
+        if (el) el.textContent = 'That file is not a GarageSchool progress file. Export one from Profile on your other device.';
       }
     };
     reader.readAsText(file);
@@ -241,7 +242,7 @@
 
   // ---------- Dashboard ----------
   function viewDashboard() {
-    document.title = 'Dashboard | VentureSchool';
+    document.title = 'Dashboard | GarageSchool';
     var p = store.profile;
     if (p.kind === 'founder' && VSApp.routes.founderHome) return VSApp.routes.founderHome();
     var active = null;
@@ -298,7 +299,7 @@
   // ---------- Track lists ----------
   function viewTracks(track) {
     if (!E.TRACKS[track]) track = 'analyst';
-    document.title = trackName(track) + ' tests | VentureSchool';
+    document.title = trackName(track) + ' tests | GarageSchool';
     var tabs = '<nav class="tabs" aria-label="Tracks">' + TRACK_IDS.map(function (t) {
       return '<a href="#/tests/' + t + '"' + (t === track ? ' aria-current="page"' : '') + '>' + trackName(t) + ' (' + doneCount(t) + '/50)</a>';
     }).join('') + '</nav>';
@@ -365,7 +366,7 @@
     if (mode === 'play' && st) return viewRunner(track, n);
     if (mode === 'play' && !st) return go('#/test/' + track + '/' + n);
     var meta = metaFor(track, n), T = E.TRACKS[track];
-    document.title = trackName(track) + ' test ' + n + ' | VentureSchool';
+    document.title = trackName(track) + ' test ' + n + ' | GarageSchool';
     var facts = [['Fund', meta.fundName], ['Fund size', money(meta.fundSize)], ['Stage', stageText(meta)], ['Sectors', (meta.gen >= 2 ? focusText(meta.focus) : 'All sectors')]];
     var rules;
     if (track === 'partner') {
@@ -457,7 +458,7 @@
     var test = getTest(track, n), meta = test.meta, T = E.TRACKS[track];
     var st = testState(track, n);
     setKeys(null);
-    document.title = trackName(track) + ' test ' + n + ' | VentureSchool';
+    document.title = trackName(track) + ' test ' + n + ' | GarageSchool';
     if (st.checkpoint) return viewCheckpoint(track, n);
     if (st.pos >= 50) {
       if (track !== 'partner' && VSApp.dealStage) return VSApp.dealStage(track, n);
@@ -618,7 +619,7 @@
     var st = testState(track, n);
     if (!st || st.status !== 'done') return go('#/tests/' + track);
     var test = getTest(track, n), meta = test.meta, r = st.result, T = E.TRACKS[track];
-    document.title = trackName(track) + ' test ' + n + ' debrief | VentureSchool';
+    document.title = trackName(track) + ' test ' + n + ' debrief | GarageSchool';
     var scores;
     if (track === 'partner') {
       scores = [
@@ -702,7 +703,7 @@
 
   // ---------- Example (no account, instant feedback) ----------
   function viewExample() {
-    document.title = 'Example test | VentureSchool';
+    document.title = 'Example test | GarageSchool';
     var test = E.generateExample(), meta = test.meta, T = E.TRACKS.analyst;
     var st = { pos: 0, decisions: {}, dug: {}, credits: meta.credits, picks: 0, right: 0 };
     // The strongest cases are the two in-thesis companies with the best expected return.
@@ -760,7 +761,7 @@
   function viewCourse(which) {
     which = COURSE_INFO[which] ? which : 'vc';
     var info = COURSE_INFO[which];
-    document.title = info.name + ' | VentureSchool';
+    document.title = info.name + ' | GarageSchool';
     var list = COURSE.filter(function (m) { return m.course === which; });
     var parts = [];
     list.forEach(function (m) { if (parts.indexOf(m.part) === -1) parts.push(m.part); });
@@ -790,7 +791,7 @@
   function viewLesson(slug) {
     var m = lessonBySlug(slug);
     if (!m) return go('#/course');
-    document.title = m.title + ' | VentureSchool';
+    document.title = m.title + ' | GarageSchool';
     if (VSApp.lastLesson) VSApp.lastLesson(m);
     var siblings = COURSE.filter(function (x) { return x.course === m.course; });
     var info = COURSE_INFO[m.course];
@@ -843,7 +844,7 @@
 
   // ---------- Walkthrough ----------
   function viewWalkthrough() {
-    document.title = 'Walkthrough | VentureSchool';
+    document.title = 'Walkthrough | GarageSchool';
     var steps = [
       ['Read the fund brief', 'Every test opens with the fund: its size, its thesis, how many companies you can pick, and the size of each check. Fund size rises with every test, so the stage of the companies changes as you go.'],
       ['Read each deal', 'Each company shows its pitch, team, market, product and customers, traction, competition, risks, and terms. Notes from the diligence team point out what stood out. There are no scores to lean on, so you read the evidence yourself.'],
@@ -853,14 +854,14 @@
       ['Read the debrief', 'At the end you see what happened to all 50 companies, your judgment score compared with random picks, what your picks actually returned, the winners you missed, and which signals you leaned on compared with what mattered. Each lesson links to the part of the course that covers it.']
     ];
     render(shell('walkthrough', page(pageHead('How a test works', 'Watch the walkthrough, or read the six steps below.'),
-      '<div class="player" data-src="media/ventureschool-walkthrough.mp4" data-poster="media/ventureschool-walkthrough-poster.jpg"><button class="poster" type="button" aria-label="Play the walkthrough video"><span><span class="play-icon" aria-hidden="true"></span><b>Walkthrough: one full test</b><small>From the fund brief to the debrief</small></span></button></div>' +
+      '<div class="player" data-src="media/garageschool-walkthrough.mp4" data-poster="media/garageschool-walkthrough-poster.jpg"><button class="poster" type="button" aria-label="Play the walkthrough video"><span><span class="play-icon" aria-hidden="true"></span><b>Walkthrough: one full test</b><small>From the fund brief to the debrief</small></span></button></div>' +
       '<ol class="check-list panel" style="margin-top:28px">' + steps.map(function (s, k) { return '<li style="align-items:flex-start"><span class="pill accent">' + (k + 1) + '</span><div><b>' + s[0] + '</b><p class="muted small" style="margin-top:4px">' + s[1] + '</p></div></li>'; }).join('') + '</ol>' +
       '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px"><a class="btn btn-primary" href="#/example">Try the example test</a><a class="btn btn-secondary" href="#/tests">Go to the tests</a></div>')));
   }
 
   // ---------- Library and glossary ----------
   function viewLibrary() {
-    document.title = 'Library | VentureSchool';
+    document.title = 'Library | GarageSchool';
     var items = LIB.length ? LIB.map(function (d) {
       return '<div class="pdf-card"><div class="pdf-icon" aria-hidden="true">PDF</div><div><h3>' + esc(d.title) + '</h3><p>' + esc(d.source) + (d.pages ? ', ' + d.pages + ' pages' : '') + '</p><p>' + esc(d.about) + '</p></div>' +
         '<a class="btn btn-secondary btn-sm" href="' + esc(d.file) + '" target="_blank" rel="noopener">Open PDF</a></div>';
@@ -872,7 +873,7 @@
   }
 
   function viewGlossary() {
-    document.title = 'Glossary | VentureSchool';
+    document.title = 'Glossary | GarageSchool';
     render(shell('glossary', page(pageHead('Glossary', GLOSS.length + ' terms used in the tests and the course.'),
       '<label class="sr-only" for="q">Search the glossary</label><input class="search" id="q" type="search" placeholder="Search terms, for example dilution" autocomplete="off">' +
       '<dl class="gloss" id="gloss"></dl><p class="empty" id="none" hidden>No terms match that search.</p>')));
@@ -889,7 +890,7 @@
 
   // ---------- Profile ----------
   function viewProfile() {
-    document.title = 'Profile | VentureSchool';
+    document.title = 'Profile | GarageSchool';
     var p = store.profile;
     var done = TRACK_IDS.reduce(function (s, t) { return s + doneCount(t); }, 0);
     render(shell('profile', page(pageHead('Profile and progress', 'Your account and progress are saved in this browser on this device.'),

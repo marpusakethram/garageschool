@@ -72,7 +72,7 @@ body: `
 </ul>
 
 <h2>After the decision</h2>
-<p>Save every memo, including the ones for deals you passed on. Reread them a year later. The point is not to be right every time; nobody is. The point is to learn which of your beliefs held up and which did not, so your next memo is better. In VentureSchool, the memo workshop shows you what happened to the company after you submit, so you can check your reasoning right away.</p>
+<p>Save every memo, including the ones for deals you passed on. Reread them a year later. The point is not to be right every time; nobody is. The point is to learn which of your beliefs held up and which did not, so your next memo is better. In GarageSchool, the memo workshop shows you what happened to the company after you submit, so you can check your reasoning right away.</p>
 
 <h2>Check yourself</h2>
 <details class="check"><summary>What belongs in the first paragraph of a memo?</summary><p>The decision, the amount and price, the main reason, and the biggest risk. A busy reader should be able to decide from that paragraph alone.</p></details>

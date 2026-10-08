@@ -1,5 +1,5 @@
 /*
-  VentureSchool test engine.
+  GarageSchool test engine.
   Every test is generated from a seed, so the same track and test number always
   produce the same 50 companies for every user. Nothing here touches the page.
 */
@@ -420,7 +420,7 @@
     var follow = Math.round(slots * 0.6);
     return {
       track: track, n: n, trackName: T.name,
-      fundName: 'VentureSchool Capital Fund ' + n,
+      fundName: 'GarageSchool Capital Fund ' + n,
       fundSize: size, investable: investable, fees: size - investable,
       stages: stagesFor(size),
       thesis: o.gen >= 2 ? makeThesis2(r, track, o.focus) : makeThesis(r, track),

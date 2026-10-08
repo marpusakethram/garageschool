@@ -86,7 +86,7 @@ body: `
 <p>A simple defense is to write down, before the meeting, the two or three things you need to learn about this team. After the meeting, write down what evidence you got for each. If your notes say "great energy" and nothing else, you have not learned much.</p>
 
 <h2>Conviction</h2>
-<p>After you have met a team, rate your conviction and write down why. Then write down what would change your mind. This forces you to separate what you know from what you feel, and it gives you something to check against later. Over many deals, you learn whether your high-conviction calls are actually better than your low-conviction ones. In the VentureSchool associate tests, the debrief shows you exactly that.</p>
+<p>After you have met a team, rate your conviction and write down why. Then write down what would change your mind. This forces you to separate what you know from what you feel, and it gives you something to check against later. Over many deals, you learn whether your high-conviction calls are actually better than your low-conviction ones. In the GarageSchool associate tests, the debrief shows you exactly that.</p>
 
 <h2>Check yourself</h2>
 <details class="check"><summary>Two founders pitch the same idea. One went to a famous university and worked at a well-known tech company. The other spent eight years as a buyer for the exact customers the product serves. Who has stronger founder and market fit?</summary><p>Usually the second founder. Years inside the customer's world is direct evidence they understand the problem and how buying decisions get made. The first founder's background is impressive but not specific to this market.</p></details>

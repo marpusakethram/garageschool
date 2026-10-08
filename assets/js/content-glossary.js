@@ -1,4 +1,4 @@
-// VentureSchool VC glossary. Definitions written for this site.
+// GarageSchool VC glossary. Definitions written for this site.
 window.GARAGE_GLOSSARY = [
   ['Accelerator', 'A program that invests a small amount in many early companies at once, usually in exchange for a few percent of equity, and supports them for a few months with advice and introductions.'],
   ['Acqui-hire', 'An acquisition where the buyer mainly wants the team. Investors often get back little or nothing.'],

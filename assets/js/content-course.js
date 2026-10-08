@@ -1,4 +1,4 @@
-// VentureSchool course index. Lesson text lives in assets/js/course/<slug>.js and loads when opened.
+// GarageSchool course index. Lesson text lives in assets/js/course/<slug>.js and loads when opened.
 // course: 'vc' or 'founder'. id is unique; n is the number shown inside its course.
 window.GARAGE_COURSE = [
   { id: 1, n: 1, course: 'vc', part: 'Theory', slug: 'how-vc-works', title: 'How venture capital works', minutes: 11,

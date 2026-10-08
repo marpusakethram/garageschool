@@ -1,4 +1,4 @@
-// VentureSchool sector map and startup metrics guide.
+// GarageSchool sector map and startup metrics guide.
 // Benchmarks are rough guides for early-stage companies. They move with markets and vary by business model.
 window.VS_METRICS = {
   // Revenue and growth

@@ -33,7 +33,7 @@ body: `
     <tr><td>Net IRR</td><td>The annual return to LPs after fees and carry, taking timing into account.</td></tr>
   </tbody>
 </table>
-<p>A fund with a TVPI of 2.5x and a DPI of 0.3x has mostly paper gains. After a period of high valuations followed by a slowdown, many LPs learned that paper gains can shrink, so DPI gets close attention. The LP report at the end of each VentureSchool test shows all of these for your fund.</p>
+<p>A fund with a TVPI of 2.5x and a DPI of 0.3x has mostly paper gains. After a period of high valuations followed by a slowdown, many LPs learned that paper gains can shrink, so DPI gets close attention. The LP report at the end of each GarageSchool test shows all of these for your fund.</p>
 
 <h2>The quarterly LP report</h2>
 <p>Most funds send LPs a report every quarter. A good one includes:</p>
