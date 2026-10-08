@@ -1,11 +1,11 @@
 /*
   VentureSim: creates the two Google Forms the website writes to.
-  Paste into a new project at https://script.google.com, then run setupVentureSimForms.
+  Paste into a new project at https://script.google.com, then run setupVentureSimForms_ once (remove the trailing underscore first; it is private so it cannot be run again by accident).
   It logs a JSON block. Paste that block into assets/js/forms-config.js.
 */
 var NOTIFY_EMAIL = 'marpu.sr@gmail.com';
 
-function setupVentureSimForms() {
+function setupVentureSimForms_() {
   var sheet = SpreadsheetApp.create('VentureSim responses');
 
   var signup = FormApp.create('VentureSim sign-ups');
@@ -23,13 +23,13 @@ function setupVentureSimForms() {
 
   ScriptApp.newTrigger('notifyOnFeedback').forForm(feedback).onFormSubmit().create();
 
-  var out = { sheet: sheet.getUrl(), signup: describe(signup), feedback: describe(feedback) };
+  var out = { sheet: sheet.getUrl(), signup: describe_(signup), feedback: describe_(feedback) };
   Logger.log(JSON.stringify(out, null, 2));
   return out;
 }
 
 // Finds the entry.N field name for every question by building a pre-filled link.
-function describe(form) {
+function describe_(form) {
   var items = form.getItems();
   var r = form.createResponse();
   items.forEach(function (item, k) {
@@ -58,4 +58,16 @@ function notifyOnFeedback(e) {
   });
   var type = (e.response.getItemResponses()[0] || { getResponse: function () { return 'response'; } }).getResponse();
   MailApp.sendEmail(NOTIFY_EMAIL, 'VentureSim: new ' + type, lines.join('\n'));
+}
+
+// Added later: adds Organization and Organization type to the sign-up form, finding it through the responses sheet.
+// Run once, then copy the logged entry IDs into assets/js/forms-config.js.
+function addOrganizationFields() {
+  var ss = SpreadsheetApp.openById('1evyO_qZl11TCHSG4qQSoiV0eJA1IkpR_y6-W7U-S3rY');
+  var form = FormApp.openByUrl(ss.getSheetByName('Sign-ups').getFormUrl());
+  var titles = form.getItems().map(function (i) { return i.getTitle(); });
+  ['Organization', 'Organization type'].forEach(function (t) { if (titles.indexOf(t) === -1) form.addTextItem().setTitle(t); });
+  var entries = describe_(form).entries;
+  Logger.log(JSON.stringify(entries));
+  return entries;
 }

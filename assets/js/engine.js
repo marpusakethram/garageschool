@@ -156,6 +156,115 @@
       ['Skills training for {c}, paid for by employers.', ['hospital nursing staff', 'warehouse workers', 'utility line workers']]] }
   };
 
+  // Version 2 tests (started after sector focus was added) also draw from these.
+  // Version 1 tests keep using only the tables above, so saved tests never change.
+  var NEW_SECTORS = {
+    aiapps: { label: 'AI applications', lines: [
+      ['An AI agent that handles {c}.', ['insurance claims intake for regional carriers', 'first-line support for ecommerce brands', 'accounts payable for mid-size companies', 'patient scheduling for medical clinics']],
+      ['An AI copilot for {c}.', ['commercial real estate brokers', 'tax preparers', 'clinical trial coordinators', 'procurement teams']],
+      ['AI that reviews {c} and flags problems before they cost money.', ['construction drawings', 'supplier contracts', 'freight invoices']]] },
+    defense: { label: 'Defense tech', lines: [
+      ['Low-cost autonomous drones for {c}.', ['border surveillance agencies', 'infantry units', 'naval inspection teams']],
+      ['Software that fuses sensor data for {c}.', ['air defense units', 'coast guard operations', 'base security teams']],
+      ['Counter-drone systems for {c}.', ['military bases', 'airports', 'critical infrastructure operators']],
+      ['Secure, jam-resistant communications for {c}.', ['special operations teams', 'disaster response agencies']]] },
+    space: { label: 'Space', lines: [
+      ['Satellite imagery analytics for {c}.', ['crop insurers', 'commodity traders', 'wildfire agencies']],
+      ['Small satellite buses built in weeks for {c}.', ['earth observation startups', 'government research labs']],
+      ['In-orbit refueling and servicing for {c}.', ['geostationary satellite operators', 'defense satellite programs']]] },
+    proptech: { label: 'Real estate tech', lines: [
+      ['Property management software for {c}.', ['small landlords', 'student housing operators', 'self-storage owners']],
+      ['Construction scheduling and payments for {c}.', ['general contractors', 'home builders', 'specialty subcontractors']],
+      ['Leasing automation for {c}.', ['apartment operators', 'retail landlords']]] },
+    gaming: { label: 'Gaming', lines: [
+      ['A multiplayer game built for {c}.', ['mobile strategy players', 'casual puzzle fans', 'kids aged 8 to 12']],
+      ['Tools that help {c} build and run live games.', ['indie game studios', 'mid-size mobile studios']],
+      ['A platform for {c} to make and sell game mods.', ['PC gamers', 'young game creators']]] }
+  };
+  var MORE_LINES = {
+    fintech: [['Treasury and cash management for {c}.', ['venture-backed startups', 'mid-size manufacturers', 'nonprofits']], ['Cross-border payments for {c}.', ['online sellers', 'freelancers in emerging markets', 'import businesses']]],
+    insurance: [['Embedded warranty and protection plans for {c}.', ['electronics retailers', 'furniture brands', 'bike shops']], ['Underwriting software that prices risk for {c}.', ['commercial property insurers', 'cyber insurers']]],
+    vertical: [['Practice management software for {c}.', ['physical therapy clinics', 'small law firms', 'med spas']], ['Field service software for {c}.', ['solar installers', 'pest control companies', 'elevator maintenance firms']]],
+    devtools: [['Code review automation for {c}.', ['enterprise engineering teams', 'open source maintainers']], ['A testing platform for {c} shipping AI agents.', ['customer support software companies', 'AI startups']]],
+    ai: [['GPU scheduling software for {c}.', ['research labs', 'AI startups', 'regional cloud providers']], ['Search and retrieval infrastructure for {c}.', ['legal tech companies', 'enterprise search teams']]],
+    security: [['Security monitoring for {c}.', ['manufacturing plants', 'water utilities']], ['Protection against deepfake fraud for {c}.', ['banks', 'HR teams', 'call centers']]],
+    work: [['Employee onboarding software for {c}.', ['franchise restaurants', 'home care agencies']], ['Meeting notes and follow-ups for {c}.', ['sales teams', 'consulting firms']]],
+    health: [['Medical billing automation for {c}.', ['independent physician groups', 'behavioral health clinics']], ['At-home lab testing for {c}.', ['people managing thyroid conditions', 'employers running wellness programs']]],
+    climate: [['Industrial heat pumps for {c}.', ['food processing plants', 'breweries']], ['Battery recycling for {c}.', ['EV makers', 'electronics recyclers']]],
+    hardware: [['Inspection drones for {c}.', ['wind farms', 'oil pipelines', 'rail operators']], ['Robotic arms that pick mixed items for {c}.', ['ecommerce warehouses', 'pharmacy distributors']]],
+    logistics: [['Route planning software for {c}.', ['grocery delivery fleets', 'waste haulers']], ['Cold chain tracking for {c}.', ['vaccine distributors', 'seafood exporters']]],
+    marketplace: [['A marketplace that books {c} for shifts.', ['freelance nurses', 'licensed electricians', 'substitute teachers']], ['A B2B marketplace for {c}.', ['surplus industrial parts', 'used restaurant equipment']]],
+    consumer: [['A social app for {c}.', ['people who run clubs', 'amateur athletes']], ['A meal planning subscription for {c}.', ['busy families', 'people with diabetes']]],
+    edtech: [['Test prep with AI tutors for {c}.', ['nursing students', 'high school students']], ['Coding programs for {c}, paid after they get a job.', ['career changers', 'military veterans']]]
+  };
+  // Every product here works with every customer in the same sector, so focused tests rarely repeat a pitch.
+  var MIX = {
+    fintech: [['Corporate cards and spend controls for {c}.', 'Payroll and benefits software for {c}.', 'Invoice financing for {c}, repaid when their customers pay.', 'Accounting automation for {c}.', 'Cash management and treasury for {c}.', 'Payments and invoicing software for {c}.', 'Working capital loans for {c}.'],
+      ['restaurant groups', 'construction subcontractors', 'dental practices', 'trucking fleets', 'independent pharmacies', 'ecommerce brands', 'staffing agencies', 'franchise owners']],
+    insurance: [['Insurance for {c}, bought in minutes online.', 'Usage-based insurance for {c}.', 'Insurance with safety monitoring for {c}.', 'Embedded insurance for {c}, sold through software they already use.', 'Income protection for {c}.', 'Liability coverage for {c}, priced with real-time data.'],
+      ['gig workers', 'small landlords', 'e-bike owners', 'freelance designers', 'trucking fleets', 'restaurants', 'home care agencies', 'short-term rental hosts']],
+    vertical: [['Scheduling, dispatch, and billing for {c}.', 'An operating system for {c}, replacing spreadsheets and paper.', 'Inventory and ordering software for {c}.', 'Payments and customer messaging for {c}.', 'AI phone answering and booking for {c}.', 'Compliance and inspection software for {c}.', 'Staff scheduling and payroll for {c}.'],
+      ['HVAC contractors', 'veterinary clinics', 'auto repair shops', 'independent grocers', 'home care agencies', 'craft breweries', 'physical therapy clinics', 'landscaping companies']],
+    devtools: [['Test infrastructure that cuts build times in half for {c}.', 'Observability for {c} running AI features in production.', 'Database tooling that lets {c} ship schema changes without downtime.', 'Code review automation for {c}.', 'Feature flags and safe rollouts for {c}.', 'Cloud cost controls for {c}.', 'Security scanning built into the workflow of {c}.'],
+      ['mobile teams', 'game studios', 'mid-size SaaS companies', 'platform engineering teams', 'fintech engineering teams', 'data teams', 'ecommerce engineering teams', 'AI startups']],
+    ai: [['Model evaluation and monitoring for {c}.', 'A cheaper inference layer for {c} serving open models.', 'Data labeling with AI agents and human review for {c}.', 'GPU scheduling software for {c}.', 'Search and retrieval infrastructure for {c}.', 'Fine-tuning tools for {c}.', 'Guardrails and testing for {c} deploying AI agents.'],
+      ['enterprise AI teams', 'healthcare AI companies', 'banks deploying chat assistants', 'consumer apps', 'robotics companies', 'legal tech companies', 'AI startups', 'insurers']],
+    security: [['Identity security for {c}.', 'Automated compliance evidence for {c} going through security audits.', 'Phishing and email defense for {c}.', 'Security monitoring for {c}.', 'Protection against deepfake fraud for {c}.', 'Backup and ransomware recovery for {c}.', 'Vendor risk management for {c}.'],
+      ['mid-market companies', 'hospitals', 'school districts', 'law firms', 'accounting firms', 'local governments', 'fintech companies', 'manufacturing plants']],
+    work: [['Hiring software for {c}.', 'Employee onboarding software for {c}.', 'Meeting notes and follow-ups for {c}.', 'An AI assistant that drafts documents for {c}.', 'Shift scheduling for {c}.', 'Training and knowledge sharing for {c}.', 'Performance reviews and feedback for {c}.'],
+      ['hourly retail chains', 'hospital systems', 'warehouse operators', 'sales teams', 'consulting firms', 'franchise restaurants', 'home care agencies', 'in-house legal teams']],
+    health: [['Virtual care for {c}, paid for by employers.', 'Remote monitoring for {c} after hospital discharge.', 'Care coordination for {c}.', 'At-home testing for {c}.', 'Medication management for {c}.', 'A care navigation service for {c}.'],
+      ['people with type 2 diabetes', 'people with chronic back pain', 'new parents', 'heart failure patients', 'COPD patients', 'older adults living alone', 'people managing thyroid conditions', 'cancer survivors']],
+    climate: [['Software that pays {c} to shift power use when the grid is stressed.', 'Financing and installation of heat pumps for {c}.', 'Rooftop solar and storage for {c}.', 'Energy monitoring that cuts bills for {c}.', 'Carbon accounting for {c} with audited supplier data.', 'EV charging installed and managed for {c}.'],
+      ['apartment buildings', 'schools', 'small offices', 'mid-size manufacturers', 'food brands', 'warehouses', 'hotels', 'hospitals']],
+    hardware: [['Autonomous robots for {c}.', 'Low-cost sensors that monitor {c}.', 'Inspection drones for {c}.', 'Robotic arms that pick mixed items for {c}.', 'Machine vision quality checks for {c}.', 'Predictive maintenance hardware for {c}.'],
+      ['commercial kitchens', 'solar farms', 'hospital supply rooms', 'water utilities', 'cold storage warehouses', 'wind farms', 'ecommerce warehouses', 'food processing plants']],
+    logistics: [['Freight booking and tracking for {c}.', 'Returns processing for {c}.', 'Route planning software for {c}.', 'Cold chain tracking for {c}.', 'Warehouse robots leased by the hour to {c}.', 'Customs and trade compliance for {c}.'],
+      ['regional shippers', 'produce growers', 'furniture makers', 'online apparel brands', 'grocery distributors', 'seafood exporters', 'electronics retailers', 'third-party warehouses']],
+    marketplace: [['A marketplace connecting {c} with vetted local providers.', 'A marketplace where {c} book trusted help in minutes.', 'A rental marketplace for {c}.', 'A group buying marketplace for {c}.', 'A secondhand marketplace for {c}.', 'A booking marketplace for local experiences, built for {c}.'],
+      ['busy parents', 'pet owners', 'older adults living alone', 'college students', 'new homeowners', 'small business owners', 'remote workers', 'outdoor enthusiasts']],
+    consumer: [['A subscription app that helps {c} stick to a routine.', 'Personal finance coaching for {c}.', 'Language practice with AI tutors for {c}.', 'A social app for {c}.', 'A meal planning subscription for {c}.', 'Sleep and stress coaching for {c}.', 'A fitness program built for {c}.'],
+      ['new runners', 'people managing insomnia', 'beginner lifters', 'first-time investors', 'recent graduates', 'gig workers', 'busy families', 'new parents']],
+    edtech: [['Skills training for {c}, paid for by employers.', 'Test prep with AI tutors for {c}.', 'Live online classes for {c}.', 'Career coaching and job placement for {c}.', 'A credential program for {c}.', 'Language training for {c}.'],
+      ['hospital nursing staff', 'warehouse workers', 'utility line workers', 'nursing students', 'career changers', 'military veterans', 'high school students', 'new managers']],
+    aiapps: [['An AI agent that handles claims intake for {c}.', 'An AI agent that answers customer support for {c}.', 'An AI copilot for the finance team at {c}.', 'AI that reviews contracts for {c}.', 'An AI agent that books appointments for {c}.', 'AI that drafts proposals and bids for {c}.', 'An AI agent that processes invoices for {c}.'],
+      ['regional insurers', 'ecommerce brands', 'mid-size companies', 'medical clinics', 'construction firms', 'law firms', 'logistics companies', 'property managers']],
+    defense: [['Low-cost autonomous drones for {c}.', 'Software that fuses sensor data for {c}.', 'Counter-drone systems for {c}.', 'Secure, jam-resistant communications for {c}.', 'AI tools that speed up mission planning for {c}.', 'Rugged edge computers for {c}.', 'Training simulators for {c}.'],
+      ['border security agencies', 'infantry units', 'naval forces', 'air defense units', 'coast guard operations', 'special operations teams', 'military bases', 'allied defense ministries']],
+    space: [['Satellite imagery analytics for {c}.', 'Small satellites built in weeks for {c}.', 'In-orbit servicing for {c}.', 'Satellite communications for {c}.', 'Space weather and orbit tracking for {c}.', 'Radar satellite data for {c}.'],
+      ['crop insurers', 'commodity traders', 'wildfire agencies', 'shipping companies', 'defense agencies', 'satellite operators', 'utilities', 'research labs']],
+    proptech: [['Property management software for {c}.', 'Leasing automation for {c}.', 'Maintenance requests and vendor payments for {c}.', 'Rent collection and accounting for {c}.', 'Utility billing for {c}.', 'Tenant screening for {c}.'],
+      ['small landlords', 'student housing operators', 'self-storage owners', 'apartment operators', 'retail landlords', 'office building owners', 'short-term rental hosts', 'affordable housing operators']],
+    gaming: [['A multiplayer game for {c}.', 'A cozy simulation game for {c}.', 'A competitive card game for {c}.', 'A fitness game for {c}.', 'A puzzle game for {c}.', 'A story-driven mobile game for {c}.'],
+      ['mobile strategy players', 'players who like to build', 'kids aged 8 to 12', 'families playing together', 'commuters', 'retro game fans', 'competitive players', 'adults new to gaming']]
+  };
+  var ALL_SECTORS = {};
+  Object.keys(SECTORS).forEach(function (k) { ALL_SECTORS[k] = SECTORS[k]; });
+  Object.keys(NEW_SECTORS).forEach(function (k) { ALL_SECTORS[k] = NEW_SECTORS[k]; });
+  var GROUPS2 = {
+    software: { label: 'B2B software', sectors: ['vertical', 'devtools', 'ai', 'aiapps', 'security', 'work', 'proptech'] },
+    fintech: { label: 'financial services', sectors: ['fintech', 'insurance'] },
+    health: { label: 'healthcare', sectors: ['health'] },
+    climate: { label: 'industrial and climate tech', sectors: ['climate', 'hardware', 'logistics'] },
+    frontier: { label: 'defense and space', sectors: ['defense', 'space'] },
+    consumer: { label: 'consumer', sectors: ['marketplace', 'consumer', 'edtech', 'gaming'] }
+  };
+  function linesFor(sector, gen) {
+    var base = ALL_SECTORS[sector].lines;
+    return gen >= 2 && MORE_LINES[sector] ? base.concat(MORE_LINES[sector]) : base;
+  }
+  function listText(names) {
+    return names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + (names.length > 2 ? ', and ' : ' and ') + names[names.length - 1];
+  }
+  // opts: { gen: 1 or 2, focus: array of sector ids or null }. Version 1 is the original generator.
+  function normOpts(opts) {
+    opts = opts || {};
+    var gen = opts.gen >= 2 ? 2 : 1;
+    var focus = gen >= 2 && opts.focus && opts.focus.length ? opts.focus.filter(function (k) { return ALL_SECTORS[k]; }).sort() : null;
+    return { gen: gen, focus: focus && focus.length ? focus : null };
+  }
+  function optsKey(o) { return o.gen >= 2 ? '2' + (o.focus ? ':' + o.focus.join(',') : '') : ''; }
+
   var PLACES = {
     na: ['San Francisco', 'New York', 'Austin', 'Boston', 'Chicago', 'Seattle', 'Denver', 'Atlanta', 'Toronto', 'Los Angeles', 'Miami', 'Pittsburgh'],
     eu: ['London', 'Berlin', 'Paris', 'Stockholm', 'Amsterdam', 'Lisbon', 'Madrid', 'Copenhagen'],
@@ -166,7 +275,7 @@
   var NAME_A = ['Tide', 'Corv', 'Nim', 'Lum', 'Ark', 'Vel', 'Sol', 'Bram', 'Cind', 'Dov', 'Esk', 'Fen', 'Gal', 'Hal', 'Kest', 'Lark', 'Mar', 'Nov', 'Orr', 'Pell',
     'Quin', 'Ros', 'Sabl', 'Tav', 'Ver', 'Wren', 'Yar', 'Zeph', 'Alder', 'Birch', 'Cobal', 'Dun', 'Ember', 'Flint', 'Grov', 'Harb', 'Ir', 'Jas', 'Kel', 'Mos'];
   var NAME_B = ['ly', 'io', 'a', 'en', 'ix', 'or', 'well', 'line', 'stack', 'path', 'forge', 'loop', 'base', 'yard', 'mint', 'grid', 'field', 'works', 'ra', 'ova', 'et', 'um'];
-  var NAME_TAIL = { health: ' Health', climate: ' Energy', fintech: ' Pay', ai: ' AI', hardware: ' Robotics', insurance: ' Cover', edtech: ' Learn', security: ' Security' };
+  var NAME_TAIL = { health: ' Health', climate: ' Energy', fintech: ' Pay', ai: ' AI', hardware: ' Robotics', insurance: ' Cover', edtech: ' Learn', security: ' Security', defense: ' Defense', space: ' Space', aiapps: ' AI', gaming: ' Games' };
 
   var TEAM = [
     ['First-time founders with no background in this industry. The CEO plans to go full time once the round closes.',
@@ -185,6 +294,32 @@
      'A founder who built the leading product in an adjacent market and recruited the best engineer from that team.',
      'Repeat founders who built and sold a company to these same customers. Early hires followed them from that company.']
   ];
+  // Series A and later: the same quality tiers, described for a company that has scaled.
+  var TEAM_LATE = [
+    ['The founding CEO has struggled to scale. Two senior executives left in the last year.',
+     'There is no experienced sales leader, and the founders still close most large deals themselves.',
+     'The leadership team is thin. Several key roles have been open for months.'],
+    ['A capable founding team, but most executives are leading at this scale for the first time.',
+     'The CEO is strong on product. The board has asked for a more experienced finance lead.',
+     'Founders who have grown the company well so far, with high turnover in the sales team.'],
+    ['A solid leadership team with a mix of founders and experienced hires.',
+     'The founders recently hired a seasoned COO from a larger company in this market.',
+     'An experienced team with one clear gap: nobody has led international expansion before.'],
+    ['A strong leadership team. Most executives have scaled companies of this size before.',
+     'Founders who have kept their best people. Senior turnover is very low.',
+     'A CEO who has grown the company steadily and hired executives from category leaders.'],
+    ['An exceptional leadership team. The CEO is widely seen as one of the best in the market.',
+     'Founders plus executives who have each taken a company public before.',
+     'A team that attracts top talent. Several leaders left larger companies to join.']
+  ];
+  var PRODUCT_LATE = [
+    ['Customer churn has risen for three quarters, and usage per account is falling.', 'Customers say the product has fallen behind newer competitors.'],
+    ['Customers are satisfied, but few would be upset to switch vendors.', 'Usage is flat. Most growth comes from price increases.'],
+    ['Customers renew reliably and use the product every week.', 'Customers rely on it for one core workflow and are adopting a second product.'],
+    ['Customers expand every year and rarely leave.', 'Most large customers now use two or more products.'],
+    ['The product is the standard in its category. Customers almost never leave.', 'Customers build their own processes on top of it, and new products sell quickly to the base.']
+  ];
+  var HEADS = { preseed: 1, seed: 1.8, a: 8, b: 25, growth: 90 };
   var PRODUCT = [
     ['Pilot users log in about once a month. Two of five pilots did not renew.', 'Customers describe the product as interesting but have not changed how they work.'],
     ['Customers like the product but call it a nice extra. Usage drops after the first month.', 'Early users are friendly but most were found through the founders\' personal networks.'],
@@ -243,6 +378,28 @@
     var text = list.charAt(0).toUpperCase() + list.slice(1) + ' companies based ' + (geo === 'global' ? 'anywhere' : 'in ' + GEO[geo]) + '.';
     return { groups: groups, geo: geo, text: text };
   }
+  function makeThesis2(r, track, focus) {
+    var labels = focus ? focus.map(function (k) { return ALL_SECTORS[k].label; }) : null;
+    if (track === 'partner') {
+      return focus ? { groups: null, focus: focus, sectors: focus, geo: 'global', text: 'Focused on ' + listText(labels) + '. Any region.' }
+        : { groups: null, focus: null, sectors: Object.keys(ALL_SECTORS), geo: 'global', text: 'Generalist. Any sector, any region.' };
+    }
+    var geo, text;
+    if (focus) {
+      geo = pick(r, ['na', 'na', 'eu', 'global']);
+      text = listText(labels) + ' companies based ' + (geo === 'global' ? 'anywhere' : 'in ' + GEO[geo]) + '.';
+      return { groups: null, focus: focus, sectors: focus, geo: geo, text: text };
+    }
+    var keys = Object.keys(GROUPS2);
+    var count = r() < .3 ? 1 : r() < .7 ? 2 : 3;
+    var groups = shuffle(r, keys).slice(0, count);
+    geo = pick(r, ['na', 'na', 'eu', 'global']);
+    var names = groups.map(function (g) { return GROUPS2[g].label; });
+    text = listText(names);
+    text = text.charAt(0).toUpperCase() + text.slice(1) + ' companies based ' + (geo === 'global' ? 'anywhere' : 'in ' + GEO[geo]) + '.';
+    var secs = groups.reduce(function (acc, g) { return acc.concat(GROUPS2[g].sectors); }, []);
+    return { groups: groups, focus: null, sectors: secs, geo: geo, text: text };
+  }
   function sectorsOf(groups) {
     return groups.reduce(function (acc, g) { return acc.concat(GROUPS[g].sectors); }, []);
   }
@@ -251,10 +408,11 @@
     return null;
   }
 
-  function testMeta(track, n) {
+  function testMeta(track, n, opts) {
     var T = TRACKS[track];
     var size = fundSize(n);
-    var r = makeRng('meta:' + track + ':' + n);
+    var o = normOpts(opts);
+    var r = makeRng(o.gen >= 2 ? 'meta2:' + track + ':' + n + ':' + optsKey(o) : 'meta:' + track + ':' + n);
     // Fees and expenses take a smaller share of bigger funds.
     var investable = size * (size < 100e6 ? 0.8 : size < 600e6 ? 0.84 : 0.87);
     var reserve = 0.4;
@@ -265,7 +423,8 @@
       fundName: 'VentureSim Capital Fund ' + n,
       fundSize: size, investable: investable, fees: size - investable,
       stages: stagesFor(size),
-      thesis: makeThesis(r, track),
+      thesis: o.gen >= 2 ? makeThesis2(r, track, o.focus) : makeThesis(r, track),
+      gen: o.gen, focus: o.focus,
       slots: slots,                                       // advances or initial investments allowed
       check: investable * (1 - reserve) / slots,
       followSlots: follow,
@@ -285,13 +444,14 @@
 
     // Thesis: decide fit first, then draw sector and place to match.
     var fits = r() >= T.outOfThesis;
-    var allSectors = Object.keys(SECTORS);
-    var thesisSectors = meta.thesis.groups ? sectorsOf(meta.thesis.groups) : allSectors;
+    var gen2 = meta.gen >= 2;
+    var allSectors = gen2 ? Object.keys(ALL_SECTORS) : Object.keys(SECTORS);
+    var thesisSectors = gen2 ? meta.thesis.sectors : meta.thesis.groups ? sectorsOf(meta.thesis.groups) : allSectors;
     var sector, region, miss = null;
     if (fits) {
       sector = pick(r, thesisSectors);
       region = meta.thesis.geo === 'global' ? pick(r, ['na', 'na', 'eu', 'row']) : meta.thesis.geo;
-    } else if (r() < .55 && thesisSectors.length < allSectors.length) {
+    } else if (r() < .55 && thesisSectors.length < allSectors.length && !meta.focus) {
       var others = allSectors.filter(function (s) { return thesisSectors.indexOf(s) === -1; });
       sector = pick(r, others);
       region = meta.thesis.geo === 'global' ? pick(r, ['na', 'eu', 'row']) : meta.thesis.geo;
@@ -303,9 +463,14 @@
     }
     var inThesis = !miss;
 
-    var SEC = SECTORS[sector];
-    var line = pick(r, SEC.lines);
-    var pitch = line[0].replace('{c}', pick(r, line[1]));
+    var SEC = ALL_SECTORS[sector];
+    var lines = linesFor(sector, meta.gen), line, customer, pitch;
+    for (var pt = 0; pt < (gen2 ? 40 : 1); pt++) {
+      if (pt < 4) { line = pick(r, lines); customer = pick(r, line[1]); pitch = line[0].replace('{c}', customer); }
+      else { customer = pick(r, MIX[sector][1]); pitch = pick(r, MIX[sector][0]).replace('{c}', customer); }
+      if (!used['pitch:' + pitch]) break;
+    }
+    if (gen2) used['pitch:' + pitch] = true;
 
     var name;
     for (var tries = 0; tries < 20; tries++) {
@@ -338,10 +503,10 @@
     var c = {
       i: i, name: name, sector: sector, sectorLabel: SEC.label, stage: stageKey, stageLabel: S.label,
       location: pick(r, PLACES[region]), region: region,
-      pitch: pitch, inThesis: inThesis, miss: miss,
-      team: { text: TEAM[tier(s.team, 5)][Math.floor(r() * 3)], fullTime: 2 + Math.round(s.team * 4 + r() * 2) },
+      pitch: pitch, customer: customer, inThesis: inThesis, miss: miss,
+      team: { text: (stageKey === 'preseed' || stageKey === 'seed' ? TEAM : TEAM_LATE)[tier(s.team, 5)][Math.floor(r() * 3)], fullTime: Math.round((2 + Math.round(s.team * 4 + r() * 2)) * HEADS[stageKey]) },
       market: { text: MARKET[tier(s.market, 5)], tam: niceRound(Math.pow(10, 8.3 + 2.4 * s.market)), growth: Math.round(3 + 30 * s.market) },
-      product: { text: PRODUCT[tier(s.product, 5)][Math.floor(r() * 2)] },
+      product: { text: (stageKey === 'b' || stageKey === 'growth' ? PRODUCT_LATE : PRODUCT)[tier(s.product, 5)][Math.floor(r() * 2)] },
       traction: traction.rows,
       moat: { text: MOAT[tier(s.moat, 5)], competitors: Math.max(1, Math.round(12 - 10 * s.moat + r() * 2)) },
       risks: pickRisks(r, s.risk),
@@ -482,9 +647,10 @@
     return out;
   }
 
-  function generateTest(track, n) {
-    var meta = testMeta(track, n);
-    var r = makeRng('test:' + track + ':' + n);
+  function generateTest(track, n, opts) {
+    var o = normOpts(opts);
+    var meta = testMeta(track, n, o);
+    var r = makeRng(o.gen >= 2 ? 'test2:' + track + ':' + n + ':' + optsKey(o) : 'test:' + track + ':' + n);
     var used = {};
     var companies = [];
     for (var i = 0; i < COMPANIES_PER_TEST; i++) companies.push(makeCompany(r, meta, i, used));
@@ -817,7 +983,13 @@
   return {
     TESTS_PER_TRACK: TESTS_PER_TRACK, COMPANIES_PER_TEST: COMPANIES_PER_TEST,
     TRACKS: TRACKS, STAGES: STAGES, FACTORS: FACTORS, FACTOR_LABEL: FACTOR_LABEL,
-    fundSize: fundSize, stagesFor: stagesFor, testMeta: testMeta,
+    fundSize: fundSize, stagesFor: stagesFor, testMeta: testMeta, optsKey: function (o) { return optsKey(normOpts(o)); },
+    SECTOR_CHOICES: Object.keys(GROUPS2).map(function (g) {
+      return { id: g, label: GROUPS2[g].label, sectors: GROUPS2[g].sectors.map(function (k) { return { id: k, label: ALL_SECTORS[k].label }; }) };
+    }),
+    sectorLabel: function (k) { return ALL_SECTORS[k] ? ALL_SECTORS[k].label : k; },
+    _internal: { makeRng: makeRng, pick: pick, shuffle: shuffle, clamp: clamp, niceRound: niceRound, money: money, mult: mult, pct: pct,
+      TEAM: TEAM, TEAM_LATE: TEAM_LATE, PRODUCT: PRODUCT, PRODUCT_LATE: PRODUCT_LATE, MARKET: MARKET, MOAT: MOAT, REFS: REFS, CALLS: CALLS, RISKS: RISKS, STAGES: STAGES, tier: tier },
     generateTest: generateTest, generateExample: generateExample, scoreTest: scoreTest,
     fundReport: fundReport, irr: irr, capTableExercise: capTableExercise, termSheetExercise: termSheetExercise,
     money: money, mult: mult, pct: pct

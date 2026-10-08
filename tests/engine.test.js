@@ -105,3 +105,23 @@ console.log('engine ok:', stats.companies, 'companies;', 'success rate', (stats.
   const r = E.fundReport(t, st);
   assert(r.netTvpi < 1 && r.netIrr != null && r.netIrr < 0, 'partner loss irr ' + r.netIrr); }
 console.log('report irr ok');
+
+// Version 2 tests honor the sector focus, and deal materials and diligence questions are complete.
+require('../assets/js/engine-deals.js')(E);
+{
+  const t = E.generateTest('analyst', 3, { gen: 2, focus: ['defense', 'space'] });
+  assert(t.companies.every(c => c.sector === 'defense' || c.sector === 'space'), 'focus sectors');
+  assert(new Set(t.companies.map(c => c.pitch)).size >= 45, 'pitch variety');
+  const legacy = E.generateTest('analyst', 3), again = E.generateTest('analyst', 3, { gen: 1 });
+  assert.strictEqual(JSON.stringify(legacy.companies.map(c => c.hidden.multiple)), JSON.stringify(again.companies.map(c => c.hidden.multiple)), 'version 1 is the default');
+  for (const c of t.companies.concat(legacy.companies)) {
+    const meta = c.sector === 'defense' || c.sector === 'space' ? t.meta : legacy.meta;
+    const blob = JSON.stringify([E.pitchDeck(c, meta), E.demoDayTranscript(c, meta)]);
+    assert(!/undefined|NaN|\{c\}|\{C\}/.test(blob), 'deck text ' + c.name);
+    for (const q of E.dueDiligence(c, meta)) {
+      assert(q.options.length >= 3 && new Set(q.options).size === q.options.length, 'distinct options');
+      assert(q.answer >= 0 && q.answer < q.options.length, 'answer in range');
+    }
+  }
+  console.log('deals ok');
+}

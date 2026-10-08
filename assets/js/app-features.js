@@ -14,7 +14,99 @@
     'Finance or accounting', 'Corporate development or strategy', 'Researcher or academic', 'Other'
   ];
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  function phoneOk(p) { return (p.replace(/\D/g, '').length >= 7) && /^[0-9+()\-.\s]+$/.test(p); }
+  var ORG_TYPES = ['University or school', 'Startup', 'Venture capital firm', 'Angel group or syndicate', 'Accelerator or incubator', 'Large company',
+    'Investment bank', 'Consulting firm', 'Private equity or hedge fund', 'Government or nonprofit', 'Self-employed', 'None', 'Other'];
+
+  // ---------- Phone number with a searchable country picker ----------
+  var COUNTRIES = null;
+  function countries() {
+    if (COUNTRIES) return COUNTRIES;
+    var dn = null;
+    try { dn = new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) { /* older browsers show codes */ }
+    COUNTRIES = (window.VS_COUNTRIES || []).map(function (c) {
+      var name = c.iso; try { name = (dn && dn.of(c.iso)) || c.iso; } catch (e) { /* keep code */ }
+      return { iso: c.iso, dial: c.dial, name: name };
+    }).sort(function (a, b) { return a.name.localeCompare(b.name); });
+    return COUNTRIES;
+  }
+  function byIso(iso) { return countries().filter(function (c) { return c.iso === iso; })[0]; }
+  function guessIso() {
+    var langs = (navigator.languages || [navigator.language || '']);
+    for (var i = 0; i < langs.length; i++) { var m = /-([A-Z]{2})$/i.exec(langs[i] || ''); if (m && byIso(m[1].toUpperCase())) return m[1].toUpperCase(); }
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* ignore */ }
+    var TZ = { 'Asia/Kolkata': 'IN', 'Asia/Calcutta': 'IN', 'Europe/London': 'GB', 'Asia/Singapore': 'SG', 'Asia/Dubai': 'AE', 'Europe/Berlin': 'DE', 'Europe/Paris': 'FR',
+      'Asia/Tokyo': 'JP', 'Australia/Sydney': 'AU', 'America/Toronto': 'CA', 'America/Sao_Paulo': 'BR', 'Africa/Lagos': 'NG', 'Africa/Nairobi': 'KE', 'Asia/Jakarta': 'ID', 'America/Mexico_City': 'MX' };
+    if (TZ[tz]) return TZ[tz];
+    return /^America\//.test(tz) ? 'US' : 'US';
+  }
+  function flag(iso) { var l = iso.toLowerCase(); return '<img class="flag" src="https://flagcdn.com/24x18/' + l + '.png" srcset="https://flagcdn.com/48x36/' + l + '.png 2x" width="24" height="18" alt="" loading="lazy">'; }
+  // Splits a stored "+CC number" back into a country and the local number.
+  function splitPhone(value, isoHint) {
+    var v = (value || '').trim();
+    if (v.charAt(0) !== '+') return { iso: isoHint || guessIso(), local: v };
+    var digits = v.replace(/[^\d]/g, ''), best = null;
+    countries().forEach(function (c) { if (digits.indexOf(c.dial) === 0 && (!best || c.dial.length > best.dial.length || (c.dial === best.dial && c.iso === isoHint))) best = c; });
+    if (!best) return { iso: isoHint || guessIso(), local: v };
+    if (isoHint && byIso(isoHint) && byIso(isoHint).dial === best.dial) best = byIso(isoHint);
+    return { iso: best.iso, local: v.slice(v.indexOf(best.dial) + best.dial.length).trim() };
+  }
+  A.phone = {
+    html: function (id, value, iso) {
+      var sp = splitPhone(value, iso), c = byIso(sp.iso) || byIso('US');
+      return '<div class="phone" data-phone="' + id + '" data-iso="' + c.iso + '">' +
+        '<button type="button" class="phone-cc" aria-haspopup="listbox" aria-expanded="false" aria-label="Country code, ' + esc(c.name) + ' +' + c.dial + '">' + flag(c.iso) + '<span>+' + c.dial + '</span><span aria-hidden="true" class="caret">&#9662;</span></button>' +
+        '<input type="tel" id="' + id + '" autocomplete="tel-national" inputmode="tel" value="' + esc(sp.local) + '" placeholder="Phone number">' +
+        '<div class="phone-pop" hidden><input type="search" class="phone-search" placeholder="Search country or code" aria-label="Search countries">' +
+        '<ul class="phone-list" role="listbox" aria-label="Countries"></ul></div></div>';
+    },
+    bind: function (id) {
+      var box = document.querySelector('[data-phone="' + id + '"]'); if (!box) return;
+      var btn = box.querySelector('.phone-cc'), pop = box.querySelector('.phone-pop'), search = box.querySelector('.phone-search'), list = box.querySelector('.phone-list'), active = 0, shown = [];
+      function draw() {
+        var q = search.value.trim().toLowerCase().replace(/^\+/, '');
+        shown = countries().filter(function (c) { return !q || c.name.toLowerCase().indexOf(q) > -1 || c.dial.indexOf(q) === 0 || c.iso.toLowerCase() === q; });
+        if (q) shown.sort(function (a, b) { return (b.name.toLowerCase().indexOf(q) === 0 || b.iso.toLowerCase() === q) - (a.name.toLowerCase().indexOf(q) === 0 || a.iso.toLowerCase() === q); });
+        active = Math.min(active, Math.max(0, shown.length - 1));
+        list.innerHTML = shown.length ? shown.map(function (c, k) {
+          return '<li role="option" id="' + id + '-opt-' + c.iso + '" data-iso="' + c.iso + '" aria-selected="' + (c.iso === box.getAttribute('data-iso')) + '"' + (k === active ? ' class="active"' : '') + '>' + flag(c.iso) + '<span class="pc-name">' + esc(c.name) + '</span><span class="pc-dial">+' + c.dial + '</span></li>';
+        }).join('') : '<li class="pc-empty">No country matches</li>';
+        var a = list.querySelector('.active'); if (a) { a.scrollIntoView({ block: 'nearest' }); search.setAttribute('aria-activedescendant', a.id); }
+      }
+      function open() { pop.hidden = false; btn.setAttribute('aria-expanded', 'true'); search.value = ''; active = Math.max(0, countries().map(function (c) { return c.iso; }).indexOf(box.getAttribute('data-iso'))); draw(); search.focus(); }
+      function close(focusBtn) { pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); if (focusBtn) btn.focus(); }
+      function choose(iso) {
+        var c = byIso(iso); if (!c) return;
+        box.setAttribute('data-iso', iso);
+        btn.innerHTML = flag(iso) + '<span>+' + c.dial + '</span><span aria-hidden="true" class="caret">&#9662;</span>';
+        btn.setAttribute('aria-label', 'Country code, ' + c.name + ' +' + c.dial);
+        close(false); document.getElementById(id).focus();
+      }
+      btn.addEventListener('click', function () { if (pop.hidden) open(); else close(true); });
+      search.addEventListener('input', function () { active = 0; draw(); });
+      search.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(shown.length - 1, active + 1); draw(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(0, active - 1); draw(); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (shown[active]) choose(shown[active].iso); }
+        else if (e.key === 'Escape') { e.preventDefault(); close(true); }
+      });
+      list.addEventListener('click', function (e) { var li = e.target.closest('[data-iso]'); if (li) choose(li.getAttribute('data-iso')); });
+      document.addEventListener('click', function outside(e) {
+        if (!document.body.contains(box)) return document.removeEventListener('click', outside);
+        if (!pop.hidden && !box.contains(e.target)) close(false);
+      });
+    },
+    // Returns { value: '+CC local', iso, ok, error }.
+    get: function (id) {
+      var box = document.querySelector('[data-phone="' + id + '"]'), iso = box.getAttribute('data-iso'), c = byIso(iso);
+      var local = document.getElementById(id).value.trim(), digits = local.replace(/\D/g, '').replace(/^0+/, '');
+      // Exact national lengths for the largest countries; a sensible range elsewhere.
+      var EXACT = { 1: [10], IN: [10], CN: [11], PK: [10], NG: [10], AU: [9], FR: [9], GB: [10], MX: [10], ZA: [9], DE: [10, 11], BR: [10, 11], JP: [10], ID: [9, 10, 11, 12], PH: [10], BD: [10], VN: [9, 10], TR: [10], EG: [10], KE: [9], AE: [9], SG: [8], ES: [9], IT: [9, 10] };
+      var want = EXACT[c.dial === '1' ? 1 : iso];
+      var ok = /^[0-9()\-.\s]*$/.test(local) && (want ? want.indexOf(digits.length) > -1 : digits.length >= 6 && digits.length + c.dial.length <= 15);
+      return { value: '+' + c.dial + ' ' + local.replace(/^0+/, ''), iso: iso, ok: ok,
+        error: !local ? 'Enter your phone number.' : !/^[0-9()\-.\s]*$/.test(local) ? 'Use digits only. The country code is set by the flag.' : 'That number looks too short or too long for ' + c.name + '.' };
+    }
+  };
   function store() { return A.store(); }
   function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
   function setErr(msg, focusId) {
@@ -117,7 +209,9 @@
     }).join('');
     var fields =
       '<div><label for="name">Your name</label><input type="text" id="name" autocomplete="name" value="' + esc(pending.name || '') + '"></div>' +
-      '<div><label for="phone">Phone number</label><input type="tel" id="phone" autocomplete="tel" placeholder="+1 555 123 4567"></div>' +
+      '<div><label for="phone">Phone number</label>' + A.phone.html('phone', '', null) + '</div>' +
+      '<div><label for="org">' + (founder ? 'Organization (your startup, school, or employer)' : 'Organization (company, school, or fund)') + '</label><input type="text" id="org" autocomplete="organization" placeholder="Type n/a if none"><p class="hint">Type n/a if none.</p></div>' +
+      '<div><label for="orgType">Type of organization</label><select id="orgType"><option value="">Choose one</option>' + ORG_TYPES.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join('') + '</select></div>' +
       (founder || !pending.email ? '<div><label for="email">Email' + (founder ? '' : ' (optional)') + '</label><input type="email" id="email" autocomplete="email" value="' + esc(pending.email || '') + '"></div>' : '') +
       (founder
         ? '<div><label for="building">What are you building? (optional)</label><textarea id="building" placeholder="One or two sentences"></textarea></div>'
@@ -128,14 +222,17 @@
       '<p class="consent">We save these details to contact you about VentureSim. We do not sell them or share them with anyone else.</p>' +
       '<p class="form-error" id="form-error" role="alert"></p>' +
       '<button class="btn btn-primary btn-lg" type="submit">' + (founder ? 'Create founder account' : 'Create account') + '</button></form>', true);
+    A.phone.bind('phone');
     document.getElementById('details').addEventListener('submit', function (e) {
       e.preventDefault();
-      var name = val('name'), phone = val('phone'), email = val('email') || pending.email || '';
+      var name = val('name'), ph = A.phone.get('phone'), phone = ph.value, email = val('email') || pending.email || '', org = val('org'), orgType = val('orgType');
       if (!name) return setErr('Enter your name.', 'name');
-      if (!phoneOk(phone)) return setErr('Enter a phone number with at least 7 digits.', 'phone');
+      if (!ph.ok) return setErr(ph.error, 'phone');
+      if (!org) return setErr('Enter your organization, or type n/a if none.', 'org');
+      if (!orgType) return setErr('Choose the type of organization. Pick None if you have none.', 'orgType');
       if (founder && !EMAIL_RE.test(email)) return setErr('Enter a valid email address so we can reply to you.', 'email');
       if (!founder && email && !EMAIL_RE.test(email)) return setErr('That email address does not look right. Fix it or leave it blank.', 'email');
-      var profile = { kind: pending.kind, name: name, phone: phone, email: email, uid: pending.uid || null, method: pending.method || 'Browser only', createdAt: Date.now() };
+      var profile = { kind: pending.kind, name: name, phone: phone, phoneIso: ph.iso, org: org, orgType: orgType, email: email, uid: pending.uid || null, method: pending.method || 'Browser only', createdAt: Date.now() };
       if (founder) { profile.building = val('building'); profile.track = 'analyst'; }
       else {
         profile.role = val('role');
@@ -145,7 +242,7 @@
       var s = store();
       s.profile = profile; s.signedOut = false; A.save();
       window.VSForms.send('signup', {
-        'Account type': founder ? 'Founder' : 'Learner', 'Name': name, 'Phone number': phone, 'Email': email,
+        'Account type': founder ? 'Founder' : 'Learner', 'Name': name, 'Phone number': phone, 'Email': email, 'Organization': org, 'Organization type': orgType,
         'What they do now': founder ? 'Founder' : profile.role, 'What they are building': profile.building || '',
         'Sign-in method': profile.method, 'Starting track': founder ? '' : A.trackName(profile.track)
       });

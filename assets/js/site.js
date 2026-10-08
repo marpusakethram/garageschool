@@ -76,6 +76,20 @@
     show(cs.reduce(function (a, c) { return c.hidden.multiple > a.hidden.multiple ? c : a; }).i);
   }
 
+  // YouTube embeds load only when someone presses play, from the no-cookie domain.
+  document.querySelectorAll('.yt').forEach(function (fig) {
+    var btn = fig.querySelector('.yt-play');
+    btn.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + fig.getAttribute('data-yt') + '?autoplay=1&rel=0';
+      f.title = fig.getAttribute('data-title');
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen = true;
+      btn.replaceWith(f);
+      f.focus();
+    });
+  });
+
   window.GaragePlayers = function (scope) {
     (scope || document).querySelectorAll('.player').forEach(function (player) {
       if (player.dataset.ready) return;

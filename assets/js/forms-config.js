@@ -11,7 +11,9 @@ window.VS_FORMS = {
       'What they do now': 'entry.1348826100',
       'What they are building': 'entry.2024598418',
       'Sign-in method': 'entry.386879097',
-      'Starting track': 'entry.1699553600'
+      'Starting track': 'entry.1699553600',
+      'Organization': 'entry.871045748',
+      'Organization type': 'entry.2023372640'
     }
   },
   feedback: {

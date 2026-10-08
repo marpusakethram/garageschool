@@ -27,7 +27,15 @@
   function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
   function key(track, n) { return track + '-' + n; }
   var cache = {};
-  function getTest(track, n) { var k = key(track, n); return cache[k] || (cache[k] = E.generateTest(track, n)); }
+  // A started test keeps the generator version and sectors it began with. New tests use version 2 and the current sector focus.
+  function testOpts(track, n) {
+    var st = store.tests[key(track, n)];
+    if (st) return { gen: st.gen || 1, focus: st.focus || null };
+    return { gen: 2, focus: store.focus || null };
+  }
+  function getTest(track, n) { var o = testOpts(track, n), k = key(track, n) + '|' + E.optsKey(o); return cache[k] || (cache[k] = E.generateTest(track, n, o)); }
+  function metaFor(track, n) { return E.testMeta(track, n, testOpts(track, n)); }
+  function focusText(focus) { return focus && focus.length ? focus.map(E.sectorLabel).join(', ') : 'All sectors'; }
   function testState(track, n) { return store.tests[key(track, n)] || null; }
   function isUnlocked(track, n) { return n === 1 || (testState(track, n - 1) || {}).status === 'done'; }
   function doneCount(track) { var c = 0; for (var n = 1; n <= E.TESTS_PER_TRACK; n++) if ((testState(track, n) || {}).status === 'done') c++; return c; }
@@ -117,10 +125,12 @@
 
   // ---------- Router ----------
   var keyHandler = null;
+  var REASONS = [['team', 'Team'], ['market', 'Market'], ['product', 'Product'], ['traction', 'Traction'], ['moat', 'Competition'], ['price', 'Price'], ['risk', 'Risks'], ['thesis', 'Thesis fit']];
   function setKeys(fn) {
     if (keyHandler) document.removeEventListener('keydown', keyHandler);
-    keyHandler = fn;
-    if (fn) document.addEventListener('keydown', fn);
+    // Shortcuts never fire while a dialog, such as the pitch deck, is open.
+    keyHandler = fn ? function (e) { if (document.querySelector('dialog[open]')) return; fn(e); } : null;
+    if (keyHandler) document.addEventListener('keydown', keyHandler);
   }
   var scrollHandler = null;
   function setScroll(fn) {
@@ -239,9 +249,9 @@
     var main = p.track, n = nextTest(main);
     var next;
     if (active) {
-      next = '<div class="next-card"><div><h2>Continue ' + trackName(active.track) + ' test ' + active.n + '</h2><p>You are on company ' + Math.min(active.pos + 1, 50) + ' of 50 in a ' + money(E.testMeta(active.track, active.n).fundSize) + ' fund.</p></div><a class="btn btn-primary btn-lg" href="#/test/' + active.track + '/' + active.n + '/play">Continue test</a></div>';
+      next = '<div class="next-card"><div><h2>Continue ' + trackName(active.track) + ' test ' + active.n + '</h2><p>' + (active.stage === 'diligence' ? 'You are doing due diligence on your shortlist' : active.stage === 'ic' ? 'Your IC memo is next' : 'You are on company ' + Math.min(active.pos + 1, 50) + ' of 50') + ' in a ' + money(metaFor(active.track, active.n).fundSize) + ' fund.</p></div><a class="btn btn-primary btn-lg" href="#/test/' + active.track + '/' + active.n + '/play">Continue test</a></div>';
     } else if (n) {
-      var meta = E.testMeta(main, n);
+      var meta = metaFor(main, n);
       next = '<div class="next-card"><div><h2>Next up: ' + trackName(main) + ' test ' + n + '</h2><p>' + money(meta.fundSize) + ' fund, ' + stageText(meta) + ' companies. 50 startups to review.</p></div><a class="btn btn-primary btn-lg" href="#/test/' + main + '/' + n + '">Open the fund brief</a></div>';
     } else {
       next = '<div class="next-card"><div><h2>You finished every ' + trackName(main) + ' test</h2><p>Try another track to practice a different job.</p></div><a class="btn btn-primary btn-lg" href="#/tests">See all tracks</a></div>';
@@ -294,13 +304,13 @@
     }).join('') + '</nav>';
     var rows = '';
     for (var n = 1; n <= E.TESTS_PER_TRACK; n++) {
-      var meta = E.testMeta(track, n), st = testState(track, n), open = isUnlocked(track, n);
+      var meta = metaFor(track, n), st = testState(track, n), open = isUnlocked(track, n);
       var status, action;
       if (st && st.status === 'done') {
         status = '<span class="pill good">Judgment ' + st.result.judgment + '</span>';
         action = '<a class="btn btn-secondary btn-sm" href="#/results/' + track + '/' + n + '">Debrief</a>';
       } else if (st && st.status === 'active') {
-        status = '<span class="pill warn">In progress, ' + st.pos + '/50</span>';
+        status = '<span class="pill warn">' + (st.stage === 'diligence' ? 'Due diligence' : st.stage === 'ic' ? 'IC memo' : 'In progress, ' + st.pos + '/50') + '</span>';
         action = '<a class="btn btn-primary btn-sm" href="#/test/' + track + '/' + n + '/play">Continue</a>';
       } else if (open) {
         status = '<span class="pill accent">Ready</span>';
@@ -310,12 +320,40 @@
         action = '<span class="small muted">Finish test ' + (n - 1) + '</span>';
       }
       rows += '<tr' + (!open && !st ? ' class="locked"' : '') + '><td><b>Test ' + n + '</b></td><td class="num">' + money(meta.fundSize) + '</td><td class="hide-sm">' + stageText(meta) + '</td>' +
-        '<td class="hide-sm">' + (track === 'partner' ? meta.slots + ' initial, ' + meta.followSlots + ' follow-ons' : esc(meta.thesis.text)) + '</td><td>' + status + '</td><td>' + action + '</td></tr>';
+        '<td class="hide-sm">' + (track === 'partner' ? meta.slots + ' initial, ' + meta.followSlots + ' follow-ons' + (meta.thesis.focus ? '<br><span class="small muted">' + esc(meta.thesis.text) + '</span>' : '') : esc(meta.thesis.text)) + '</td><td>' + status + '</td><td>' + action + '</td></tr>';
     }
     render(shell('tests', page(
       pageHead('Tests', esc(E.TRACKS[track].blurb) + ' Each test has 50 startups and a bigger fund than the one before. Finish a test to unlock the next.'),
-      tabs + '<div class="table-wrap"><table class="test-table"><thead><tr><th>Test</th><th>Fund</th><th class="hide-sm">Stage</th><th class="hide-sm">' + (track === 'partner' ? 'Portfolio' : 'Thesis') + '</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      tabs + focusPanel() + '<div class="table-wrap"><table class="test-table"><thead><tr><th>Test</th><th>Fund</th><th class="hide-sm">Stage</th><th class="hide-sm">' + (track === 'partner' ? 'Portfolio' : 'Thesis') + '</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
     )));
+    bindFocus();
+  }
+
+  function focusPanel() {
+    var cur = store.focus || [];
+    var groups = E.SECTOR_CHOICES.map(function (g) {
+      return '<fieldset class="focus-group"><legend>' + esc(g.label.charAt(0).toUpperCase() + g.label.slice(1)) + '</legend>' + g.sectors.map(function (x) {
+        return '<label class="chip-check"><input type="checkbox" value="' + x.id + '"' + (cur.indexOf(x.id) > -1 ? ' checked' : '') + '><span>' + esc(x.label) + '</span></label>';
+      }).join('') + '</fieldset>';
+    }).join('');
+    return '<section class="focus-box" id="focus-box"><div class="focus-head"><div><h2>Sector focus: ' + esc(focusText(store.focus)) + '</h2>' +
+      '<p class="small muted">Choose the sectors your tests draw companies from, or keep all sectors. Applies to tests you start from now on. Tests already started keep their companies.</p></div>' +
+      '<button class="btn btn-secondary btn-sm" type="button" id="focus-toggle" aria-expanded="false" aria-controls="focus-form">Choose sectors</button></div>' +
+      '<form id="focus-form" hidden><div class="focus-groups">' + groups + '</div><div class="focus-actions"><button class="btn btn-primary btn-sm" type="submit">Save sectors</button>' +
+      '<button class="btn btn-secondary btn-sm" type="button" id="focus-all">Use all sectors</button><span class="small muted" id="focus-count"></span></div></form></section>';
+  }
+  function bindFocus() {
+    var box = document.getElementById('focus-box'); if (!box) return;
+    var form = document.getElementById('focus-form'), tog = document.getElementById('focus-toggle'), count = document.getElementById('focus-count');
+    function upd() { var n = form.querySelectorAll('input:checked').length; count.textContent = n ? n + ' selected' : 'None selected means all sectors'; }
+    tog.addEventListener('click', function () { form.hidden = !form.hidden; tog.setAttribute('aria-expanded', String(!form.hidden)); upd(); });
+    form.addEventListener('change', upd);
+    document.getElementById('focus-all').addEventListener('click', function () { store.focus = null; save(); route(); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var sel = Array.prototype.map.call(form.querySelectorAll('input:checked'), function (i) { return i.value; });
+      store.focus = sel.length ? sel : null; save(); route();
+    });
   }
 
   // ---------- Test brief ----------
@@ -326,9 +364,9 @@
     if (!isUnlocked(track, n) && !st) return go('#/tests/' + track);
     if (mode === 'play' && st) return viewRunner(track, n);
     if (mode === 'play' && !st) return go('#/test/' + track + '/' + n);
-    var meta = E.testMeta(track, n), T = E.TRACKS[track];
+    var meta = metaFor(track, n), T = E.TRACKS[track];
     document.title = trackName(track) + ' test ' + n + ' | VentureSim';
-    var facts = [['Fund', meta.fundName], ['Fund size', money(meta.fundSize)], ['Stage', stageText(meta)]];
+    var facts = [['Fund', meta.fundName], ['Fund size', money(meta.fundSize)], ['Stage', stageText(meta)], ['Sectors', (meta.gen >= 2 ? focusText(meta.focus) : 'All sectors')]];
     var rules;
     if (track === 'partner') {
       facts = facts.concat([
@@ -351,12 +389,14 @@
         'You are an analyst. Read 50 deals and advance the ' + meta.slots + ' that deserve a partner meeting.',
         'Deals outside the thesis will never be approved. Advancing one wastes a slot.',
         'Diligence calls give you reference and customer calls on a company. You have ' + meta.credits + ' for the whole test.',
-        'Every decision is final. You can save and come back at any point.'
+        'Give a reason for every call. After the 50 deals, you run due diligence on your shortlist and write a one-page memo for the investment committee.',
+        'Every decision is final. You can save and come back at any point, at any stage.'
       ] : [
         'You are an associate. Choose ' + meta.slots + ' companies to invest in and rate your conviction in each one.',
         'Price matters. The same company can be a good deal at one valuation and a bad one at another.',
         'Diligence calls give you reference and customer calls on a company. You have ' + meta.credits + ' for the whole test.',
-        'Every decision is final. You can save and come back at any point.'
+        'Give a reason for every call. After the 50 deals, you run due diligence on your investments and write a one-page memo for the investment committee.',
+        'Every decision is final. You can save and come back at any point, at any stage.'
       ];
     }
     var factsHtml = '<dl class="facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>';
@@ -368,13 +408,14 @@
     render(shell('tests', page(
       pageHead(trackName(track) + ' test ' + n, null, '<a href="#/tests/' + track + '">' + trackName(track) + ' tests</a>'),
       factsHtml +
-      (meta.thesis.groups ? '<div class="thesis-box" style="margin-top:20px"><h3>Fund thesis</h3><p>' + esc(meta.thesis.text) + ' ' + stageText(meta) + ' rounds.</p></div>' : '') +
+      ((meta.thesis.groups || meta.thesis.focus) ? '<div class="thesis-box" style="margin-top:20px"><h3>Fund thesis</h3><p>' + esc(meta.thesis.text) + ' ' + stageText(meta) + ' rounds.</p></div>' : '') +
+      (st ? '' : '<p class="small muted" style="margin-top:12px">Want different sectors? <a href="#/tests/' + track + '">Change your sector focus</a> before you start.</p>') +
       '<div class="grid-2" style="margin-top:24px"><section class="panel"><div class="panel-head"><h2>How this test works</h2></div><div class="panel-body"><ul class="rules">' + rules.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></div></section>' +
       '<section class="panel"><div class="panel-head"><h2>How you are scored</h2></div><div class="panel-body">' + scoring + '</div></section></div>' +
       '<div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-primary btn-lg" type="button" id="start">Start the test</button><a class="btn btn-secondary btn-lg" href="#/walkthrough">Watch the walkthrough first</a></div>'
     )));
     document.getElementById('start').addEventListener('click', function () {
-      store.tests[key(track, n)] = { track: track, n: n, status: 'active', pos: 0, decisions: {}, dug: {}, followOns: {}, credits: meta.credits, checkpoint: false, startedAt: Date.now(), updatedAt: Date.now() };
+      store.tests[key(track, n)] = { track: track, n: n, gen: 2, focus: store.focus || null, status: 'active', pos: 0, decisions: {}, dug: {}, followOns: {}, credits: meta.credits, checkpoint: false, startedAt: Date.now(), updatedAt: Date.now() };
       save();
       go('#/test/' + track + '/' + n + '/play');
     });
@@ -387,11 +428,17 @@
     var t = c.terms;
     var terms = [['Round size', money(t.round)], ['Post-money valuation', money(t.post)], ['Your check', money(t.check)], ['Your ownership', pct(t.ownership)]];
     if (t.arrMultiple) terms.push(['Valuation to ARR', Math.round(t.arrMultiple) + 'x']);
+    var d = E.dealDetails ? E.dealDetails(c, meta) : null;
+    if (d) terms.push(['Raised before this round', d.prior]);
+    var founders = d ? '<ul class="founders">' + d.founders.map(function (f) { return '<li><b>' + esc(f.name) + '</b>, ' + esc(f.role) + '<span>' + esc(f.bio) + '</span></li>'; }).join('') + '</ul>' : '';
+    var deckBar = d ? '<div class="deck-bar"><button class="btn btn-secondary btn-sm" type="button" data-act="deck">View pitch deck</button><button class="btn btn-secondary btn-sm" type="button" data-act="talk">Read demo day transcript</button>' +
+      '<span class="small muted">The founders\' own version. Compare it with the diligence notes.</span></div>' : '';
     return '<div class="co-head"><div><h2 id="co-name">' + esc(c.name) + '</h2><div class="co-tags"><span class="pill accent">' + c.stageLabel + '</span><span class="pill">' + esc(c.sectorLabel) + '</span><span class="pill">' + esc(c.location) + '</span></div></div>' +
       '<p class="co-month">Month ' + c.month + ' of 36</p></div>' +
-      '<p class="co-pitch">' + esc(c.pitch) + '</p>' +
+      '<p class="co-pitch">' + esc(c.pitch) + '</p>' + deckBar +
       '<div class="co-grid">' +
-        block('Team', '<p>' + esc(c.team.text) + '</p><p class="small muted">' + c.team.fullTime + ' full-time people</p>') +
+        block('Team', '<p>' + esc(c.team.text) + '</p>' + founders + '<p class="small muted">' + c.team.fullTime + ' full-time people</p>') +
+        (d ? block('Company', kv([['Founded', String(d.founded)], ['Business model', d.model], ['Typical price', d.priceText], ['Use of this round', d.use.map(function (u) { return u[0].toLowerCase() + ' ' + u[1] + '%'; }).join(', ')]])) : '') +
         block('Market', '<p>' + esc(c.market.text) + '</p>' + kv([['Market size estimate', money(c.market.tam)], ['Market growth per year', c.market.growth + '%']])) +
         block('Product and customers', '<p>' + esc(c.product.text) + '</p>') +
         block('Traction', kv(c.traction)) +
@@ -412,8 +459,12 @@
     setKeys(null);
     document.title = trackName(track) + ' test ' + n + ' | VentureSim';
     if (st.checkpoint) return viewCheckpoint(track, n);
-    if (st.pos >= 50) return finishTest(track, n);
+    if (st.pos >= 50) {
+      if (track !== 'partner' && VSApp.dealStage) return VSApp.dealStage(track, n);
+      return finishTest(track, n);
+    }
     var c = test.companies[st.pos];
+    var needReason = track !== 'partner';
     var picks = picksOf(st), full = picks.length >= meta.slots;
     var follows = Object.keys(st.followOns).filter(function (i) { return st.followOns[i] === true; }).length;
     var left = 50 - st.pos;
@@ -435,11 +486,14 @@
           '<div class="decide-box"><h2>Your call</h2>' + conv +
             '<div class="decide-buttons" style="margin-top:' + (T.conviction ? '14px' : '0') + '"><button class="btn btn-bad" type="button" data-act="no">' + T.no + '</button>' +
             '<button class="btn btn-good" type="button" data-act="yes"' + (full ? ' disabled' : '') + '>' + T.yes + '</button></div>' + pace + fullNote +
-            '<label for="reason">Why? (optional, shown in your debrief)</label><textarea id="reason" maxlength="500"></textarea>' +
-            '<p class="keys"><kbd>Y</kbd> ' + T.yes.toLowerCase() + ', <kbd>N</kbd> ' + T.no.toLowerCase() + ', <kbd>D</kbd> diligence calls</p></div>' +
+            '<fieldset class="reasons"><legend>Main reason' + (needReason ? ' (pick at least one)' : ' (optional)') + '</legend>' +
+              REASONS.map(function (x, k) { return '<label class="chip-check"><input type="checkbox" name="why" value="' + x[0] + '"><span>' + x[1] + ' <kbd>' + (k + 1) + '</kbd></span></label>'; }).join('') + '</fieldset>' +
+            '<p class="form-error" id="reason-err" role="alert"></p>' +
+            '<label for="reason">Notes (optional, shown in your debrief)</label><textarea id="reason" maxlength="500"></textarea>' +
+            '<p class="keys"><kbd>Y</kbd> ' + T.yes.toLowerCase() + ', <kbd>N</kbd> ' + T.no.toLowerCase() + ', <kbd>1</kbd> to <kbd>8</kbd> reasons, <kbd>D</kbd> diligence calls</p></div>' +
           '<div class="decide-box"><h2>Diligence calls</h2><p class="small muted">Reference and customer calls give a clearer read on the team and the product. ' + st.credits + ' left for this test.</p>' +
             '<button class="btn btn-secondary btn-sm" type="button" data-act="dig" style="margin-top:10px"' + (st.dug[c.i] || st.credits < 1 ? ' disabled' : '') + '>' + (st.dug[c.i] ? 'Calls done for this company' : 'Make calls (uses 1)') + '</button></div>' +
-          (meta.thesis.groups ? '<div class="thesis-box"><h3>Fund thesis</h3><p>' + esc(meta.thesis.text) + '</p><p class="small muted">' + stageText(meta) + ' rounds</p></div>' : '') +
+          ((meta.thesis.groups || meta.thesis.focus) ? '<div class="thesis-box"><h3>Fund thesis</h3><p>' + esc(meta.thesis.text) + '</p><p class="small muted">' + stageText(meta) + ' rounds</p></div>' : '') +
           '<div class="decide-box"><h2>Your picks</h2>' + picksList + '</div>' +
         '</aside></main>';
     root.querySelector('.runner-bar h1').focus({ preventScroll: true });
@@ -448,6 +502,13 @@
     function decide(yes) {
       if (yes && picksOf(st).length >= meta.slots) return;
       var d = { yes: yes };
+      var whys = Array.prototype.map.call(root.querySelectorAll('input[name=why]:checked'), function (i) { return i.value; });
+      if (needReason && !whys.length) {
+        document.getElementById('reason-err').textContent = 'Pick at least one reason for ' + (yes ? (track === 'analyst' ? 'advancing' : 'investing in') : 'letting go of') + ' ' + c.name + '.';
+        root.querySelector('input[name=why]').focus();
+        return;
+      }
+      if (whys.length) d.reasons = whys;
       var r = document.getElementById('reason').value.trim();
       if (r) d.reason = r;
       if (yes && T.conviction) { var cv = root.querySelector('input[name=conv]:checked'); d.conviction = cv ? +cv.value : 2; }
@@ -464,6 +525,7 @@
       var act = b.getAttribute('data-act');
       if (act === 'yes') decide(true);
       else if (act === 'no') decide(false);
+      else if (act === 'deck' || act === 'talk') { if (VSApp.openDeck) VSApp.openDeck(c, meta, act); }
       else if (act === 'dig') {
         if (st.credits < 1 || st.dug[c.i]) return;
         st.credits--; st.dug[c.i] = true; save();
@@ -473,7 +535,7 @@
         var dig = root.querySelector('.dig'); if (dig) dig.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else if (act === 'rest') {
         if (!confirm('Let go of the remaining ' + left + ' companies? This cannot be undone.')) return;
-        for (var i = st.pos; i < 50; i++) st.decisions[test.companies[i].i] = { yes: false };
+        for (var i = st.pos; i < 50; i++) st.decisions[test.companies[i].i] = { yes: false, reasons: ['slots'] };
         st.pos = 50;
         if (track === 'partner' && eligibleUpdates(test, st).length) st.checkpoint = true;
         save();
@@ -481,9 +543,10 @@
       }
     });
     setKeys(function (e) {
-      if (e.target.closest && e.target.closest('textarea, input, select')) return;
+      if (e.target.closest && e.target.closest('textarea, input:not([type=checkbox]):not([type=radio]), select')) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       var k = e.key.toLowerCase();
+      if (/^[1-8]$/.test(k)) { var cb = root.querySelectorAll('input[name=why]')[+k - 1]; if (cb) { e.preventDefault(); cb.checked = !cb.checked; } return; }
       if (k === 'y') { e.preventDefault(); if (!full) decide(true); }
       else if (k === 'n') { e.preventDefault(); decide(false); }
       else if (k === 'd') { var b = root.querySelector('[data-act=dig]'); if (b && !b.disabled) { e.preventDefault(); b.click(); } }
@@ -542,6 +605,7 @@
   function finishTest(track, n) {
     var test = getTest(track, n), st = testState(track, n);
     var res = E.scoreTest(test, st);
+    if (VSApp.extendResult) VSApp.extendResult(res, test, st);
     st.result = res;
     st.status = 'done';
     st.finishedAt = Date.now();
@@ -597,14 +661,16 @@
       return { c: c, d: d, html: '<tr data-pick="' + (d.yes ? 1 : 0) + '" data-missed="' + (tags.indexOf('missed') > -1 ? 1 : 0) + '" data-off="' + (c.inThesis ? 0 : 1) + '">' +
         '<td><b>' + esc(c.name) + '</b><small>' + c.stageLabel + ', ' + esc(c.sectorLabel) + (c.inThesis ? '' : ', outside thesis') + '</small></td>' +
         '<td>' + (d.yes ? '<span class="pill good">' + T.past.yes + (d.conviction ? ', ' + ['', 'low', 'medium', 'high'][d.conviction] : '') + '</span>' : '<span class="pill">' + T.past.no + '</span>') +
-          (follow === true ? '<small>Followed on</small>' : follow === false ? '<small>No follow-on</small>' : '') + (d.reason ? '<small>"' + esc(d.reason) + '"</small>' : '') + '</td>' +
+          (follow === true ? '<small>Followed on</small>' : follow === false ? '<small>No follow-on</small>' : '') + (d.dropped ? '<small>Dropped after due diligence</small>' : '') +
+          (d.reasons ? '<small>Reasons: ' + d.reasons.map(function (x) { return x === 'slots' ? 'slots were full' : (REASONS.filter(function (y) { return y[0] === x; })[0] || [0, x])[1].toLowerCase(); }).join(', ') + '</small>' : '') +
+          (d.reason ? '<small>"' + esc(d.reason) + '"</small>' : '') + '</td>' +
         '<td>' + esc(h.outcome) + '</td>' +
         '<td class="mult" style="color:' + (h.multiple >= 1 ? 'var(--good)' : 'var(--bad)') + '">' + mult(h.multiple) + '</td>' +
         '<td><details><summary>Why</summary>' + h.mattered.map(function (x) { return '<p>' + esc(x.text) + '</p>'; }).join('') + '</details></td></tr>' };
     });
     var table = '<div class="filter" role="group" aria-label="Filter companies">' +
       '<button type="button" data-filter="all" aria-pressed="true">All 50</button><button type="button" data-filter="pick" aria-pressed="false">Your picks</button>' +
-      '<button type="button" data-filter="missed" aria-pressed="false">Missed winners</button>' + (meta.thesis.groups ? '<button type="button" data-filter="off" aria-pressed="false">Outside thesis</button>' : '') + '</div>' +
+      '<button type="button" data-filter="missed" aria-pressed="false">Missed winners</button>' + ((meta.thesis.groups || (meta.thesis.focus && track !== 'partner')) ? '<button type="button" data-filter="off" aria-pressed="false">Outside thesis</button>' : '') + '</div>' +
       '<div class="table-wrap"><table class="test-table result-table"><thead><tr><th>Company</th><th>Your call</th><th>What happened</th><th>Multiple</th><th>Why</th></tr></thead><tbody>' +
       rows.map(function (x) { return x.html; }).join('') + '</tbody></table></div>';
 
@@ -615,7 +681,7 @@
 
     render(shell('tests', page(
       pageHead(trackName(track) + ' test ' + n + ' debrief', money(meta.fundSize) + ' fund, ' + stageText(meta) + '. You ' + (track === 'analyst' ? 'advanced ' : 'invested in ') + r.picks + ' of 50 companies' + (r.dug ? ' and made diligence calls on ' + r.dug : '') + '.', '<a href="#/tests/' + track + '">' + trackName(track) + ' tests</a>'),
-      scoreHtml +
+      scoreHtml + (VSApp.resultExtras ? VSApp.resultExtras(track, n, test, st) : '') +
       (r.conviction ? '<p class="small muted" style="margin-top:12px">By conviction: ' + [3, 2, 1].map(function (k) { var c = r.conviction[k]; return ['', 'low', 'medium', 'high'][k] + ' ' + (c ? c.count + ' picks returned ' + mult(c.multiple) : 'no picks'); }).join(', ') + '.</p>' : '') +
       (r.fund ? '<p class="small muted" style="margin-top:12px">Carry paid to the GPs: ' + money(r.fund.carry) + '. Capital left uninvested: ' + money(r.fund.undeployed) + '. Initial investments made by month 24: ' + r.by24 + ' of ' + meta.slots + '.</p>' : '') +
       '<section class="panel" style="margin-top:24px"><div class="panel-head"><h2>What to work on</h2></div><div class="panel-body">' + lessons + '</div></section>' +
@@ -829,7 +895,8 @@
     render(shell('profile', page(pageHead('Profile and progress', 'Your account and progress are saved in this browser on this device.'),
       '<form class="form panel panel-body" id="pf" style="max-width:none"><div class="grid-2"><div><label for="name">Name</label><input type="text" id="name" value="' + esc(p.name) + '" required></div>' +
       '<div><label for="email">Email</label><input type="email" id="email" value="' + esc(p.email || '') + '"></div>' +
-      '<div><label for="phone">Phone number</label><input type="text" id="phone" value="' + esc(p.phone || '') + '"></div>' +
+      '<div><label for="phone">Phone number</label>' + (VSApp.phone ? VSApp.phone.html('phone', p.phone || '', p.phoneIso) : '<input type="text" id="phone" value="' + esc(p.phone || '') + '">') + '</div>' +
+      '<div><label for="org">Organization</label><input type="text" id="org" value="' + esc(p.org || '') + '" placeholder="Type n/a if none"></div>' +
       '<div><label for="role">' + (p.kind === 'founder' ? 'What you are building' : 'What you do now') + '</label><input type="text" id="role" value="' + esc(p.kind === 'founder' ? (p.building || '') : (p.role || '')) + '"></div></div>' +
       '<div><label for="track">Main track</label><select id="track" class="search">' + TRACK_IDS.map(function (t) { return '<option value="' + t + '"' + (p.track === t ? ' selected' : '') + '>' + trackName(t) + '</option>'; }).join('') + '</select></div>' +
       '<p class="form-error" id="pf-msg" role="status"></p><div><button class="btn btn-primary" type="submit">Save changes</button></div></form>' +
@@ -840,12 +907,15 @@
         '<hr style="border:0;border-top:1px solid var(--line)"><p><b>Sign out.</b> Your progress stays saved in this browser for when you log back in.</p><div><button class="btn btn-secondary" type="button" id="signout">Sign out</button></div>' +
         '<hr style="border:0;border-top:1px solid var(--line)"><p><b>Reset everything.</b> Deletes your account, all test results, and course progress from this browser.</p>' +
         '<div><button class="btn btn-bad" type="button" id="reset">Delete my progress</button></div></div></section>')));
+    if (VSApp.phone) VSApp.phone.bind('phone');
     document.getElementById('pf').addEventListener('submit', function (e) {
       e.preventDefault();
       var name = document.getElementById('name').value.trim(), msg = document.getElementById('pf-msg');
       if (!name) { msg.textContent = 'Name cannot be empty.'; return; }
       p.name = name; p.email = document.getElementById('email').value.trim(); p.track = document.getElementById('track').value;
-      p.phone = document.getElementById('phone').value.trim();
+      if (VSApp.phone) { var ph = VSApp.phone.get('phone'); if (document.getElementById('phone').value.trim()) { p.phone = ph.value; p.phoneIso = ph.iso; } else p.phone = ''; }
+      else p.phone = document.getElementById('phone').value.trim();
+      p.org = document.getElementById('org').value.trim();
       if (p.kind === 'founder') p.building = document.getElementById('role').value.trim(); else p.role = document.getElementById('role').value.trim();
       save(); msg.style.color = 'var(--good)'; msg.textContent = 'Changes saved.';
     });
@@ -876,7 +946,7 @@
     store: function () { return store; },
     setStore: function (s2) { store = s2; save(); },
     save: save, esc: esc, shell: shell, page: page, pageHead: pageHead, render: render, go: go, route: route,
-    getTest: getTest, testState: testState, trackName: trackName, stageText: stageText, icon: icon, LOGO: LOGO,
+    getTest: getTest, testState: testState, metaFor: metaFor, focusText: focusText, finishTest: finishTest, picksOf: picksOf, companyHtml: companyHtml, REASONS: REASONS, trackName: trackName, stageText: stageText, icon: icon, LOGO: LOGO,
     money: money, mult: mult, pct: pct, setKeys: setKeys, setScroll: setScroll, importFile: importFile,
     lessonBySlug: lessonBySlug, COURSE: COURSE, TRACK_IDS: TRACK_IDS, doneCount: doneCount, nextTest: nextTest
   };
