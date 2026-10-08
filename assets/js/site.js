@@ -14,7 +14,7 @@
     });
   }
 
-  // The dock: once the header scrolls away, only the drawn G stays, at the bottom. Hover or tap it for the menu.
+  // The dock: always at the bottom. Once the header scrolls away it shrinks to the drawn G; hover or tap it for the menu.
   var mainNav = document.querySelector('.site-nav');
   if (head && mainNav) {
     var cta = head.querySelector('.head-cta');
@@ -33,8 +33,7 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
     var onScroll = function () {
       var past = head.getBoundingClientRect().bottom < 0;
-      dock.classList.toggle('show', past);
-      dock.inert = !past;
+      dock.classList.toggle('mini', past);
       if (!past) setOpen(false);
     };
     addEventListener('scroll', onScroll, { passive: true });
