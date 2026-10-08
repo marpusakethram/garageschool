@@ -63,7 +63,7 @@
   };
   function icon(name) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>'; }
   var GMARK = '<img class="brand-mark" src="assets/img/g-mark-96.png" alt="" width="96" height="96">';
-  var LOGO = '<a class="logo" href="index.html" aria-label="garageschool, home">' + GMARK + 'arageschool</a>';
+  var LOGO = '<a class="logo" href="index.html" aria-label="Garage, home">' + GMARK + 'arage</a>';
 
   // ---------- Layout ----------
   function shell(active, html) {
