@@ -123,6 +123,18 @@
     });
   });
 
+  // Home: highlight the topic in the sticky list whose content is on screen.
+  var learnLinks = document.querySelectorAll('.learn-nav a');
+  if (learnLinks.length && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        learnLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id); });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('.learn-item').forEach(function (el) { io.observe(el); });
+  }
+
   window.GaragePlayers = function (scope) {
     (scope || document).querySelectorAll('.player').forEach(function (player) {
       if (player.dataset.ready) return;
