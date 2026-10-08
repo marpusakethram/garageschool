@@ -656,23 +656,64 @@
 
   // ---------- Metrics guide and sector map ----------
   var SECTORS = window.VS_SECTORS || [], METRICS = window.VS_METRICS || {};
-  R.metrics = function (parts) {
-    var sid = parts[1] || (SECTORS[0] && SECTORS[0].id), sector = SECTORS.filter(function (x) { return x.id === sid; })[0] || SECTORS[0];
-    document.title = 'Startup metrics guide | VentureSim';
-    var tabs = '<nav class="sector-tabs" aria-label="Sectors">' + SECTORS.map(function (x) { return '<a href="#/metrics/' + x.id + '"' + (x.id === sector.id ? ' aria-current="page"' : '') + '>' + esc(x.name) + '</a>'; }).join('') + '</nav>';
+  var DETAIL = window.VS_SECTOR_DETAIL || {}, SUBQ = window.VS_SUB_Q || {}, COMMON = window.VS_COMMON;
+  function metricCard(id) {
+    var m = METRICS[id];
+    return m ? '<div class="metric"><b>' + esc(m.name) + '</b><p>' + esc(m.what) + '</p><p><span class="lbl">How: </span>' + esc(m.how) + '</p><p><span class="lbl">Rough guide: </span>' + esc(m.good) + '</p></div>' : '';
+  }
+  function list(items, ordered) { var tag = ordered ? 'ol' : 'ul'; return '<' + tag + ' class="detail-list">' + items.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</' + tag + '>'; }
+  function block(id, title, inner) { return '<section class="detail-block" id="d-' + id + '"><h3>' + title + '</h3>' + inner + '</section>'; }
+  function jump(items) { return '<nav class="jump" aria-label="On this page">' + items.map(function (x) { return '<button type="button" class="btn-link" data-jump="' + x[0] + '">' + esc(x[1]) + '</button>'; }).join('') + '</nav>'; }
+
+  function commonPage() {
+    var C = COMMON, st = C.stages;
+    return '<div class="sector-intro"><h2>Metrics for every startup</h2>' + C.intro.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>' +
+      jump(C.groups.map(function (g) { return ['d-g-' + g.id, g.title]; }).concat([['d-stages', 'By stage'], ['d-principles', 'Reading metrics'], ['d-vanity', 'Vanity metrics'], ['d-present', 'Presenting metrics']])) +
+      C.groups.map(function (g) {
+        return '<section class="sub-block" id="d-g-' + g.id + '"><h3>' + esc(g.title) + '</h3><p>' + esc(g.text) + '</p><div class="metric-list">' + g.metrics.map(metricCard).join('') + '</div></section>';
+      }).join('') +
+      block('stages', 'What investors expect at each stage', '<div class="table-scroll"><table class="stage-table"><thead><tr>' + st.head.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        st.rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return i ? '<td>' + esc(c) + '</td>' : '<th scope="row">' + esc(c) + '</th>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div><p class="small muted" style="margin-top:8px">' + esc(st.note) + '</p>') +
+      block('principles', 'How to read any metric', '<dl class="pairs">' + C.principles.map(function (x) { return '<div><dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl>') +
+      block('vanity', 'Vanity metrics and what to show instead', '<div class="table-scroll"><table class="stage-table"><thead><tr><th>Looks good but says little</th><th>Show this instead</th></tr></thead><tbody>' +
+        C.vanity.map(function (x) { return '<tr><td>' + esc(x[0]) + '</td><td>' + esc(x[1]) + '</td></tr>'; }).join('') + '</tbody></table></div>') +
+      block('present', 'How founders should present metrics', list(C.present));
+  }
+
+  function sectorPage(sector) {
+    var d = DETAIL[sector.id];
+    var head = '<div class="sector-intro"><h2>' + esc(sector.name) + '</h2><p>' + esc(sector.about) + '</p>' + (d ? d.overview.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') : '') + '</div>';
     var subs = sector.subsectors.map(function (sub) {
-      return '<section class="sub-block" id="sub-' + sub.id + '"><h3>' + esc(sub.name) + '</h3><p>' + esc(sub.about) + '</p><div class="metric-list">' +
-        sub.metrics.map(function (id) { var m = METRICS[id]; return m ? '<div class="metric"><b>' + esc(m.name) + '</b><p>' + esc(m.what) + '</p><p><span class="lbl">How: </span>' + esc(m.how) + '</p><p><span class="lbl">Rough guide: </span>' + esc(m.good) + '</p></div>' : ''; }).join('') +
-        '</div><p class="watch"><b>Watch for:</b> ' + esc(sub.watch) + '</p></section>';
+      return '<section class="sub-block" id="sub-' + sub.id + '"><h3>' + esc(sub.name) + '</h3><p>' + esc(sub.about) + '</p><div class="metric-list">' + sub.metrics.map(metricCard).join('') + '</div>' +
+        (SUBQ[sub.id] ? '<p class="key-q"><b>Key question:</b> ' + esc(SUBQ[sub.id]) + '</p>' : '') +
+        '<p class="watch"><b>Watch for:</b> ' + esc(sub.watch) + '</p></section>';
     }).join('');
-    A.render(A.shell('metrics', A.page(A.pageHead('Startup metrics guide', 'The numbers investors expect for each sector and subsector, what each one measures, how to calculate it, and a rough sense of what good looks like. Benchmarks move with markets, so treat them as starting points.') ,
-      tabs + '<p class="muted" style="margin-bottom:16px"><b>' + esc(sector.name) + '.</b> ' + esc(sector.about) + ' <a href="#/sectors">See every sector and subsector</a>.</p>' + subs)));
+    if (!d) return head + subs;
+    return head + jump([['d-models', 'How they make money'], ['d-look', 'What investors look for'], ['d-stages', 'By stage'], ['d-questions', 'Questions to ask'], ['d-flags', 'Red flags'], ['d-subs', 'Subsectors']]) +
+      block('models', 'How companies make money', '<div class="metric-list">' + d.models.map(function (x) { return '<div class="metric"><b>' + esc(x[0]) + '</b><p>' + esc(x[1]) + '</p></div>'; }).join('') + '</div>') +
+      '<div class="two-col">' + block('look', 'What investors look for', list(d.lookFor)) + block('flags', 'Red flags', list(d.redFlags)) + '</div>' +
+      block('stages', 'What good looks like by stage', '<div class="stage-grid">' + ['Pre-seed', 'Seed', 'Series A'].map(function (n, i) { return '<div><b>' + n + '</b><p>' + esc(d.stages[i]) + '</p></div>'; }).join('') + '</div>') +
+      block('questions', 'Questions to ask', list(d.questions, true)) +
+      '<h3 class="subs-title" id="d-subs">Subsectors and their metrics</h3>' + subs;
+  }
+
+  R.metrics = function (parts) {
+    var sid = parts[1] || 'common', sector = SECTORS.filter(function (x) { return x.id === sid; })[0];
+    if (!sector) sid = 'common';
+    document.title = (sector ? sector.name + ' metrics' : 'Startup metrics guide') + ' | VentureSim';
+    var tabs = '<nav class="sector-tabs" aria-label="Sectors"><a href="#/metrics/common"' + (sid === 'common' ? ' aria-current="page"' : '') + '>Every startup</a>' +
+      SECTORS.map(function (x) { return '<a href="#/metrics/' + x.id + '"' + (sector && x.id === sector.id ? ' aria-current="page"' : '') + '>' + esc(x.name) + '</a>'; }).join('') + '</nav>';
+    A.render(A.shell('metrics', A.page(A.pageHead('Startup metrics guide', 'Start with the metrics every startup is judged on, then go deeper by sector: how companies make money, what investors look for at each stage, the questions to ask, and the numbers for each subsector. Benchmarks move with markets, so treat them as starting points.'),
+      tabs + (sector ? sectorPage(sector) : commonPage()) + '<p class="muted" style="margin-top:20px"><a href="#/sectors">See every sector and subsector on one page</a>.</p>')));
+    document.querySelectorAll('[data-jump]').forEach(function (b) {
+      b.addEventListener('click', function () { var el = document.getElementById(b.getAttribute('data-jump')); if (el) el.scrollIntoView(); });
+    });
     if (parts[2]) { var el = document.getElementById('sub-' + parts[2]); if (el) el.scrollIntoView(); }
   };
   R.sectors = function () {
     document.title = 'Sector map | VentureSim';
     A.render(A.shell('sectors', A.page(A.pageHead('Sector map', 'How startup sectors break down into subsectors. Every subsector links to the metrics investors use for it.'),
-      '<div class="map-grid">' + SECTORS.map(function (x) {
+      '<p class="muted" style="margin-bottom:16px">New to startup metrics? Start with <a href="#/metrics/common">the metrics every startup is judged on</a>.</p><div class="map-grid">' + SECTORS.map(function (x) {
         return '<article class="map-card"><h3>' + esc(x.name) + '</h3><p>' + esc(x.about) + '</p><ul>' + x.subsectors.map(function (sub) {
           return '<li><a href="#/metrics/' + x.id + '/' + sub.id + '">' + esc(sub.name) + '</a><span>' + esc(sub.about) + '</span></li>';
         }).join('') + '</ul></article>';

@@ -636,6 +636,30 @@ code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size:
 .metric b { display: block; font-size: 15px; margin-bottom: 4px; }
 .metric p + p { margin-top: 4px; }
 .metric .lbl { color: var(--muted); }
+.sector-intro { background: var(--card); border-radius: 14px; box-shadow: 0 0 0 1px var(--line); padding: 24px; }
+.sector-intro h2 { font: 400 32px/1.15 var(--serif); }
+.sector-intro p { margin-top: 10px; max-width: 46em; }
+.sector-intro h2 + p { color: var(--muted); }
+.jump { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 14px 0 4px; font-size: 14px; }
+.jump .btn-link { background: none; border: 0; padding: 4px 0; color: var(--blue); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.detail-block { background: var(--card); border-radius: 14px; box-shadow: 0 0 0 1px var(--line); padding: 20px; margin-top: 16px; scroll-margin-top: 20px; }
+.detail-block h3, .subs-title { font: 400 24px var(--serif); }
+.subs-title { margin: 32px 0 12px; scroll-margin-top: 20px; }
+.sub-block[id^="d-g-"] { margin-top: 16px; scroll-margin-top: 20px; }
+.detail-list { margin: 10px 0 0 20px; display: grid; gap: 6px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+.stage-grid > div { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+.stage-grid b { display: block; font-size: 15px; margin-bottom: 4px; }
+.table-scroll { overflow-x: auto; margin-top: 12px; }
+.stage-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+.stage-table th, .stage-table td { text-align: left; vertical-align: top; padding: 9px 10px; border-bottom: 1px solid var(--line); }
+.stage-table thead th { color: var(--muted); font-weight: 500; }
+.pairs { display: grid; gap: 10px; margin-top: 12px; }
+.pairs dt { font-weight: 600; }
+.pairs dd { margin: 2px 0 0; color: var(--muted); }
+.key-q { margin-top: 10px; font-size: 14px; }
+@media (max-width: 760px) { .two-col, .stage-grid { grid-template-columns: 1fr; } .sector-intro h2 { font-size: 26px; } .sector-intro, .detail-block { padding: 16px; } }
 .map-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .map-card { background: var(--card); border-radius: 14px; box-shadow: 0 0 0 1px var(--line); padding: 20px; }
 .map-card h3 { font: 400 24px var(--serif); }
