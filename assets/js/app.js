@@ -62,8 +62,8 @@
     rocket: '<path d="M5 15c-1 1-1.5 3.5-1.5 3.5S6 18 7 17"/><path d="M9 15l-3-3c2-6 7-9 13-9 0 6-3 11-9 13z"/><circle cx="14.5" cy="9.5" r="1.5"/>'
   };
   function icon(name) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>'; }
-  var GMARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><path d="M10.3 11.4h3.1l2.6 6.8 2.6-6.8h3.1l-4.2 10h-3z" fill="#fff"/></svg>';
-  var LOGO = '<a class="logo" href="index.html">' + GMARK + 'ventureschool</a>';
+  var GMARK = '<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><text x="16" y="23.4" text-anchor="middle" font-family="\'Times New Roman\', Times, serif" font-size="22" fill="#fff">V</text></svg>';
+  var LOGO = '<a class="logo" href="index.html" aria-label="ventureschool, home">' + GMARK + 'entureschool</a>';
 
   // ---------- Layout ----------
   function shell(active, html) {

@@ -90,6 +90,21 @@
     });
   });
 
+  // Prompt library: copy a prompt to the clipboard.
+  document.querySelectorAll('.prompt-copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var text = document.getElementById(b.getAttribute('data-copy')).textContent;
+      var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy prompt'; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+      else fallback();
+      function fallback() {
+        var r = document.createRange(), el = document.getElementById(b.getAttribute('data-copy'));
+        r.selectNodeContents(el); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        b.textContent = 'Press Ctrl+C to copy';
+      }
+    });
+  });
+
   window.GaragePlayers = function (scope) {
     (scope || document).querySelectorAll('.player').forEach(function (player) {
       if (player.dataset.ready) return;

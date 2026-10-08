@@ -6,7 +6,7 @@
 <title>AI tools for venture investors | VentureSchool</title>
 <meta name="description" content="How venture investors use Granola, Mem, Notion, and Claude or ChatGPT for sourcing, meetings, diligence, and memos, with a workflow, prompts, and the cautions that matter.">
 <meta name="theme-color" content="#F7F6F2">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232350E8'/%3E%3Cpath d='M10.3 11.4h3.1l2.6 6.8 2.6-6.8h3.1l-4.2 10h-3z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Ccircle%20cx='16'%20cy='16'%20r='16'%20fill='%232350E8'/%3E%3Ctext%20x='16'%20y='23.4'%20text-anchor='middle'%20font-family='Times%20New%20Roman,Times,serif'%20font-size='22'%20fill='%23fff'%3EV%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap">
@@ -18,7 +18,7 @@
 
 <header class="site-head">
   <div class="head-bar">
-    <a class="logo" href="index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><path d="M10.3 11.4h3.1l2.6 6.8 2.6-6.8h3.1l-4.2 10h-3z" fill="#fff"/></svg>ventureschool</a>
+    <a class="logo" href="index.html" aria-label="ventureschool, home"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><text x="16" y="23.4" text-anchor="middle" font-family="'Times New Roman', Times, serif" font-size="22" fill="#fff">V</text></svg>entureschool</a>
     <nav class="site-nav" aria-label="Main">
       <a href="index.html#tracks">Tests</a>
       <a href="app.html#/course">Course</a>
@@ -58,7 +58,7 @@
         <li><a href="#notion">Notion</a></li>
         <li><a href="#assistants">Claude and ChatGPT</a></li>
         <li><a href="#workflow">From first call to memo</a></li>
-        <li><a href="#prompts">Prompts to start with</a></li>
+        <li><a href="#prompts">Prompt library</a></li>
         <li><a href="#careful">Where to be careful</a></li>
       </ol>
     </nav>
@@ -154,14 +154,342 @@
         <li><strong>After the decision.</strong> Record the decision and the main reasons in your pipeline and pass log. A year later, ask Mem or Notion what you believed, and compare it with what happened.</li>
       </ol>
 
-      <h2 id="prompts">Prompts to start with</h2>
-      <p>Replace the bracketed parts. Always check the output against sources you trust.</p>
-      <div class="callout"><p><strong>Market brief:</strong> I am meeting a startup that sells [product] to [customer]. Give me a one-page brief: who buys this today and from which budget, the main competitors and how they make money, what has changed in the last two years, and the three questions I should ask the founder. Mark anything you are unsure about.</p></div>
-      <div class="callout"><p><strong>Bottom-up market size:</strong> Help me size the market for [product] bottom-up. Ask me for the number of target customers and the price, show each step of the math, and list which assumptions would change the result the most.</p></div>
-      <div class="callout"><p><strong>Pre-mortem:</strong> Here are my notes on [company]. Assume we invested and it failed three years from now. List the five most likely reasons, ranked, and for each one tell me what evidence I could look for now.</p></div>
-      <div class="callout"><p><strong>Memo first draft:</strong> Using the notes below and this structure (recommendation, company, why it could be very large, team, evidence, competition, risks, returns), write a two-page first draft. Keep my numbers exactly as given and flag any gaps.</p></div>
-      <div class="callout"><p><strong>Reference call questions:</strong> I am calling a former manager of [founder], who was [role] at [company]. Write eight specific questions that would reveal how they work under pressure, how they hire, and where they need help.</p></div>
-      <div class="callout"><p><strong>Cap table check:</strong> A company has [shares] fully diluted shares including a pool of [pool]. An investor puts in [amount] at a [pre-money] pre-money and wants a [x]% pool after the round. Walk me through the price per share, new shares, and everyone's ownership after the round.</p></div>
+      <h2 id="prompts">Prompt library</h2>
+      <p>Good prompts give the assistant a role, the context, a step-by-step task, the format you want back, and rules against guessing. The prompts below follow that pattern. Replace everything in [brackets], paste in your own material, and check every output against sources you trust before relying on it.</p>
+      <div class="callout"><p><strong>Getting better answers:</strong> paste the actual source material instead of describing it; ask for uncertainty to be marked; ask for the working, not just the answer; keep one job per prompt; and when an answer is weak, reply with what is wrong rather than starting over. Remove confidential names and figures unless your firm has approved the tool.</p></div>
+      <nav class="prompt-index" aria-label="Prompt groups"><a href="#pg-0">Sourcing and theses</a><a href="#pg-1">Before the first call</a><a href="#pg-2">After the call</a><a href="#pg-3">Diligence</a><a href="#pg-4">Valuation and terms</a><a href="#pg-5">Memo and investment committee</a><a href="#pg-6">Portfolio and LPs</a><a href="#pg-7">Learning and interviews</a></nav>
+      <h3 id="pg-0">Sourcing and theses</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Build an investment thesis for a market</h4><button type="button" class="prompt-copy" data-copy="p-1">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: Before you start sourcing in a new area.</span><span>Works well in: Claude or ChatGPT with web search</span></p>
+        <pre class="prompt-text" id="p-1">You are a senior venture investor helping me build an investment thesis.
+
+Market: [market, for example AI tools for independent pharmacies]
+Our fund: [fund size], investing at [stage], check size [amount], region [region].
+
+Work through these steps and label each one:
+1. Define the market in one sentence: who buys, what they buy, and which budget it comes from.
+2. Explain what has changed in the last 2 to 3 years (technology, regulation, cost, behavior) that creates an opening for new companies now.
+3. Describe how money flows today: the main incumbents, how they make money, and why customers are unhappy with them.
+4. List 3 to 5 specific wedges a startup could use to enter, and for each one, what it could expand into later.
+5. Estimate whether a company here could reach $100M in annual revenue. Show the math: number of customers times price.
+6. Give the 3 strongest arguments against investing in this market at all.
+7. Finish with a one-paragraph thesis and 5 signals I should look for in founders and companies.
+
+Rules: mark every fact you are not sure of with [check], cite sources where you used them, and do not invent company names or numbers.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Map a market</h4><button type="button" class="prompt-copy" data-copy="p-2">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When you need to see the whole landscape fast.</span><span>Works well in: Claude or ChatGPT with web search</span></p>
+        <pre class="prompt-text" id="p-2">Create a market map of [market] for a venture investor.
+
+1. Split the market into 4 to 7 categories based on what the product does for the customer, not on technology.
+2. For each category, list well-known companies you are confident exist, their stage if known, and one line on how they differ.
+3. Mark which categories look crowded, which look empty, and why.
+4. Point out where large platforms (for example Microsoft, Google, Salesforce, Amazon) already compete or could easily add the feature.
+5. Suggest 2 categories where a new seed-stage company could still win, with your reasoning.
+
+Return a table with columns: category, what it does, example companies, crowded or open, platform risk.
+Only include companies you are confident are real. If unsure, say so instead of guessing. I will verify every company before using this.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Turn a thesis into a sourcing plan</h4><button type="button" class="prompt-copy" data-copy="p-3">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: After your thesis is written.</span><span>Works well in: Claude or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-3">Here is my investment thesis: [paste thesis].
+
+Turn it into a 30-day sourcing plan:
+1. The 3 types of founders most likely to start companies here, and where they work today.
+2. Specific places to find them: communities, conferences, open source projects, university labs, job titles to search.
+3. 10 search queries I could use on LinkedIn, GitHub, or Google to find early teams.
+4. A short, specific cold email to a founder who fits the thesis, under 120 words, that shows I understand their market.
+5. A weekly routine with a target number of conversations.
+
+Keep it practical. No generic advice like "network more".</pre>
+      </section>
+      <h3 id="pg-1">Before the first call</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Brief me on a company from its deck</h4><button type="button" class="prompt-copy" data-copy="p-4">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: The night before a first meeting.</span><span>Works well in: Claude Projects or ChatGPT with the deck uploaded</span></p>
+        <pre class="prompt-text" id="p-4">I am a venture investor meeting [company] tomorrow. Their deck is attached.
+
+Give me a one-page brief:
+1. What the company does, in one sentence a non-expert would understand.
+2. The customer, the buyer, and who pays, if they differ.
+3. The 3 claims in the deck that matter most to the investment case, and for each, what evidence the deck gives and what is missing.
+4. Key numbers from the deck in a small table: revenue, growth, customers, burn, round size, valuation. Write "not stated" where missing.
+5. The 2 or 3 biggest risks a skeptical partner would raise.
+6. 8 questions for the call, ordered from most to least important.
+
+Use only what is in the deck for facts about the company. If you add outside context, label it clearly as outside information.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Prepare stage-specific questions</h4><button type="button" class="prompt-copy" data-copy="p-5">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When you want a sharper first call.</span><span>Works well in: Claude or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-5">I have a 30-minute first call with a [stage] company that [one-line description].
+
+Write my question plan:
+- 2 opening questions that get the founder telling the story of how they found the problem.
+- 4 questions on the customer and the evidence of need, appropriate for [stage]. For pre-seed, focus on insight and early users. For seed, focus on usage and retention. For Series A, focus on repeatable sales and unit economics.
+- 3 questions on why this team will win.
+- 2 questions on the market and competition.
+- 2 questions on the round: size, use of funds, other investors.
+For each question, add in brackets what a strong answer and a weak answer would sound like.
+
+Keep questions open-ended and short. Avoid questions the deck already answers: [paste key deck facts].</pre>
+      </section>
+      <h3 id="pg-2">After the call</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Turn rough notes into structured call notes</h4><button type="button" class="prompt-copy" data-copy="p-6">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: Right after a call, while it is fresh.</span><span>Works well in: Granola, Notion AI, or any assistant</span></p>
+        <pre class="prompt-text" id="p-6">Below are my rough notes and transcript from a first call with [company].
+
+Rewrite them into structured notes with these headings:
+Company in one line. Team. Problem and customer. Product. Traction (numbers only, with dates). Market. Competition. Round details. What I liked. What worries me. Open questions. Next steps with owners and dates.
+
+Rules:
+- Keep the founder's exact words in quotes for anything important.
+- Separate what the founder claimed from what they showed evidence for.
+- Do not add anything that was not said. If a heading has nothing, write "not discussed".
+- End with my own first impression in 2 sentences, which I will edit.
+
+Notes and transcript:
+[paste]</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Make the pass or advance decision</h4><button type="button" class="prompt-copy" data-copy="p-7">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When you are unsure whether a deal deserves more time.</span><span>Works well in: Claude or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-7">Act as a disciplined senior investor reviewing my call notes on [company]. Our fund invests at [stage] in [thesis].
+
+1. Check thesis fit: stage, sector, geography, check size. Say clearly if it is outside the thesis.
+2. Score team, market, product evidence, traction, and competition from 1 to 5, with one sentence of evidence each, using only my notes.
+3. Name the single biggest reason to advance and the single biggest reason to pass.
+4. List the 3 pieces of evidence that would most change the decision, and how to get each one in a week.
+5. Recommend: pass, advance, or one more call. Explain in 3 sentences.
+
+Be honest. If my notes are too thin to decide, say exactly what is missing.
+
+Notes: [paste]</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Write a kind, clear pass email</h4><button type="button" class="prompt-copy" data-copy="p-8">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When you decide not to invest.</span><span>Works well in: Any assistant</span></p>
+        <pre class="prompt-text" id="p-8">Write a short email to [founder name] at [company] saying we are not investing in this round.
+
+Tone: warm, direct, respectful of their time. Under 130 words.
+Include: thanks for the time, the decision in the first two sentences, one specific and honest reason [reason], one thing we genuinely liked [what you liked], and an offer to stay in touch with a clear trigger, for example when they reach [milestone].
+Do not: give vague reasons, promise to invest later, or use cliches like "not a fit at this time" without explanation.</pre>
+      </section>
+      <h3 id="pg-3">Diligence</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Size the market bottom-up</h4><button type="button" class="prompt-copy" data-copy="p-9">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: Whenever a deck shows a top-down market number.</span><span>Works well in: Claude or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-9">Help me size the market for [product] sold to [customer type] in [region], bottom-up.
+
+Ask me for any input you need before calculating. Then:
+1. Count the potential customers. Show the source or the assumption for each number.
+2. Estimate the realistic annual price per customer, based on [current price or comparable products].
+3. Calculate the total market: customers times price.
+4. Calculate the reachable market for this company in 5 years, with an explicit market share assumption.
+5. Run a sensitivity table: low, base, and high cases for customer count and price.
+6. Compare the result with the founder's claim of [their number] and explain the gap.
+7. Tell me whether this market can support a company with $100M in annual revenue.
+
+Show every step as a formula. Mark assumptions with [assumption] so I can change them.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Analyze growth, retention, and unit economics</h4><button type="button" class="prompt-copy" data-copy="p-10">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When you get a metrics export or data room.</span><span>Works well in: ChatGPT or Claude with the file uploaded</span></p>
+        <pre class="prompt-text" id="p-10">Attached is [company]'s metrics export: [describe columns, for example monthly revenue by customer from Jan 2024 to Jun 2026].
+
+Do this analysis and show your working:
+1. Monthly and annual revenue growth, and whether growth is speeding up or slowing down.
+2. Revenue by customer cohort (month of first payment), and net and gross revenue retention for each cohort after 12 months.
+3. Logo churn by month.
+4. Customer concentration: share of revenue from the top 1, 5, and 10 customers.
+5. If cost data is included: gross margin, CAC, and CAC payback.
+6. Any numbers in the founder's deck that do not match this data: [paste deck figures].
+7. The 3 most important findings for an investment decision, in plain language.
+
+Before calculating, describe the data and any problems with it, such as missing months or duplicate customers. Do not fill gaps with guesses. I will check your calculations against the raw file.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Test the competition and the moat</h4><button type="button" class="prompt-copy" data-copy="p-11">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: Before you believe "we have no competitors".</span><span>Works well in: Claude or ChatGPT with web search</span></p>
+        <pre class="prompt-text" id="p-11">[Company] does [description] for [customer]. The founders say their advantage is [claimed moat].
+
+1. List the real alternatives a customer has today, including doing nothing, spreadsheets, hiring someone, and incumbents.
+2. For each, explain why a customer would choose it over [company].
+3. Test the claimed advantage against the main types of moat: network effects, switching costs, proprietary data, scale, brand, regulation. Is it real today, possible later, or not present?
+4. Describe how a large, well-funded competitor would copy this in 12 months, and what would stop them.
+5. Give an honest verdict: strong, moderate, or weak defensibility, and what evidence would change your view.
+
+Cite sources for facts about other companies. Do not invent competitors.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Plan and synthesize reference calls</h4><button type="button" class="prompt-copy" data-copy="p-12">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When the team is the main question.</span><span>Works well in: Any assistant, plus Granola for the calls</span></p>
+        <pre class="prompt-text" id="p-12">I am doing reference calls on [founder name], CEO of [company]. They were previously [role] at [company or companies].
+
+Part 1. Write 10 questions for a former manager and 6 for a former direct report. Focus on: how they make decisions under pressure, how they hire and fire, how they handle being wrong, and where they need the most help. Avoid yes or no questions. Include one question that asks the reference to rank the founder against peers.
+
+Part 2. After my calls, I will paste my notes from each reference. Then:
+- Summarize each reference in 3 bullets.
+- Find themes that came up in more than one call, positive and negative.
+- Flag any hesitation, faint praise, or contradictions between references.
+- Tell me what the references did not say that I would expect to hear about a top founder.
+- Give an overall read: strong, mixed, or concerning, with your reasoning.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Script a customer call</h4><button type="button" class="prompt-copy" data-copy="p-13">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When you need to know if customers truly need the product.</span><span>Works well in: Any assistant</span></p>
+        <pre class="prompt-text" id="p-13">Write a 20-minute customer call script for a customer of [company], which sells [product] to [customer type].
+
+Goals: understand the problem before the product, how they chose it, how much they use it, and whether they would be upset to lose it.
+
+Include:
+- An opening that makes clear I am an investor, not a salesperson.
+- 8 questions, starting with their work and the problem, then moving to the product.
+- The question: "How would you feel if you could no longer use [product]?" with answer choices of very disappointed, somewhat disappointed, or not disappointed.
+- 2 questions on price and value, such as what they would pay or what they would cut if budgets were reduced.
+- A closing question asking who else I should talk to.
+
+After the calls, I will paste notes. Then score each customer on need, usage, and likelihood to renew, and summarize what the calls say about product-market fit.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Scan a deck or data room for red flags</h4><button type="button" class="prompt-copy" data-copy="p-14">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: Before IC, as a final check.</span><span>Works well in: Claude Projects or ChatGPT with documents uploaded</span></p>
+        <pre class="prompt-text" id="p-14">Review the attached documents for [company] as a skeptical diligence analyst.
+
+List anything that looks inconsistent, incomplete, or risky, under these headings:
+1. Numbers that do not match between documents, or that look unusually good.
+2. Metrics with unclear definitions, such as ARR that may include one-time revenue or pilots.
+3. Legal or cap table issues: departed founders with large stakes, unvested founders, unusual investor rights, pending disputes.
+4. Customer concentration or dependence on one partner or platform.
+5. Missing items a normal [stage] data room would include.
+
+For each item, quote the source document and page, explain why it matters, and write the exact question to ask the founder. Do not speculate beyond the documents. If something is simply missing, say it is missing rather than assuming the worst.</pre>
+      </section>
+      <h3 id="pg-4">Valuation and terms</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Model the cap table and dilution</h4><button type="button" class="prompt-copy" data-copy="p-15">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When you need ownership numbers you can trust.</span><span>Works well in: ChatGPT or Claude, ideally with code or a spreadsheet</span></p>
+        <pre class="prompt-text" id="p-15">Build a cap table for [company] and show every calculation.
+
+Current state: founders [shares], option pool [shares, granted and unused], existing investors [shares or SAFEs with amount, cap, and discount].
+New round: [amount] at a [pre-money] pre-money valuation. The investor requires an unused option pool of [x]% after the round, created before the investment.
+
+1. Convert every SAFE or note at the correct price and show the shares issued.
+2. Calculate the new pool shares, the price per share, and the new investor's shares.
+3. Show the cap table before and after the round: shares and percentage for every holder.
+4. Show the effective pre-money valuation once the pool increase is counted.
+5. Show my fund's ownership after this round, and after a future round that sells 20% of the company if we do not invest.
+
+Present the result as a table. Then explain the math in plain language so I can check it by hand.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Review a term sheet</h4><button type="button" class="prompt-copy" data-copy="p-16">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When a term sheet arrives, before your lawyer reviews it.</span><span>Works well in: Claude or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-16">Review this term sheet for a [stage] financing as an experienced venture investor. I represent [the investor or the founders].
+
+For each term, tell me:
+1. What it means in plain language.
+2. Whether it is standard for this stage in [region], more founder-friendly, or more investor-friendly.
+3. What it would mean in practice in three cases: a sale for less than the money raised, a sale at 3x the post-money, and a down round.
+
+Then list the 3 terms most worth negotiating and a reasonable ask for each.
+
+This is preparation, not legal advice. Flag anything that needs a lawyer.
+
+Term sheet: [paste]</pre>
+      </section>
+      <h3 id="pg-5">Memo and investment committee</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Draft the investment memo</h4><button type="button" class="prompt-copy" data-copy="p-17">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: After diligence, when you have notes and findings.</span><span>Works well in: Claude Projects or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-17">Write a first draft of an investment memo for [company] using only the material below.
+
+Structure:
+1. Recommendation: invest or pass, amount, valuation, ownership, in 3 sentences.
+2. The company in one paragraph.
+3. Why it could be very large: market, the change that creates the opening, and the path to $100M in revenue.
+4. Team: why these founders, with evidence from references.
+5. Evidence so far: traction, retention, customer calls.
+6. Competition and why they can win.
+7. Key risks, each paired with how we would know early if it is going wrong.
+8. Returns: bear, base, and bull scenarios with probability, exit value, and our multiple, and the probability-weighted multiple.
+9. What must be true for this to return the fund.
+
+Rules: keep my numbers exactly as given. Write in plain sentences, not marketing language. Put [gap] wherever the material does not support a section, instead of filling it in. Length: about 2 pages.
+
+Material: [paste notes, diligence findings, metrics, terms]</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Run a pre-mortem and red team</h4><button type="button" class="prompt-copy" data-copy="p-18">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: Before you send the memo.</span><span>Works well in: Claude or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-18">Here is my investment memo for [company]: [paste].
+
+Act as the most skeptical partner on our investment committee.
+1. Assume we invested and the company failed within 4 years. Write the 5 most likely reasons, ranked by likelihood, each in 2 sentences.
+2. For each reason, name the earliest warning sign and whether my memo addresses it.
+3. Find the 3 weakest arguments in my memo and explain why they are weak.
+4. Identify any place where I am relying on the founder's claims rather than evidence.
+5. Write the 5 hardest questions I will be asked at IC.
+
+Do not soften the criticism. I want to find the problems before the committee does.</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Rehearse the IC meeting</h4><button type="button" class="prompt-copy" data-copy="p-19">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: The day before the investment committee.</span><span>Works well in: Claude or ChatGPT, in a back-and-forth chat</span></p>
+        <pre class="prompt-text" id="p-19">Role-play our investment committee. You are three partners: a skeptical former founder, a numbers-focused former banker, and a partner who knows the [sector] market well.
+
+I will present [company] in 2 minutes, then you will question me.
+Rules:
+- Ask one question at a time, rotating between the three partners, and name who is asking.
+- Follow up when my answer is vague or avoids the question.
+- After 10 questions, stop and give me feedback: which answers were strong, which were weak, and what I should prepare better.
+- Finally, say how each partner would vote and why.
+
+Here is the memo for context: [paste]</pre>
+      </section>
+      <h3 id="pg-6">Portfolio and LPs</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Digest portfolio updates</h4><button type="button" class="prompt-copy" data-copy="p-20">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: Each month, when founder updates arrive.</span><span>Works well in: Notion AI, Mem, or any assistant</span></p>
+        <pre class="prompt-text" id="p-20">Below are this month's investor updates from our portfolio companies.
+
+For each company, extract into a table: revenue or main metric, growth since last month, monthly burn, cash, runway in months, headcount, and the founder's asks.
+Then:
+1. Flag any company with less than 9 months of runway, growth that slowed for 2 or more months, or a missing update.
+2. List every specific ask (hires, introductions, advice) so our team can assign owners.
+3. Write a 5-line summary of the portfolio this month.
+
+Use only the numbers in the updates. Write "not reported" where a number is missing, and never calculate runway from guessed figures.
+
+Updates: [paste]</pre>
+      </section>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Draft the quarterly LP letter</h4><button type="button" class="prompt-copy" data-copy="p-21">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: At quarter end.</span><span>Works well in: Claude or ChatGPT</span></p>
+        <pre class="prompt-text" id="p-21">Draft a quarterly letter to our limited partners for [fund name], quarter ending [date].
+
+Inputs: fund performance [TVPI, DPI, net IRR], capital called and distributed this quarter [amounts], new investments [list], follow-ons [list], exits or write-downs [list], and notable portfolio news [paste].
+
+Structure: a short opening on the quarter, performance numbers with one sentence of context each, new investments with a 2-line description of each, portfolio highlights and challenges given equal honesty, and an outlook for next quarter.
+
+Tone: plain, confident, and candid about problems. No hype. Around 600 words. Keep every number exactly as I provide it, and mark anything you could not fill as [gap].</pre>
+      </section>
+      <h3 id="pg-7">Learning and interviews</h3>
+      <section class="prompt">
+        <div class="prompt-head"><h4>Practice a VC interview case</h4><button type="button" class="prompt-copy" data-copy="p-22">Copy prompt</button></div>
+        <p class="prompt-meta"><span>When: When preparing for venture interviews.</span><span>Works well in: Claude or ChatGPT, in a back-and-forth chat</span></p>
+        <pre class="prompt-text" id="p-22">Act as a partner interviewing me for an [analyst or associate] role at a [stage] venture fund focused on [sector].
+
+1. Give me a realistic fictional startup to evaluate in 3 to 4 sentences, including a few numbers.
+2. Ask me to pitch whether we should invest. Let me answer fully before responding.
+3. Ask 4 follow-up questions that test market sizing, competition, founder assessment, and valuation, one at a time.
+4. Then ask me to name a company I would invest in today and defend it.
+5. At the end, score me from 1 to 5 on structure, judgment, use of numbers, and communication, with specific feedback and what a top candidate would have said.</pre>
+      </section>
 
       <h2 id="careful">Where to be careful</h2>
       <ul>
@@ -180,7 +508,7 @@
 <footer class="site-foot">
   <div class="wrap">
     <div class="foot-top">
-      <div class="foot-brand"><a class="logo" href="index.html"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><path d="M10.3 11.4h3.1l2.6 6.8 2.6-6.8h3.1l-4.2 10h-3z" fill="#fff"/></svg>ventureschool</a><p>A school for venture capital. Courses and investing tests for anyone learning the job.</p></div>
+      <div class="foot-brand"><a class="logo" href="index.html" aria-label="ventureschool, home"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#2350E8"/><text x="16" y="23.4" text-anchor="middle" font-family="'Times New Roman', Times, serif" font-size="22" fill="#fff">V</text></svg>entureschool</a><p>A school for venture capital. Courses and investing tests for anyone learning the job.</p></div>
       <nav aria-label="Tests"><h2>Tests</h2><ul><li><a href="app.html#/tests/analyst">Analyst</a></li><li><a href="app.html#/tests/associate">Associate</a></li><li><a href="app.html#/tests/partner">Partner</a></li><li><a href="app.html#/workshops">Workshops</a></li></ul></nav>
       <nav aria-label="Learn"><h2>Learn</h2><ul><li><a href="app.html#/course">VC course</a></li><li><a href="founders.html">For founders</a></li><li><a href="app.html#/metrics">Metrics guide</a></li><li><a href="app.html#/sectors">Sector map</a></li><li><a href="break-into-vc.html">Break into VC</a></li></ul></nav>
       <nav aria-label="Account"><h2>Account</h2><ul><li><a href="app.html#/signup">Sign up</a></li><li><a href="app.html#/login">Log in</a></li><li><a href="app.html#/feedback">Send feedback</a></li></ul></nav>

@@ -51,7 +51,7 @@ button { font: inherit; color: inherit; }
 
 /* Logo */
 .brand-mark { display: block; width: 30px; height: 30px; flex: none; }
-.logo { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font: 700 20px/1 var(--sans); letter-spacing: -.02em; }
+.logo { display: inline-flex; align-items: center; gap: 1px; color: var(--ink); text-decoration: none; font: 700 20px/1 var(--sans); letter-spacing: -.02em; }
 .logo:hover { color: var(--ink); }
 
 /* Buttons */
@@ -805,3 +805,16 @@ code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size:
 .pass-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--blue); font: 500 14px var(--sans); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
 .pass-toggle:hover { background: var(--blue-soft); }
 .pass-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.prompt-index { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 8px; }
+.prompt-index a { padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line-strong); background: #fff; font: 500 13.5px var(--sans); text-decoration: none; color: var(--ink); }
+.prompt-index a:hover { border-color: var(--blue); color: var(--blue); }
+.prompt { background: var(--card); border-radius: 12px; box-shadow: 0 0 0 1px var(--line); padding: 16px 18px; margin: 14px 0; }
+.prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.prompt-head h4 { font: 600 17px/1.3 var(--sans); margin: 0; }
+.prompt-copy { flex: none; border: 1px solid var(--line-strong); background: #fff; border-radius: 8px; padding: 6px 12px; font: 500 13.5px var(--sans); color: var(--blue); cursor: pointer; }
+.prompt-copy:hover { border-color: var(--blue); }
+.prompt-copy:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.prompt-meta { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 400 13.5px var(--sans); color: var(--muted); margin: 6px 0 10px; }
+.prompt-text { white-space: pre-wrap; word-wrap: break-word; font: 400 14px/1.6 var(--sans); background: var(--bg-2); border-radius: 8px; padding: 14px 16px; margin: 0; max-height: 360px; overflow: auto; }
+.prose h3[id^="pg-"] { scroll-margin-top: 80px; }
+@media (max-width: 600px) { .prompt-head { flex-direction: column; align-items: flex-start; } }
