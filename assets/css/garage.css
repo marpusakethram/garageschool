@@ -920,7 +920,7 @@ a:hover { color: var(--blue); }
 .nav-right { gap: 14px; }
 .nav-right .login { font: 500 15px var(--sans); }
 
-/* The dock: frosted glass at the bottom, white in light mode and dark in dark mode. Full at the top of the page; once you scroll, only the G until you hover or tap it. */
+/* The dock: frosted glass at the bottom, white in light mode and dark in dark mode. Only the G at the top of the page; it expands once you scroll down. */
 body { padding-bottom: 96px; }
 .dock { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; max-width: calc(100vw - 24px); bottom: 20px; z-index: 60;
         display: flex; align-items: center; padding: 6px; border-radius: 18px;

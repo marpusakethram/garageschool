@@ -14,7 +14,7 @@
     });
   }
 
-  // The dock: always at the bottom. Once the header scrolls away it shrinks to the drawn G; hover or tap it for the menu.
+  // The dock: always at the bottom. Just the G while the header is on screen; it expands into the full menu once you scroll down.
   var mainNav = document.querySelector('.site-nav');
   if (head && mainNav) {
     var cta = head.querySelector('.head-cta');
@@ -34,8 +34,8 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
     var onScroll = function () {
       var past = head.getBoundingClientRect().bottom < 0;
-      dock.classList.toggle('mini', past);
-      if (!past) setOpen(false);
+      dock.classList.toggle('mini', !past);
+      if (past) setOpen(false);
     };
     addEventListener('scroll', onScroll, { passive: true });
     onScroll();
