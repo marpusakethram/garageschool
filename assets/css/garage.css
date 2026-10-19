@@ -920,27 +920,31 @@ a:hover { color: var(--blue); }
 .nav-right { gap: 14px; }
 .nav-right .login { font: 500 15px var(--sans); }
 
-/* The dock: a dark glass bar at the bottom. Full at the top of the page; once you scroll, only the G until you hover or tap it. */
+/* The dock: frosted glass at the bottom, white in light mode and dark in dark mode. Full at the top of the page; once you scroll, only the G until you hover or tap it. */
 body { padding-bottom: 96px; }
 .dock { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; max-width: calc(100vw - 24px); bottom: 20px; z-index: 60;
-        display: flex; align-items: center; gap: 4px; padding: 6px; border-radius: 18px; color: #F2F3F5;
-        background: rgba(22, 23, 27, .9); border: 1px solid rgba(255, 255, 255, .1);
-        box-shadow: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 20px 50px -18px rgba(0, 0, 0, .55); }
-@supports (backdrop-filter: blur(1px)) { .dock { backdrop-filter: saturate(160%) blur(16px); background: rgba(22, 23, 27, .74); } }
+        display: flex; align-items: center; padding: 6px; border-radius: 18px;
+        --dock-bg: rgba(255, 255, 255, .62); --dock-line: rgba(35, 38, 44, .1); --dock-text: rgba(35, 38, 44, .78); --dock-hover: rgba(35, 38, 44, .07);
+        background: var(--dock-bg); border: 1px solid var(--dock-line);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 18px 44px -18px rgba(20, 22, 28, .35); }
+:root[data-theme="dark"] .dock { --dock-bg: rgba(30, 31, 36, .58); --dock-line: rgba(255, 255, 255, .1); --dock-text: rgba(242, 243, 245, .78); --dock-hover: rgba(255, 255, 255, .1);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 20px 50px -18px rgba(0, 0, 0, .6); }
+@supports not (backdrop-filter: blur(1px)) { .dock { --dock-bg: rgba(255, 255, 255, .96); } :root[data-theme="dark"] .dock { --dock-bg: rgba(30, 31, 36, .96); } }
+@supports (backdrop-filter: blur(1px)) { .dock { backdrop-filter: saturate(170%) blur(18px); -webkit-backdrop-filter: saturate(170%) blur(18px); } }
 .dock-g { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; background: none; border-radius: 12px; cursor: pointer; transition: transform .2s; }
-.dock-g .brand-mark { width: 36px; height: 36px; font-size: 22px; border-radius: 10px; }
-.dock-links { display: flex; align-items: center; gap: 2px; max-width: 0; overflow: hidden; opacity: 0; transition: max-width .4s cubic-bezier(.2, .9, .25, 1), opacity .2s; }
-.dock:not(.mini) .dock-links, .dock.open .dock-links { max-width: 1000px; opacity: 1; overflow-x: auto; scrollbar-width: none; }
-.dock-links a { flex: none; padding: 9px 12px; border-radius: 11px; font: 500 14px var(--logo-font); color: rgba(242, 243, 245, .78); text-decoration: none; white-space: nowrap; transition: background .15s, color .15s; }
-.dock-links a:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.dock-g .brand-mark { margin: 0; width: 36px; height: 36px; font-size: 22px; border-radius: 10px; }
+.dock-links { display: flex; align-items: center; gap: 2px; max-width: 0; overflow: hidden; opacity: 0; transition: max-width .4s cubic-bezier(.2, .9, .25, 1), opacity .2s, margin .4s; }
+.dock:not(.mini) .dock-links, .dock.open .dock-links { max-width: 1000px; opacity: 1; margin-left: 4px; overflow-x: auto; scrollbar-width: none; }
+.dock-links a { flex: none; padding: 9px 12px; border-radius: 11px; font: 500 14px var(--logo-font); color: var(--dock-text); text-decoration: none; white-space: nowrap; transition: background .15s, color .15s; }
+.dock-links a:hover { background: var(--dock-hover); color: var(--ink); }
 .dock-links .dock-cta { background: var(--blue); color: #16171B; font-weight: 600; margin-left: 4px; }
-.dock-links .dock-cta:hover { background: #fff; color: #16171B; }
-.dock .theme-switch { margin-left: 4px; flex: none; border-color: rgba(255, 255, 255, .14); }
-.dock .theme-switch button { color: rgba(242, 243, 245, .6); }
-.dock .theme-switch button:hover { color: #fff; }
-.dock .theme-switch button[aria-pressed="true"] { background: rgba(255, 255, 255, .16); color: #fff; }
+.dock-links .dock-cta:hover { background: var(--ink); color: var(--on-ink); }
+.dock .theme-switch { margin-left: 4px; flex: none; border-color: var(--dock-line); }
+.dock .theme-switch button { color: var(--dock-text); }
+.dock .theme-switch button:hover { color: var(--ink); }
+.dock .theme-switch button[aria-pressed="true"] { background: var(--dock-hover); color: var(--ink); }
 @media (hover: hover) {
-  .dock:hover .dock-links, .dock:focus-within .dock-links { max-width: 1000px; opacity: 1; }
+  .dock:hover .dock-links, .dock:focus-within .dock-links { max-width: 1000px; opacity: 1; margin-left: 4px; }
   .dock-g:hover { transform: translateY(-2px); }
 }
 
@@ -1148,7 +1152,6 @@ body { padding-bottom: 96px; }
   --warn-soft: rgba(229, 176, 74, .14);
 }
 :root[data-theme="dark"] input, :root[data-theme="dark"] select, :root[data-theme="dark"] textarea { color: var(--ink); }
-:root[data-theme="dark"] .dock { background: rgba(38, 40, 46, .78); }
 :root[data-theme="dark"] .auth-card { box-shadow: 0 0 0 1px var(--line); }
 
 /* Pencil drawings follow the theme: graphite lines turn light in the dark */
