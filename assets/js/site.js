@@ -21,7 +21,7 @@
     var dock = document.createElement('nav');
     dock.className = 'dock';
     dock.setAttribute('aria-label', 'Quick menu');
-    dock.innerHTML = '<button class="dock-g" type="button" aria-expanded="false" aria-label="Menu"><img src="assets/img/g-mark.svg" alt="" width="32" height="32"></button>' +
+    dock.innerHTML = '<button class="dock-g" type="button" aria-expanded="false" aria-label="Menu"><span class="brand-mark" aria-hidden="true">G</span></button>' +
       '<div class="dock-links"><a href="index.html">Home</a>' +
       Array.prototype.map.call(mainNav.querySelectorAll('a'), function (a) { return '<a href="' + a.getAttribute('href') + '">' + esc(a.textContent) + '</a>'; }).join('') +
       (cta ? '<a class="dock-cta" href="' + cta.getAttribute('href') + '">Sign up</a>' : '') +
