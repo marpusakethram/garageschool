@@ -102,14 +102,14 @@ button { font: inherit; color: inherit; }
 .dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
 .dot { aspect-ratio: 1; border: 0; background: none; padding: 0; display: grid; place-items: center; cursor: pointer; border-radius: 50%; }
 .dot i { display: block; border-radius: 50%; width: var(--s, 12px); height: var(--s, 12px); background: var(--dot); transition: transform .12s; }
-.dot.mid i { background: #F4B48E; }
+.dot.mid i { background: #EDD38A; }
 .dot.win i { background: var(--blue); }
 .dot:hover i { transform: scale(1.15); }
 .dot[aria-pressed="true"] i { box-shadow: 0 0 0 3px var(--card), 0 0 0 5px var(--ink); }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: auto; padding-top: 22px; font-size: 13px; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .legend i { display: inline-block; border-radius: 50%; width: 10px; height: 10px; background: var(--dot); }
-.legend .mid i { background: #F4B48E; }
+.legend .mid i { background: #EDD38A; }
 .legend .win i { width: 14px; height: 14px; background: var(--blue); }
 .deal-card { overflow: hidden; display: flex; flex-direction: column; }
 .deal-top { padding: 24px 26px; }
@@ -275,7 +275,7 @@ button { font: inherit; color: inherit; }
 .module-card:hover h3 { color: var(--blue); }
 
 .next-card { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 28px; border-radius: 14px; color: #fff;
-             background: radial-gradient(120% 140% at 90% 0%, var(--blue) 0%, #5A2A12 50%, #1E1F23 100%); }
+             background: radial-gradient(120% 140% at 90% 0%, var(--blue) 0%, #5A4210 50%, #1E1F23 100%); }
 .next-card h2 { font: 400 28px var(--serif); }
 .next-card p { opacity: .82; margin-top: 6px; }
 .next-card .btn-primary { background: var(--card); color: var(--ink); }
@@ -555,7 +555,7 @@ code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size:
 
 /* LP report */
 .report { max-width: 900px; }
-.report-cover { border-radius: 16px; padding: 36px; color: #fff; background: radial-gradient(120% 140% at 90% 0%, var(--blue) 0%, #5A2A12 50%, #1E1F23 100%); }
+.report-cover { border-radius: 16px; padding: 36px; color: #fff; background: radial-gradient(120% 140% at 90% 0%, var(--blue) 0%, #5A4210 50%, #1E1F23 100%); }
 .report-cover .kicker { font-size: 14px; opacity: .8; }
 .report-cover h1 { font: 400 40px/1.1 var(--serif); margin-top: 8px; }
 .report-cover p { margin-top: 10px; opacity: .85; max-width: 40em; }
@@ -877,10 +877,10 @@ code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size:
   --faint: #929AA6;
   --line: #DEE2E8;
   --line-strong: #C2C9D3;
-  --blue: #E8692A;
-  --blue-dark: #C4531A;
-  --blue-soft: #FDEADF;
-  --grid: rgba(232, 105, 42, .07);
+  --blue: #D6A21E;
+  --blue-dark: #8C6800;
+  --blue-soft: #FBF1D6;
+  --grid: rgba(214, 162, 30, .07);
   --display: Newsreader, Georgia, serif;
   --serif: var(--display);
   --sans: "Hanken Grotesk", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
@@ -1131,10 +1131,10 @@ body { padding-bottom: 96px; }
   --faint: #7D848F;
   --line: #2E3036;
   --line-strong: #454851;
-  --blue: #F07A3E;
-  --blue-dark: #F59866;
-  --blue-soft: rgba(240, 122, 62, .14);
-  --grid: rgba(240, 122, 62, .06);
+  --blue: #E3B23C;
+  --blue-dark: #EBC461;
+  --blue-soft: rgba(227, 178, 60, .14);
+  --grid: rgba(227, 178, 60, .06);
   --dot: #3E4149;
   --good: #3CC48F;
   --good-soft: rgba(60, 196, 143, .14);
@@ -1143,7 +1143,6 @@ body { padding-bottom: 96px; }
   --warn: #E5B04A;
   --warn-soft: rgba(229, 176, 74, .14);
 }
-:root[data-theme="dark"] .brand-mark, :root[data-theme="dark"] .dock-g img { content: url("../img/g-mark-dark-96.png"); }
 :root[data-theme="dark"] input, :root[data-theme="dark"] select, :root[data-theme="dark"] textarea { color: var(--ink); }
 :root[data-theme="dark"] .dock { background: rgba(28, 29, 33, .86); box-shadow: 0 14px 34px -14px rgba(0, 0, 0, .7); }
 :root[data-theme="dark"] .auth-card { box-shadow: 0 0 0 1px var(--line); }

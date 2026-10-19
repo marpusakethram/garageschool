@@ -62,7 +62,7 @@
     rocket: '<path d="M5 15c-1 1-1.5 3.5-1.5 3.5S6 18 7 17"/><path d="M9 15l-3-3c2-6 7-9 13-9 0 6-3 11-9 13z"/><circle cx="14.5" cy="9.5" r="1.5"/>'
   };
   function icon(name) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>'; }
-  var GMARK = '<img class="brand-mark" src="assets/img/g-mark-96.png" alt="" width="96" height="96">';
+  var GMARK = '<img class="brand-mark" src="assets/img/g-mark.svg" alt="" width="32" height="32">';
   var LOGO = '<a class="logo" href="index.html" aria-label="Garage, home">' + GMARK + 'arage</a>';
 
   // ---------- Layout ----------
