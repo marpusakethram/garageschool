@@ -896,7 +896,7 @@ b, strong { font-weight: 600; }
 a:hover { color: var(--blue); }
 
 /* Logo: the drawn G, then the rest of the word in the headline serif */
-.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; margin-right: 1px; border-radius: 9px; background: #E8692A; color: #fff; font: 700 21px/1 var(--logo-font); letter-spacing: -.02em; }
+.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; margin-right: 1px; border-radius: 50%; background: var(--bg-2); border: 1px solid var(--line); color: #E8692A; font: 700 20px/1 var(--logo-font); letter-spacing: -.02em; }
 .logo { gap: 0; align-items: center; font: 600 25px/1 var(--logo-font); letter-spacing: -.035em; }
 
 /* Buttons: graphite, sentence case */
@@ -933,7 +933,7 @@ body { padding-bottom: 96px; }
 @supports (backdrop-filter: blur(1px)) { .dock { backdrop-filter: saturate(170%) blur(18px); -webkit-backdrop-filter: saturate(170%) blur(18px); } }
 .dock-g { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid var(--dock-line); background: var(--dock-hover); border-radius: 50%; cursor: pointer; transition: transform .2s; }
 /* In the dock the G is just the orange letter, not the logo badge */
-.dock-g .brand-mark { margin: 0; width: auto; height: auto; background: none; color: #E8692A; font-size: 24px; }
+.dock-g .brand-mark { margin: 0; width: auto; height: auto; background: none; border: 0; font-size: 24px; }
 .dock-links { display: flex; align-items: center; gap: 2px; max-width: 0; overflow: hidden; opacity: 0; transition: max-width .4s cubic-bezier(.2, .9, .25, 1), opacity .2s, margin .4s; }
 .dock:not(.mini) .dock-links, .dock.open .dock-links { max-width: 1000px; opacity: 1; margin-left: 4px; overflow-x: auto; scrollbar-width: none; }
 .dock-links a { flex: none; padding: 9px 12px; border-radius: 999px; font: 500 14px var(--logo-font); color: var(--dock-text); text-decoration: none; white-space: nowrap; transition: background .15s, color .15s; }
