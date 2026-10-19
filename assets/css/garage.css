@@ -896,8 +896,8 @@ b, strong { font-weight: 600; }
 a:hover { color: var(--blue); }
 
 /* Logo: the drawn G, then the rest of the word in the headline serif */
-.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; margin-right: 2px; border-radius: 9px; background: #E8692A; color: #fff; font: 700 21px/1 var(--logo-font); letter-spacing: -.02em; }
-.logo { gap: 2px; align-items: center; font: 600 25px/1 var(--logo-font); letter-spacing: -.035em; }
+.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; margin-right: 1px; border-radius: 9px; background: #E8692A; color: #fff; font: 700 21px/1 var(--logo-font); letter-spacing: -.02em; }
+.logo { gap: 0; align-items: center; font: 600 25px/1 var(--logo-font); letter-spacing: -.035em; }
 
 /* Buttons: graphite, sentence case */
 .btn { border-radius: 6px; border-width: 1.5px; font: 600 15px/1 var(--sans); min-height: 44px; padding: 0 20px; gap: 10px; }
