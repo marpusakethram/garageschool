@@ -432,7 +432,7 @@
     var d = E.dealDetails ? E.dealDetails(c, meta) : null;
     if (d) terms.push(['Raised before this round', d.prior]);
     var founders = d ? '<ul class="founders">' + d.founders.map(function (f) { return '<li><b>' + esc(f.name) + '</b>, ' + esc(f.role) + '<span>' + esc(f.bio) + '</span></li>'; }).join('') + '</ul>' : '';
-    var deckBar = d ? '<div class="deck-bar"><button class="btn btn-secondary btn-sm" type="button" data-act="deck">View pitch deck</button><button class="btn btn-secondary btn-sm" type="button" data-act="talk">Read demo day transcript</button>' +
+    var deckBar = d ? '<div class="deck-bar"><button class="btn btn-secondary btn-sm" type="button" data-act="deck">View pitch deck</button><button class="btn btn-secondary btn-sm" type="button" data-act="talk">Read demo day transcript</button><button class="btn btn-secondary btn-sm" type="button" data-act="call">Founder call summary</button>' +
       '<span class="small muted">The founders\' own version. Compare it with the diligence notes.</span></div>' : '';
     return '<div class="co-head"><div><h2 id="co-name">' + esc(c.name) + '</h2><div class="co-tags"><span class="pill accent">' + c.stageLabel + '</span><span class="pill">' + esc(c.sectorLabel) + '</span><span class="pill">' + esc(c.location) + '</span></div></div>' +
       '<p class="co-month">Month ' + c.month + ' of 36</p></div>' +
@@ -526,7 +526,7 @@
       var act = b.getAttribute('data-act');
       if (act === 'yes') decide(true);
       else if (act === 'no') decide(false);
-      else if (act === 'deck' || act === 'talk') { if (VSApp.openDeck) VSApp.openDeck(c, meta, act); }
+      else if (act === 'deck' || act === 'talk' || act === 'call') { if (VSApp.openDeck) VSApp.openDeck(c, meta, act); }
       else if (act === 'dig') {
         if (st.credits < 1 || st.dug[c.i]) return;
         st.credits--; st.dug[c.i] = true; save();
@@ -729,6 +729,8 @@
         var a = b.getAttribute('data-act');
         if (a === 'dig') { st.credits--; st.dug[c.i] = true; draw(); return; }
         if (a === 'next') { st.pos++; draw(); return; }
+        if (a === 'deck' || a === 'talk' || a === 'call') { if (VSApp.openDeck) VSApp.openDeck(c, meta, a); return; }
+        if (a !== 'yes' && a !== 'no') return;
         var yes = a === 'yes', h = c.hidden;
         if (yes) st.picks++;
         var won = h.multiple >= 1, verdict, good;

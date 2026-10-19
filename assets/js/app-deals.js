@@ -18,18 +18,20 @@
   }
 
   A.openDeck = function (c, meta, which) {
-    var slides = E.pitchDeck(c, meta), lines = E.demoDayTranscript(c, meta), at = 0;
+    var slides = E.pitchDeck(c, meta), lines = E.demoDayTranscript(c, meta), call = E.founderCall(c, meta), at = 0;
     var dlg = document.createElement('dialog');
     dlg.className = 'deck-dialog';
     dlg.setAttribute('aria-label', c.name + ' pitch materials');
     dlg.innerHTML =
-      '<div class="deck-top"><nav class="deck-tabs" aria-label="Pitch materials"><button type="button" data-tab="deck">Pitch deck</button><button type="button" data-tab="talk">Demo day transcript</button></nav>' +
+      '<div class="deck-top"><nav class="deck-tabs" aria-label="Pitch materials"><button type="button" data-tab="deck">Pitch deck</button><button type="button" data-tab="talk">Demo day transcript</button><button type="button" data-tab="call">Founder call summary</button></nav>' +
       '<button type="button" class="deck-close" data-close aria-label="Close">Close</button></div>' +
       '<div class="deck-pane" data-pane="deck"><div class="deck-stage" aria-live="polite"></div>' +
         '<div class="deck-nav"><button class="btn btn-secondary btn-sm" type="button" data-step="-1">Previous</button><span class="deck-count"></span><button class="btn btn-secondary btn-sm" type="button" data-step="1">Next</button></div>' +
         '<p class="small muted deck-note">This is the founders\' pitch. Founders present their best case, so check every claim against the deal card and the diligence notes.</p></div>' +
       '<div class="deck-pane" data-pane="talk" hidden><div class="talk"><p class="small muted">Demo day, about one minute. ' + esc(c.name) + ', ' + esc(c.stageLabel) + ', ' + esc(c.location) + '.</p>' +
-        lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') + '</div></div>';
+        lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') + '</div></div>' +
+      '<div class="deck-pane" data-pane="call" hidden><div class="talk"><p class="small muted">Notes from the first call with the founders, written up by an analyst at the fund. Use them for background; check the numbers against the deal card.</p>' +
+        '<ol class="call-notes">' + call.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ol></div></div>';
     document.body.appendChild(dlg);
     var stage = dlg.querySelector('.deck-stage'), count = dlg.querySelector('.deck-count');
     function show(k) {
@@ -54,9 +56,10 @@
       if (e.key === 'ArrowLeft') { e.preventDefault(); show(at - 1); }
     });
     dlg.addEventListener('close', function () { dlg.remove(); });
-    show(0); tab(which === 'talk' ? 'talk' : 'deck');
+    var first = which === 'talk' || which === 'call' ? which : 'deck';
+    show(0); tab(first);
     dlg.showModal();
-    dlg.querySelector('[data-tab="' + (which === 'talk' ? 'talk' : 'deck') + '"]').focus();
+    dlg.querySelector('[data-tab="' + first + '"]').focus();
   };
 
   // ---------- Due diligence and IC memo ----------
@@ -107,7 +110,7 @@
         '<span class="pill ' + (s.keep === true ? 'good' : s.keep === false ? 'bad' : '') + '">' + (s.keep === true ? 'Keep for IC' : s.keep === false ? 'Dropped' : (s.a.filter(function (x) { return x != null; }).length + ' of ' + qs.length + ' answered')) + '</span></summary>' +
         '<div class="dd-body"><p class="co-pitch" style="margin:0 0 10px">' + esc(c.pitch) + '</p>' +
           (d.reasons ? '<p class="small muted">Why you picked it: ' + d.reasons.map(function (x) { return (A.REASONS.filter(function (y) { return y[0] === x; })[0] || [0, x])[1]; }).join(', ') + (d.reason ? '. "' + esc(d.reason) + '"' : '') + '</p>' : '') +
-          '<div class="deck-bar"><button class="btn btn-secondary btn-sm" type="button" data-deck="' + i + '">View pitch deck</button><button class="btn btn-secondary btn-sm" type="button" data-talk="' + i + '">Demo day transcript</button><button class="btn btn-link btn-sm" type="button" data-card="' + i + '">Show the full deal card</button></div>' +
+          '<div class="deck-bar"><button class="btn btn-secondary btn-sm" type="button" data-deck="' + i + '">View pitch deck</button><button class="btn btn-secondary btn-sm" type="button" data-talk="' + i + '">Demo day transcript</button><button class="btn btn-secondary btn-sm" type="button" data-call="' + i + '">Founder call summary</button><button class="btn btn-link btn-sm" type="button" data-card="' + i + '">Show the full deal card</button></div>' +
           '<div class="dd-full" id="full-' + i + '" hidden></div>' + qHtml +
           '<div class="dd-decide"><p><b>Your decision after diligence</b></p><div class="decide-buttons"><button class="btn ' + (s.keep === false ? 'btn-bad' : 'btn-secondary') + '" type="button" data-keep="0" data-i="' + i + '">Drop</button>' +
           '<button class="btn ' + (s.keep === true ? 'btn-good' : 'btn-secondary') + '" type="button" data-keep="1" data-i="' + i + '">Keep for IC</button></div></div></div></details>';
@@ -129,7 +132,7 @@
       rerender(i);
     });
     wrap.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-keep],[data-deck],[data-talk],[data-card],[data-act],#to-ic'); if (!b) return;
+      var b = e.target.closest('[data-keep],[data-deck],[data-talk],[data-call],[data-card],[data-act],#to-ic'); if (!b) return;
       if (b.hasAttribute('data-act')) {
         var card = b.closest('.dd-card'), act = b.getAttribute('data-act');
         if (card && (act === 'deck' || act === 'talk')) A.openDeck(test.companies[+card.id.slice(3)], meta, act);
@@ -137,6 +140,7 @@
       }
       if (b.id === 'to-ic') { st.stage = 'ic'; st.updatedAt = Date.now(); A.save(); return viewIC(track, n); }
       if (b.hasAttribute('data-deck')) return A.openDeck(test.companies[+b.getAttribute('data-deck')], meta, 'deck');
+      if (b.hasAttribute('data-call')) return A.openDeck(test.companies[+b.getAttribute('data-call')], meta, 'call');
       if (b.hasAttribute('data-talk')) return A.openDeck(test.companies[+b.getAttribute('data-talk')], meta, 'talk');
       if (b.hasAttribute('data-card')) {
         var ci = +b.getAttribute('data-card'), box = document.getElementById('full-' + ci);

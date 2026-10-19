@@ -1,0 +1,22 @@
+# GarageSchool
+
+> GarageSchool (brand: Garage) is a free online school for venture capital. People learn the job by making decisions in simulated venture funds, then seeing what happened to every company, alongside courses for investors and founders. The Garage Residency, for founders and investors, is coming soon.
+
+Key facts:
+- 150 investing tests across three tracks: analyst, associate and partner. Each test has a fund and 50 fictional startups; fund sizes rise from $10M to $2.5B as you progress.
+- Analyst tests: screen 50 deals, advance 10 with a reason for every call, run scenario-based due diligence, then write a one-page IC memo.
+- Associate tests: choose 10 companies to back and rate conviction; price matters as much as the company.
+- Partner tests: make 10 to 18 first checks over three years, decide on follow-ons and reserves, and read an LP report with returns after fees and carry.
+- Each startup comes with a deal card, a pitch deck, a demo day transcript and a founder call summary.
+- Courses: a venture capital course, a founder course and a portfolio management course, plus memo, term sheet and cap table workshops.
+- Free. Companies and outcomes are fictional. Nothing on the site is investment advice.
+- The Garage Residency has no announced dates, format or cost yet.
+
+## Pages
+- [Home](https://garageschool.vercel.app/): what GarageSchool is, the three tracks, the 50-startup explorer, courses and FAQ
+- [For founders](https://garageschool.vercel.app/founders.html): how a VC thinks, three ways to get backed, the founder course and interview practice
+- [How to break into venture capital](https://garageschool.vercel.app/break-into-vc.html): roles at a venture firm, paths in, what firms look for, interviews and a 90-day plan
+- [AI tools for venture investors](https://garageschool.vercel.app/ai-tools.html): Granola, Mem, Notion, Claude and ChatGPT, a first-call-to-memo workflow and a prompt library
+- [The Garage Residency](https://garageschool.vercel.app/residency.html): coming soon, for founders and investors
+- [App](https://garageschool.vercel.app/app.html): tests, courses, glossary, metrics guide and sector map
+- [VC glossary (PDF)](https://garageschool.vercel.app/library/garageschool-glossary.pdf): about 90 venture capital terms

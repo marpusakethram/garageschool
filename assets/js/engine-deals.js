@@ -171,7 +171,7 @@
     }
     return 'We have ' + rows['Annual recurring revenue'] + ' in annual recurring revenue, up ' + rows['Growth, last 12 months'] + ' in the last year, with ' + rows['Net revenue retention'] + ' net revenue retention.';
   }
-  function lower(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
+  function lower(s) { return /^[A-Z]{2}/.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1); } // keep acronyms like AI
 
   // ---------- Demo day transcript ----------
   function transcript(c, meta) {
@@ -189,6 +189,27 @@
       'We are raising ' + money(t.round) + '. It gets us to the next step: ' + lower(d.milestone) + '. I am ' + ceo.name.split(' ')[0] + ', and we are ' + c.name + '. Come talk to us.'
     ];
     return lines;
+  }
+
+  // ---------- Founder call summary: an analyst's 12 notes from the first call with the CEO ----------
+  function callSummary(c, meta) {
+    var d = details(c, meta), S = story(c), t = c.terms, r = rngFor(c, meta, 'call');
+    var ceo = d.founders[0], C = cap(c.customer || 'Their customers');
+    var heard = tractionSpoken(c).replace(/^We have/, 'They have').replace(/, and we launch/, ', and they launch');
+    return [
+      'Spoke with ' + ceo.name + ' (' + ceo.role + ') for about ' + (30 + Math.floor(r() * 5) * 5) + ' minutes.',
+      c.name + ' was founded in ' + d.founded + ' and is based in ' + c.location + '. In one line: ' + lower(c.pitch),
+      'Team: ' + d.founders.map(function (f) { return f.name + ', ' + f.role + ', ' + lower(f.bio); }).join('; ') + '.',
+      'Our read on the team: ' + lower(c.team.text) + ' ' + c.team.fullTime + ' people work full time.',
+      'The problem, in the founder\'s words: ' + lower(S.problem.replace('{C}', C)),
+      'Product today: ' + lower(c.product.text),
+      'Traction they shared: ' + lower(heard),
+      'Business model: ' + lower(d.model) + ', at about ' + d.priceText + '.',
+      'Market: ' + lower(c.market.text) + ' They size it at ' + money(c.market.tam) + ', growing ' + c.market.growth + '% a year.',
+      'Competition: ' + lower(c.moat.text) + ' ' + c.moat.competitors + ' direct competitor' + (c.moat.competitors === 1 ? '' : 's') + '. Why now, they say: ' + lower(S.why),
+      'The round: raising ' + money(t.round) + ' at ' + money(t.post) + ' post-money. Raised before: ' + lower(d.prior) + '. The money gets them to ' + lower(d.milestone) + '.',
+      c.risks.length ? 'Open question to check before deciding: ' + lower(c.risks[0]) : 'Nothing alarming came up. Next step would be calls with two or three customers.'
+    ];
   }
 
   // ---------- Due diligence: scenario and option questions ----------
@@ -296,6 +317,7 @@
   E.dealDetails = details;
   E.pitchDeck = deck;
   E.demoDayTranscript = transcript;
+  E.founderCall = callSummary;
   E.dueDiligence = diligence;
   return E;
 });

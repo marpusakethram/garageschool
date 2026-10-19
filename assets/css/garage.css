@@ -50,7 +50,7 @@ button { font: inherit; color: inherit; }
 .skip:focus { top: 12px; color: #fff; }
 
 /* Logo */
-.brand-mark { display: block; width: 30px; height: 30px; flex: none; }
+.brand-mark { flex: none; }
 .logo { display: inline-flex; align-items: center; gap: 1px; color: var(--ink); text-decoration: none; font: 800 21px/1 'Nunito Sans', Avenir, 'Avenir Next', var(--sans); letter-spacing: -.01em; }
 .logo:hover { color: var(--ink); }
 
@@ -896,7 +896,7 @@ b, strong { font-weight: 600; }
 a:hover { color: var(--blue); }
 
 /* Logo: the drawn G, then the rest of the word in the headline serif */
-.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; margin-right: 1px; border-radius: 50%; background: var(--bg-2); border: 1px solid var(--line); color: #E8692A; font: 700 20px/1 var(--logo-font); letter-spacing: -.02em; }
+.brand-mark { color: #E8692A; }
 .logo { gap: 0; align-items: center; font: 600 25px/1 var(--logo-font); letter-spacing: -.035em; }
 
 /* Buttons: graphite, sentence case */
@@ -933,7 +933,7 @@ body { padding-bottom: 96px; }
 @supports (backdrop-filter: blur(1px)) { .dock { backdrop-filter: saturate(170%) blur(18px); -webkit-backdrop-filter: saturate(170%) blur(18px); } }
 .dock-g { flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid var(--dock-line); background: var(--dock-hover); border-radius: 50%; cursor: pointer; transition: transform .2s; }
 /* In the dock the G is just the orange letter, not the logo badge */
-.dock-g .brand-mark { margin: 0; width: auto; height: auto; background: none; border: 0; font-size: 24px; }
+.dock-g .brand-mark { font: 700 24px/1 var(--logo-font); }
 .dock-links { display: flex; align-items: center; gap: 2px; max-width: 0; overflow: hidden; opacity: 0; transition: max-width .4s cubic-bezier(.2, .9, .25, 1), opacity .2s, margin .4s; }
 .dock:not(.mini) .dock-links, .dock.open .dock-links { max-width: 1000px; opacity: 1; margin-left: 4px; overflow-x: auto; scrollbar-width: none; }
 .dock-links a { flex: none; padding: 9px 12px; border-radius: 999px; font: 500 14px var(--logo-font); color: var(--dock-text); text-decoration: none; white-space: nowrap; transition: background .15s, color .15s; }
@@ -961,6 +961,8 @@ body { padding-bottom: 96px; }
 /* Pencil drawings */
 .pencil { display: block; width: 100%; height: auto; overflow: visible; }
 .pencil .note { font: italic 400 15px var(--read); fill: var(--muted); }
+.pencil .code { font: 500 10px ui-monospace, "SF Mono", Menlo, Consolas, monospace; fill: var(--ink); white-space: pre; }
+.pencil .kw { fill: var(--blue-dark); }
 
 /* A box drawn like a sketch: the outline, plus faint construction lines running past each corner */
 .dots-card, .deal-card, .learn-card, .closing-box, .res-card, .res-notify-box {
@@ -1170,3 +1172,16 @@ body { padding-bottom: 96px; }
 .theme-switch svg { width: 17px; height: 17px; }
 .sidebar .theme-switch { margin: 14px 10px 0; }
 
+
+/* Founder call summary in the pitch materials dialog */
+.call-notes { margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px; }
+.call-notes li { padding-left: 4px; }
+
+/* Home FAQ: short, direct answers (also marked up as FAQPage for search and answer engines) */
+.faq-list { margin-top: 28px; border-top: 1px solid var(--line-strong); max-width: 60em; }
+.faq-list details { border-bottom: 1px solid var(--line-strong); }
+.faq-list summary { cursor: pointer; padding: 18px 0; font: 600 18px/1.35 var(--sans); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after { content: "+"; color: var(--blue-dark); font-weight: 500; }
+.faq-list details[open] summary::after { content: "\2212"; }
+.faq-list p { margin: 0 0 20px; color: var(--muted); max-width: 46em; }
